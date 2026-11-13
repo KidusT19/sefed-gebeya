@@ -102,7 +102,7 @@ export default function Navbar() {
                 <select
                   value={selectedKebele}
                   onChange={(e) => setSelectedKebele(e.target.value)}
-                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-emerald-400/40 pb-0.5 max-w-[140px] sm:max-w-[200px] truncate"
+                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-emerald-400/40 pb-0.5 max-w-[110px] sm:max-w-[200px] truncate text-[10px] sm:text-xs"
                   aria-label="Select delivery city"
                 >
                   <option value="All Ethiopia" className="text-slate-900">All Ethiopia (መላው ኢትዮጵያ)</option>
@@ -123,7 +123,7 @@ export default function Navbar() {
             </div>
 
             {/* Right: Hotline & Multi-Language Toggle */}
-            <div className="flex items-center gap-4 text-emerald-100">
+            <div className="flex items-center gap-2 sm:gap-4 text-emerald-100 flex-shrink-0">
               <div className="hidden sm:flex items-center gap-1 text-[11px] font-semibold">
                 <PhoneCall className="w-3 h-3 text-amber-400" />
                 <span>Support: 8082 (Toll-Free)</span>
@@ -132,11 +132,11 @@ export default function Navbar() {
               <span className="text-emerald-500/50 hidden sm:inline">|</span>
 
               {/* Language Switcher */}
-              <div className="flex items-center gap-1.5 text-[11px] font-bold" aria-label="Language selection">
+              <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold" aria-label="Language selection">
                 <button
                   type="button"
                   onClick={() => setLanguage("en")}
-                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
                     language === "en" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
                   }`}
                 >
@@ -146,7 +146,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setLanguage("am")}
-                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
                     language === "am" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
                   }`}
                 >
@@ -156,11 +156,13 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setLanguage("om")}
-                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
                     language === "om" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
                   }`}
+                  title="Afaan Oromoo"
                 >
-                  Oromoo
+                  <span className="sm:hidden">OM</span>
+                  <span className="hidden sm:inline">Oromoo</span>
                 </button>
               </div>
             </div>

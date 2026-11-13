@@ -80,20 +80,20 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
         </div>
 
         {/* Hero Content Container */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12 sm:pt-10 sm:pb-16 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-8 sm:pt-10 sm:pb-16 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-6 items-center">
             {/* Left Column: Headlines & Call to Action */}
-            <div className="lg:col-span-7 space-y-5 text-left">
+            <div className="lg:col-span-7 space-y-3 sm:space-y-5 text-left">
               {/* "Welcome to" Intro */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-bold text-emerald-800">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] sm:text-xs font-bold text-emerald-800">
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 fill-amber-500" />
                 <span>Welcome to Ethiopia&apos;s Trusted Marketplace</span>
               </div>
 
               {/* Main Brand Titles (Amharic + English) */}
-              <div className="space-y-1">
+              <div className="space-y-0.5 sm:space-y-1">
                 <div className="relative inline-block">
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0b4d2e] tracking-tight leading-tight">
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0b4d2e] tracking-tight leading-tight">
                     ሰፌድ ገበያ
                   </h1>
                   {/* Decorative Ethiopian Sunburst Accents */}
@@ -105,44 +105,44 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </div>
 
                 <div className="block">
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0e623a] tracking-tight">
+                  <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0e623a] tracking-tight">
                     Sefed Market
                   </span>
                 </div>
               </div>
 
               {/* Tagline & Subheading */}
-              <div className="space-y-2">
-                <h2 className="text-lg sm:text-xl font-extrabold text-slate-800 tracking-tight">
+              <div className="space-y-1 sm:space-y-2">
+                <h2 className="text-sm sm:text-xl font-extrabold text-slate-800 tracking-tight">
                   Your One-Stop Online Shopping Destination!
                 </h2>
-                <p className="text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
+                <p className="text-xs sm:text-base text-slate-600 max-w-xl leading-relaxed">
                   Discover a wide range of quality products at the best prices, and enjoy a convenient, 
                   secure shopping experience with verified sellers and fast delivery across Ethiopia.
                 </p>
               </div>
 
               {/* CTA Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <div className="flex flex-row items-center gap-2.5 sm:gap-3.5 pt-1 sm:pt-2">
                 {/* Primary Button: Shop Now */}
                 {onShopNowClick ? (
                   <button
                     type="button"
                     onClick={onShopNowClick}
-                    className="inline-flex items-center gap-2.5 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
-                    <ShoppingBag className="w-5 h-5" />
+                    <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Shop Now</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
                   </button>
                 ) : (
                   <Link
                     href="/listings"
-                    className="inline-flex items-center gap-2.5 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                    className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <ShoppingBag className="w-5 h-5" />
+                    <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Shop Now</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
                   </Link>
                 )}
 
@@ -150,39 +150,39 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(true)}
-                  className="inline-flex items-center gap-2.5 bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base px-6 py-3.5 rounded-full border-2 border-slate-200 hover:border-emerald-600 shadow-xs transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-full border border-slate-200 sm:border-2 hover:border-emerald-600 shadow-xs transition-all cursor-pointer"
                 >
-                  <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center">
-                    <Play className="w-3 h-3 fill-white ml-0.5" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center">
+                    <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white ml-0.5" />
                   </div>
                   <span>Watch Video</span>
                 </button>
               </div>
 
               {/* Quick Trust Badges */}
-              <div className="pt-3 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
+              <div className="pt-1.5 sm:pt-3 flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-500">
                 <div className="flex items-center gap-1.5 text-emerald-800">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                   <span>Escrow Protected (Telebirr / CBE)</span>
                 </div>
-                <span className="text-slate-300">•</span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
                 <div className="flex items-center gap-1.5 text-slate-700">
-                  <Truck className="w-4 h-4 text-amber-600" />
+                  <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
                   <span>Hyperlocal Express Delivery</span>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Hero Shopper Visual & Floating Badges */}
-            <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
+            <div className="lg:col-span-5 relative flex justify-center lg:justify-end mt-4 lg:mt-0">
               <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-none">
 
                 {/* Shopper Hero Frame */}
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-emerald-50/50 to-white">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-white bg-gradient-to-b from-emerald-50/50 to-white">
                   <img
                     src="/images/mockup_assets/hero_shopper.jpg"
                     alt="Ethiopian Shopper enjoying Sefed Market"
-                    className="w-full h-auto object-cover object-center max-h-[460px] transform hover:scale-[1.02] transition-transform duration-500"
+                    className="w-full h-auto object-cover object-center max-h-[300px] sm:max-h-[380px] lg:max-h-[460px] transform hover:scale-[1.02] transition-transform duration-500"
                     onError={(e) => {
                       // Fallback to high-res shopper portrait if local crop is unavailable
                       (e.target as HTMLImageElement).src =
@@ -195,15 +195,15 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </div>
 
                 {/* Floating Verified Quality Badge */}
-                <div className="absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 bg-white rounded-2xl shadow-xl border border-slate-100 p-3 flex items-center gap-3 z-20">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                <div className="absolute -bottom-3 -left-2 sm:-bottom-5 sm:-left-5 bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-slate-100 p-2 sm:p-3 flex items-center gap-2 sm:gap-3 z-20">
+                  <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs sm:text-base">
                     ✓
                   </div>
-                  <div className="text-left leading-tight pr-2">
-                    <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">
+                  <div className="text-left leading-tight pr-1 sm:pr-2">
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold block uppercase tracking-wider">
                       Verified Sellers
                     </span>
-                    <span className="text-xs font-black text-slate-900 block mt-0.5">
+                    <span className="text-[11px] sm:text-xs font-black text-slate-900 block mt-0.5">
                       100% Genuine Items
                     </span>
                   </div>

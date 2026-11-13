@@ -46,31 +46,31 @@ export default function SefedTrustBar() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 sm:-mt-6 relative z-20">
-      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 p-4 sm:p-6 transition-all hover:shadow-2xl">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-2 sm:-mt-6 relative z-20">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl shadow-slate-200/50 border border-slate-200/80 p-3 sm:p-6 transition-all hover:shadow-2xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-6 sm:divide-x divide-slate-100">
           {pillars.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className={`flex items-center gap-3.5 ${
-                  idx > 0 ? "pt-3 sm:pt-0 sm:pl-6" : ""
+                className={`flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-0 rounded-xl bg-slate-50/60 sm:bg-transparent ${
+                  idx > 0 ? "sm:pl-6" : ""
                 } group cursor-default`}
               >
                 {/* Pillar Icon with Round Badge */}
                 <div
-                  className={`w-12 h-12 rounded-2xl ${item.bgColor} ${item.iconColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200`}
+                  className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${item.bgColor} ${item.iconColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200`}
                 >
-                  <Icon className="w-6 h-6 stroke-[2.2]" />
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
                 </div>
 
                 {/* Text Labels */}
                 <div className="min-w-0">
-                  <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 tracking-tight group-hover:text-emerald-800 transition-colors">
+                  <h3 className="font-extrabold text-[11px] sm:text-sm text-slate-900 tracking-tight group-hover:text-emerald-800 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 font-medium line-clamp-1 mt-0.5">
+                  <p className="text-[10px] sm:text-xs text-slate-500 font-medium line-clamp-1 mt-0.5">
                     {item.description}
                   </p>
                 </div>
