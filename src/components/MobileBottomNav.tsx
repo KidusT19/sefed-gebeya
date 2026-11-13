@@ -29,10 +29,10 @@ export default function MobileBottomNav() {
                 href={item.href}
                 className="flex flex-col items-center justify-center -mt-5"
               >
-                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md border-4 border-slate-50">
+                <div className="w-12 h-12 rounded-full bg-[#0e623a] text-white flex items-center justify-center shadow-md border-4 border-slate-50 transition-transform active:scale-95">
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-black text-blue-600 mt-0.5">Post</span>
+                <span className="text-[10px] font-black text-[#0e623a] mt-0.5">Post</span>
               </Link>
             );
           }
@@ -42,7 +42,7 @@ export default function MobileBottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors ${
-                isActive ? "text-blue-600 font-bold" : "text-slate-500 hover:text-slate-900"
+                isActive ? "text-[#0e623a] font-bold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
               <Icon className="w-5 h-5" />
