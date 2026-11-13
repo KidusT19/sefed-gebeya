@@ -7,6 +7,16 @@ import { TRANSLATIONS, Language } from "@/data/translations";
 
 export type { Language };
 
+export interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  image: string;
+  quantity: number;
+  sellerName?: string;
+  category?: string;
+}
+
 export interface CustomOffer {
   id: string;
   listingId: string;
@@ -106,7 +116,7 @@ export const PRESET_USERS: ActiveUser[] = [
   },
   {
     id: "adm-1",
-    name: "Sebez Operations Admin",
+    name: "Sefed Operations Admin",
     phone: "+251900000000",
     role: "ADMIN",
     city: "Addis Ababa",
@@ -139,6 +149,13 @@ interface MarketplaceContextType {
   isFavorite: (listingId: string) => boolean;
   listings: ProductListing[];
   addListing: (listing: ProductListing) => void;
+  cart: CartItem[];
+  addToCart: (item: Omit<CartItem, "quantity">, qty?: number) => void;
+  removeFromCart: (itemId: string) => void;
+  updateCartQuantity: (itemId: string, qty: number) => void;
+  clearCart: () => void;
+  cartTotal: number;
+  cartCount: number;
   offers: CustomOffer[];
   addOffer: (listingId: string, offeredPrice: number, message: string) => void;
   deliveries: ActiveDelivery[];
@@ -159,6 +176,19 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [listings, setListings] = useState<ProductListing[]>(MOCK_LISTINGS);
   const [toast, setToast] = useState<ToastNotification | null>(null);
+
+  // Persistent shopping cart state
+  const [cart, setCart] = useState<CartItem[]>([
+    {
+      id: "lst-1",
+      title: "Apple iPhone 13 Pro 128GB (Sierra Blue)",
+      price: 55000,
+      image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&auto=format&fit=crop&q=80",
+      quantity: 1,
+      sellerName: "Henok Tadesse",
+      category: "electronics",
+    },
+  ]);
 
   // Load listings from API or initial state
   useEffect(() => {
@@ -185,12 +215,67 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     showToast(`✓ Listing "${newListing.title.slice(0, 24)}..." published to marketplace feed!`, "success");
   };
 
+  // Cart operations
+  const addToCart = (item: Omit<CartItem, "quantity">, qty: number = 1) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      let updated: CartItem[];
+      if (existing) {
+        updated = prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + qty } : i
+        );
+      } else {
+        updated = [...prev, { ...item, quantity: qty }];
+      }
+      try {
+        localStorage.setItem("sefed_cart", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    showToast(`✓ Added "${item.title.slice(0, 20)}..." to your cart!`, "success");
+  };
+
+  const removeFromCart = (itemId: string) => {
+    setCart((prev) => {
+      const updated = prev.filter((i) => i.id !== itemId);
+      try {
+        localStorage.setItem("sefed_cart", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    showToast("Item removed from cart", "info");
+  };
+
+  const updateCartQuantity = (itemId: string, qty: number) => {
+    if (qty <= 0) {
+      removeFromCart(itemId);
+      return;
+    }
+    setCart((prev) => {
+      const updated = prev.map((i) => (i.id === itemId ? { ...i, quantity: qty } : i));
+      try {
+        localStorage.setItem("sefed_cart", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    try {
+      localStorage.removeItem("sefed_cart");
+    } catch {}
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   const login = (user: ActiveUser) => {
     setCurrentUser(user);
     setIsLoggedIn(true);
     try {
-      localStorage.setItem("sebez_current_user", JSON.stringify(user));
-      localStorage.setItem("sebez_is_logged_in", "true");
+      localStorage.setItem("sefed_current_user", JSON.stringify(user));
+      localStorage.setItem("sefed_is_logged_in", "true");
     } catch {}
     showToast(`✓ Welcome back, ${user.name}!`, "success");
   };
@@ -198,7 +283,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const logout = () => {
     setIsLoggedIn(false);
     try {
-      localStorage.removeItem("sebez_is_logged_in");
+      localStorage.removeItem("sefed_is_logged_in");
     } catch {}
     showToast("You have been signed out.", "info");
   };
@@ -237,18 +322,22 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     },
   ]);
 
-  // Load favorites and user from localStorage if present
+  // Load favorites, user, and cart from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("sebez_favorites");
-      if (stored) {
-        setFavorites(JSON.parse(stored));
+      const storedFavs = localStorage.getItem("sefed_favorites") || localStorage.getItem("sebez_favorites");
+      if (storedFavs) {
+        setFavorites(JSON.parse(storedFavs));
       }
-      const storedUser = localStorage.getItem("sebez_current_user");
-      const storedAuth = localStorage.getItem("sebez_is_logged_in");
+      const storedUser = localStorage.getItem("sefed_current_user") || localStorage.getItem("sebez_current_user");
+      const storedAuth = localStorage.getItem("sefed_is_logged_in") || localStorage.getItem("sebez_is_logged_in");
       if (storedUser && storedAuth === "true") {
         setCurrentUser(JSON.parse(storedUser));
         setIsLoggedIn(true);
+      }
+      const storedCart = localStorage.getItem("sefed_cart");
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
       }
     } catch {
       // ignore
@@ -260,7 +349,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     if (found) {
       setCurrentUser(found);
       try {
-        localStorage.setItem("sebez_current_user", JSON.stringify(found));
+        localStorage.setItem("sefed_current_user", JSON.stringify(found));
       } catch {
         // ignore
       }
@@ -270,7 +359,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const handleSetCurrentUser = (user: ActiveUser) => {
     setCurrentUser(user);
     try {
-      localStorage.setItem("sebez_current_user", JSON.stringify(user));
+      localStorage.setItem("sefed_current_user", JSON.stringify(user));
     } catch {
       // ignore
     }
@@ -280,7 +369,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     setFavorites((prev) => {
       const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
       try {
-        localStorage.setItem("sebez_favorites", JSON.stringify(next));
+        localStorage.setItem("sefed_favorites", JSON.stringify(next));
       } catch {
         // ignore
       }
@@ -342,6 +431,13 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         isFavorite,
         listings,
         addListing,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateCartQuantity,
+        clearCart,
+        cartTotal,
+        cartCount,
         offers,
         addOffer,
         deliveries,
@@ -360,7 +456,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
           <div
             className={`pointer-events-auto px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-3 max-w-sm text-xs font-bold ${
               toast.type === "success"
-                ? "bg-blue-600 text-white border-blue-400"
+                ? "bg-[#0e623a] text-white border-[#15803d]"
                 : toast.type === "error"
                 ? "bg-rose-700 text-white border-rose-500"
                 : "bg-slate-900 text-white border-slate-700"
