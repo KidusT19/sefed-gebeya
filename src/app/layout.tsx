@@ -4,8 +4,8 @@ import { MarketplaceProvider } from "@/context/MarketplaceContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sebez Market | Buy, Sell & Swap Across Ethiopia",
-  description: "Ethiopia's premier direct buyer-to-seller marketplace, verified classifieds, and circular device barter exchange across Addis Ababa, Adama, Hawassa, and nationwide.",
+  title: "Sefed Market (ሰፌድ ገበያ) | Shop Smart · Live Better",
+  description: "Ethiopia's premier e-commerce marketplace and device barter exchange with secure Telebirr and CBE escrow across Addis Ababa, Adama, Hawassa, and nationwide.",
 };
 
 export default function RootLayout({
