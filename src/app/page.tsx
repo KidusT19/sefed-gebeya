@@ -21,9 +21,7 @@ import {
   CheckCircle,
   Star,
   Search,
-  ShoppingCart,
   Zap,
-  Check,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -39,11 +37,9 @@ export default function HomePage() {
     isLoggedIn,
     login,
     showToast,
-    addToCart,
   } = useMarketplace();
 
   const [activeFeedTab, setActiveFeedTab] = useState<"all" | "electronics" | "fashion" | "swap" | "budget">("all");
-  const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
 
   // Barter Calculator Interactive State
   const [simMyDevice, setSimMyDevice] = useState("samsung-s21");
@@ -83,23 +79,6 @@ export default function HomePage() {
 
   const handleScrollToProducts = () => {
     trendingRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleAddToCartClick = (e: React.MouseEvent, item: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      image: item.images[0],
-      sellerName: item.seller?.name || "Verified Seller",
-      category: item.categorySlug,
-    });
-    setAddedItems((prev) => ({ ...prev, [item.id]: true }));
-    setTimeout(() => {
-      setAddedItems((prev) => ({ ...prev, [item.id]: false }));
-    }, 2000);
   };
 
   // Filter listings based on active tab and city/location
@@ -209,7 +188,6 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {filteredListings.slice(0, 8).map((item) => {
               const isFav = isFavorite(item.id);
-              const isAdded = addedItems[item.id];
 
               return (
                 <div
@@ -286,37 +264,34 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Actions: Add to Cart + View/Swap */}
-                  <div className="p-4 pt-0 grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => handleAddToCartClick(e, item)}
-                      className={`w-full py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer ${
-                        isAdded
-                          ? "bg-emerald-700 text-white"
-                          : "bg-slate-100 hover:bg-slate-200 text-slate-800"
-                      }`}
-                    >
-                      {isAdded ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          <span>Added!</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingCart className="w-3.5 h-3.5 text-slate-600" />
-                          <span>Add to Cart</span>
-                        </>
-                      )}
-                    </button>
-
-                    <Link
-                      href={`/listings/${item.id}`}
-                      className="w-full py-2 px-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1 transition-colors shadow-xs"
-                    >
-                      <span>Buy Direct</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
+                  {/* Actions: Direct Purchase / View & Device Swap */}
+                  <div className="p-4 pt-0 flex items-center gap-2">
+                    {item.allowBarter ? (
+                      <>
+                        <Link
+                          href={`/trades/new?target=${item.id}`}
+                          className="flex-1 py-2 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center gap-1 transition-colors shadow-2xs"
+                        >
+                          <Repeat className="w-3.5 h-3.5 text-amber-700" />
+                          <span>Swap</span>
+                        </Link>
+                        <Link
+                          href={`/listings/${item.id}`}
+                          className="flex-1 py-2 px-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1 transition-colors shadow-xs"
+                        >
+                          <span>Buy Direct</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </>
+                    ) : (
+                      <Link
+                        href={`/listings/${item.id}`}
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                      >
+                        <span>Buy Direct from Seller</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               );

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  ShoppingCart,
+  ShoppingBag,
   Play,
   ShieldCheck,
   Truck,
@@ -131,7 +131,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                     onClick={onShopNowClick}
                     className="inline-flex items-center gap-2.5 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
-                    <ShoppingCart className="w-5 h-5" />
+                    <ShoppingBag className="w-5 h-5" />
                     <span>Shop Now</span>
                     <ArrowRight className="w-4 h-4 stroke-[3]" />
                   </button>
@@ -140,7 +140,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                     href="/listings"
                     className="inline-flex items-center gap-2.5 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <ShoppingCart className="w-5 h-5" />
+                    <ShoppingBag className="w-5 h-5" />
                     <span>Shop Now</span>
                     <ArrowRight className="w-4 h-4 stroke-[3]" />
                   </Link>

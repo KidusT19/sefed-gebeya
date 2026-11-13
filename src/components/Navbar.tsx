@@ -6,12 +6,8 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   Search,
   MapPin,
-  Heart,
   X,
-  ArrowRight,
   Menu,
-  ShoppingCart,
-  User,
   ChevronDown,
   Sparkles,
   PhoneCall,
@@ -21,7 +17,6 @@ import {
   Tag,
   Info,
   Phone,
-  Trash2,
 } from "lucide-react";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { MOCK_LISTINGS, CATEGORIES } from "@/data/mockData";
@@ -32,7 +27,6 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const cartDropdownRef = useRef<HTMLDivElement>(null);
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -40,23 +34,14 @@ export default function Navbar() {
     setSelectedKebele,
     language,
     setLanguage,
-    favorites,
-    t,
     currentUser,
     isLoggedIn,
-    logout,
-    cart,
-    cartCount,
-    cartTotal,
-    removeFromCart,
-    updateCartQuantity,
   } = useMarketplace();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCategoriesMenuOpen, setIsCategoriesMenuOpen] = useState(false);
 
   // Suggestions filtered based on query
@@ -79,9 +64,6 @@ export default function Navbar() {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
       }
-      if (cartDropdownRef.current && !cartDropdownRef.current.contains(event.target as Node)) {
-        setIsCartOpen(false);
-      }
       if (categoriesDropdownRef.current && !categoriesDropdownRef.current.contains(event.target as Node)) {
         setIsCategoriesMenuOpen(false);
       }
@@ -98,6 +80,10 @@ export default function Navbar() {
       router.push(`/listings?q=${encodeURIComponent(searchQuery.trim())}${catParam}`);
     }
   };
+
+  // Dynamic active state: green shifts between Login and Sign Up based on route
+  const isLoginPage = pathname === "/auth/login";
+  const isSignupPage = pathname === "/auth/signup";
 
   return (
     <>
@@ -181,7 +167,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Main Header Row: Logo + Search + Distinct Auth Buttons & Cart */}
+        {/* Main Header Row: Logo + Search + Dynamic Shifting Auth Buttons */}
         <div className="max-w-7xl mx-auto px-4 py-3 sm:py-3.5">
           <div className="flex items-center justify-between gap-3 sm:gap-6">
             {/* Left: Mobile Drawer Trigger & Sefed Brand Logo */}
@@ -232,7 +218,7 @@ export default function Navbar() {
                 {/* Dark Green Pill Search Button */}
                 <button
                   type="submit"
-                  className="bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-r-full border-2 border-[#0e623a] transition-all flex items-center gap-1.5 shadow-xs"
+                  className="bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-r-full border-2 border-[#0e623a] transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Search className="w-4 h-4 stroke-[2.5]" />
                   <span>Search</span>
@@ -302,14 +288,13 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Right: Distinct Auth Buttons (No overlapping!) + Cart with Counter */}
+            {/* Right: Distinct Auth Buttons with Dynamic Green Shift (No Cart!) */}
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              {/* Separate, Non-Overlapping Auth Buttons */}
               {isLoggedIn ? (
                 <div className="relative group">
                   <Link
                     href="/dashboard"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all"
                   >
                     <img
                       src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
@@ -325,21 +310,29 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  {/* Distinct Login Button */}
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  {/* Login Button: Green when on Login page; Outlined otherwise */}
                   <Link
                     href="/auth/login"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 text-xs sm:text-sm font-bold transition-all"
+                    className={`inline-flex items-center gap-1.5 px-4 sm:px-4.5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all shadow-xs ${
+                      isLoginPage
+                        ? "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
+                        : "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
+                    }`}
                     title="Sign into your existing account"
                   >
-                    <LogIn className="w-3.5 h-3.5 text-emerald-700" />
+                    <LogIn className={`w-3.5 h-3.5 ${isLoginPage ? "text-white" : "text-emerald-700"}`} />
                     <span>Login</span>
                   </Link>
 
-                  {/* Distinct Sign Up Button */}
+                  {/* Sign Up Button: Green when on Sign Up or default; Outlined when on Login page */}
                   <Link
                     href="/auth/signup"
-                    className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white text-xs sm:text-sm font-bold shadow-xs transition-transform active:scale-95"
+                    className={`inline-flex items-center gap-1.5 px-4 sm:px-4.5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all shadow-xs ${
+                      isLoginPage
+                        ? "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
+                        : "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
+                    }`}
                     title="Create a new customer account"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
@@ -347,112 +340,6 @@ export default function Navbar() {
                   </Link>
                 </div>
               )}
-
-              {/* Cart Button with Count Badge and Mini Cart Toggle */}
-              <div ref={cartDropdownRef} className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsCartOpen(!isCartOpen)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-full bg-amber-50 hover:bg-amber-100/80 border border-amber-300 text-slate-900 transition-all cursor-pointer"
-                  aria-label="View shopping cart"
-                >
-                  <div className="relative">
-                    <ShoppingCart className="w-5 h-5 text-amber-700" />
-                    <span className="absolute -top-2 -right-2.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#e11d48] text-white text-[10px] font-black flex items-center justify-center shadow-xs">
-                      {cartCount}
-                    </span>
-                  </div>
-                  <span className="hidden sm:inline font-black text-xs text-amber-900">
-                    Cart
-                  </span>
-                </button>
-
-                {/* Interactive Mini-Cart Slideover Dropdown */}
-                {isCartOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
-                      <div className="flex items-center gap-2">
-                        <ShoppingCart className="w-4 h-4 text-emerald-700" />
-                        <span className="font-extrabold text-sm text-slate-900">Your Shopping Cart</span>
-                        <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                          {cartCount} {cartCount === 1 ? "item" : "items"}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => setIsCartOpen(false)}
-                        className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700"
-                        aria-label="Close cart preview"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    {cart.length === 0 ? (
-                      <div className="py-8 text-center text-slate-500">
-                        <ShoppingCart className="w-10 h-10 text-slate-300 mx-auto mb-2 stroke-[1.5]" />
-                        <p className="text-xs font-bold text-slate-700">Your cart is currently empty</p>
-                        <p className="text-[11px] text-slate-400 mt-1">Discover items and add them to your cart</p>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 pr-1">
-                          {cart.map((item) => (
-                            <div key={item.id} className="py-2.5 flex items-center gap-3">
-                              <img
-                                src={item.image}
-                                alt={item.title}
-                                className="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 flex-shrink-0"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h4 className="text-xs font-bold text-slate-900 truncate">{item.title}</h4>
-                                <div className="text-xs font-black text-emerald-700 mt-0.5">
-                                  {item.price.toLocaleString()} ETB
-                                </div>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <button
-                                    onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
-                                    className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center"
-                                  >
-                                    -
-                                  </button>
-                                  <span className="text-xs font-bold text-slate-800 px-1">{item.quantity}</span>
-                                  <button
-                                    onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                                    className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center"
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
-                                title="Remove item"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="border-t border-slate-100 pt-3 mt-2">
-                          <div className="flex justify-between items-center text-xs font-bold text-slate-600 mb-1">
-                            <span>Subtotal</span>
-                            <span className="text-sm font-black text-slate-900">{cartTotal.toLocaleString()} ETB</span>
-                          </div>
-                          <Link
-                            href="/checkout"
-                            onClick={() => setIsCartOpen(false)}
-                            className="mt-2 w-full py-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center block shadow-xs transition-colors"
-                          >
-                            Proceed to Secure Checkout →
-                          </Link>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
 
@@ -477,7 +364,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Secondary Category & Quick Links Bar (Matching Mockup with Active Pill) */}
+        {/* Secondary Category & Quick Links Bar */}
         <nav className="bg-[#fcfdfd] border-t border-slate-200/80 px-4 py-2 hidden sm:block" aria-label="Primary Navigation">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-1.5 lg:gap-3 text-xs font-bold">
@@ -578,7 +465,7 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/listings/create"
-                className="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-2xs transition-all"
+                className="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-4 py-2 rounded-full shadow-2xs transition-all"
               >
                 <span>+ Post Free Product</span>
               </Link>
