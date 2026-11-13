@@ -289,17 +289,17 @@ export default function Navbar() {
             </div>
 
             {/* Right: Distinct Auth Buttons with Dynamic Green Shift (No Cart!) */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
               {isLoggedIn ? (
                 <div className="relative group">
                   <Link
                     href="/dashboard"
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all"
+                    className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all"
                   >
                     <img
                       src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
                       alt={currentUser.name}
-                      className="w-7 h-7 rounded-full object-cover border border-emerald-600"
+                      className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-emerald-600"
                     />
                     <div className="hidden xl:block text-left text-xs leading-tight">
                       <div className="font-bold text-slate-900 line-clamp-1">{currentUser.name.split(" ")[0]}</div>
@@ -310,32 +310,32 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 sm:gap-2.5">
+                <div className="flex items-center gap-1 sm:gap-2.5">
                   {/* Login Button: Green when on Login page; Outlined otherwise */}
                   <Link
                     href="/auth/login"
-                    className={`inline-flex items-center gap-1.5 px-4 sm:px-4.5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all shadow-xs ${
+                    className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all shadow-xs ${
                       isLoginPage
                         ? "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
                         : "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
                     }`}
                     title="Sign into your existing account"
                   >
-                    <LogIn className={`w-3.5 h-3.5 ${isLoginPage ? "text-white" : "text-emerald-700"}`} />
+                    <LogIn className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isLoginPage ? "text-white" : "text-emerald-700"}`} />
                     <span>Login</span>
                   </Link>
 
                   {/* Sign Up Button: Green when on Sign Up or default; Outlined when on Login page */}
                   <Link
                     href="/auth/signup"
-                    className={`inline-flex items-center gap-1.5 px-4 sm:px-4.5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all shadow-xs ${
+                    className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all shadow-xs ${
                       isLoginPage
                         ? "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
                         : "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
                     }`}
                     title="Create a new customer account"
                   >
-                    <UserPlus className="w-3.5 h-3.5" />
+                    <UserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span>Sign Up</span>
                   </Link>
                 </div>

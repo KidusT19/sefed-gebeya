@@ -108,7 +108,7 @@ export default function SefedLogo({
           </span>
         </div>
         {showTagline && (
-          <span className={`text-[#d97706] font-bold tracking-wider ${current.subScale} mt-0.5`}>
+          <span className={`hidden sm:block text-[#d97706] font-bold tracking-wider ${current.subScale} mt-0.5`}>
             — Shop Smart · Live Better —
           </span>
         )}
