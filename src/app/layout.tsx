@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import LayoutShell from "@/components/LayoutShell";
+import { MarketplaceProvider } from "@/context/MarketplaceContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sebez Market | Circular Barter & Hyperlocal Pooled Marketplace",
-  description: "Interwoven circular barter trading, cash top-ups, and pooled Bajaj logistics in Adama and Ethiopian cities.",
+  title: "Sebez Market | Buy, Sell & Swap Across Ethiopia",
+  description: "Ethiopia's premier direct buyer-to-seller marketplace, verified classifieds, and circular device barter exchange across Addis Ababa, Adama, Hawassa, and nationwide.",
 };
 
 export default function RootLayout({
@@ -15,12 +15,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-stone-50 text-stone-900 antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
-          {children}
-        </main>
-        <Footer />
+      <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html, body {
+                background-color: #f8fafc;
+                color: #0f172a;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                margin: 0;
+                padding: 0;
+              }
+              img {
+                max-width: 100%;
+                height: auto;
+              }
+            `,
+          }}
+        />
+      </head>
+      <body className="bg-[#f8fafc] text-[#0f172a] antialiased min-h-screen flex flex-col">
+        <MarketplaceProvider>
+          <LayoutShell>{children}</LayoutShell>
+        </MarketplaceProvider>
       </body>
     </html>
   );

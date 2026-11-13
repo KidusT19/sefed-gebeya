@@ -184,6 +184,30 @@ model EscrowTransaction {
   tradeOffer          TradeOffer?     @relation(fields: [tradeOfferId], references: [id])
   deliveryOrderId     String?         @unique
   deliveryOrder       DeliveryOrder?  @relation(fields: [deliveryOrderId], references: [id])
+  platformFee         Float           @default(0.0)
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
+}
+
+model ChatMessage {
+  id             String    @id @default(uuid())
+  conversationId String
+  senderId       String
+  senderName     String
+  receiverId     String?
+  text           String
+  isRead         Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+}
+
+model Review {
+  id            String    @id @default(uuid())
+  sellerId      String
+  author        String
+  kebele        String
+  rating        Int       @default(5)
+  dealType      String    @default("Verified Deal")
+  comment       String
+  verifiedBuyer Boolean   @default(true)
+  createdAt     DateTime  @default(now())
 }
