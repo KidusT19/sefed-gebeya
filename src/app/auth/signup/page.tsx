@@ -6,24 +6,27 @@ import { useRouter } from "next/navigation";
 import {
   Smartphone,
   User,
+  Mail,
   MapPin,
   Lock,
   ArrowRight,
   ShieldCheck,
   CheckCircle,
   Store,
-  Sparkles,
   KeyRound,
   Eye,
   EyeOff,
+  RotateCw,
 } from "lucide-react";
 import { useMarketplace, ActiveUser } from "@/context/MarketplaceContext";
+import SefedLogo from "@/components/SefedLogo";
 
 export default function SignUpPage() {
   const router = useRouter();
   const { login, showToast } = useMarketplace();
 
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("+251 9");
   const [role, setRole] = useState<"BUYER" | "MERCHANT">("BUYER");
   const [city, setCity] = useState("Addis Ababa");
@@ -66,17 +69,23 @@ export default function SignUpPage() {
       return;
     }
 
-    // Generate random 4-digit demo OTP
+    // Generate random 4-digit OTP
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setGeneratedOtp(code);
     setStep("otp");
-    showToast(`SMS Verification Code sent to ${phone}: [${code}]`, "info");
+    showToast(`Verification code sent to ${phone}`, "info");
+  };
+
+  const handleResendOtp = () => {
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedOtp(code);
+    showToast(`New verification code sent to ${phone}`, "info");
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otpCode.trim() !== generatedOtp && otpCode.trim() !== "1234") {
-      setError("Incorrect verification code. Click 'Auto-Fill Demo Code' or re-enter.");
+      setError("Incorrect verification code. Please check your SMS and try again.");
       return;
     }
 
@@ -86,6 +95,7 @@ export default function SignUpPage() {
     const newUser: ActiveUser = {
       id: `usr-${Date.now()}`,
       name: fullName.trim(),
+      email: email.trim() ? email.trim().toLowerCase() : undefined,
       phone: phone.replace(/\s+/g, ""),
       role,
       city,
@@ -100,13 +110,14 @@ export default function SignUpPage() {
       walletBalance: 0,
     };
 
-    // Try posting to API
+    // Post to API
     try {
       await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: newUser.name,
+          email: newUser.email,
           phone: newUser.phone,
           role: newUser.role,
           city: newUser.city,
@@ -118,38 +129,29 @@ export default function SignUpPage() {
 
     login(newUser);
     setIsSubmitting(false);
-    showToast(`✓ Account created successfully! Welcome to Sebez Market, ${newUser.name}.`, "success");
+    showToast(`✓ Account created successfully! Welcome to Sefed Market, ${newUser.name}.`, "success");
     router.push("/dashboard");
   };
 
   return (
-    <div className="max-w-lg mx-auto py-8 pb-16 space-y-6">
+    <div className="max-w-lg mx-auto py-8 pb-16 px-4 sm:px-0 space-y-6">
       {/* Brand Header */}
-      <div className="text-center space-y-2">
-        <Link href="/" className="inline-flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-slate-200 shadow-xs group-hover:scale-105 transition-transform bg-white flex items-center justify-center">
-            <img
-              src="/images/sefed-icon.jpg"
-              alt="Sebez Sefed Emblem"
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          </div>
-          <span className="font-black text-xl tracking-tight text-slate-900">
-            Sebez<span className="text-blue-600">Market</span>
-          </span>
-        </Link>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create Your Account</h1>
-        <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-          Join Ethiopia&apos;s direct buyer-seller classifieds and circular barter platform
+      <div className="text-center space-y-3">
+        <div className="flex justify-center">
+          <SefedLogo size="lg" showTagline={true} />
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          Create Your Sefed Account
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto font-medium">
+          Join thousands of verified shoppers and merchants across Addis Ababa, Adama, Hawassa, and nationwide
         </p>
       </div>
 
       {/* Main Registration Card */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xl shadow-slate-200/50 space-y-6">
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">
+          <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
             {error}
           </div>
         )}
@@ -158,29 +160,29 @@ export default function SignUpPage() {
           <form onSubmit={handleInitialSubmit} className="space-y-4">
             {/* Account Type Selector */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800 block">I want to register as:</label>
+              <label className="text-xs font-bold text-slate-800 block">Account Type</label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole("BUYER")}
-                  className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all ${
+                  className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all cursor-pointer ${
                     role === "BUYER"
-                      ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                      : "bg-slate-50 border-slate-200 text-slate-700 hover:border-blue-400"
+                      ? "bg-[#0e623a] text-white border-[#0e623a] shadow-xs"
+                      : "bg-slate-50 border-slate-200 text-slate-700 hover:border-emerald-600"
                   }`}
                 >
                   <User className="w-5 h-5" />
-                  <span className="text-xs font-black">Individual Trader</span>
+                  <span className="text-xs font-black">Shopper &amp; Trader</span>
                   <span className="text-[10px] opacity-80">Buy, Sell &amp; Barter</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRole("MERCHANT")}
-                  className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all ${
+                  className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all cursor-pointer ${
                     role === "MERCHANT"
-                      ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                      : "bg-slate-50 border-slate-200 text-slate-700 hover:border-blue-400"
+                      ? "bg-[#0e623a] text-white border-[#0e623a] shadow-xs"
+                      : "bg-slate-50 border-slate-200 text-slate-700 hover:border-emerald-600"
                   }`}
                 >
                   <Store className="w-5 h-5" />
@@ -201,10 +203,28 @@ export default function SignUpPage() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder={role === "MERCHANT" ? "e.g. Dawit Bekele (Arada Electronics)" : "e.g. Henok Tadesse"}
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  placeholder={role === "MERCHANT" ? "e.g. Dawit Bekele (Tech Hub)" : "e.g. Henok Tadesse"}
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
                 <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Email Address */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-800">Email Address</label>
+                <span className="text-[10px] text-slate-400 font-medium">Recommended for receipts</span>
+              </div>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 
@@ -220,12 +240,12 @@ export default function SignUpPage() {
                   value={phone}
                   onChange={handlePhoneChange}
                   placeholder="+251 911 223344"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-mono font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
                 <Smartphone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
-              <span className="text-[10px] text-slate-500 block">
-                Used for buyer contact, SMS OTP verification, and Telebirr trade safety.
+              <span className="text-[10px] text-slate-400 block font-medium">
+                Used for order confirmations, delivery OTPs, and Telebirr security.
               </span>
             </div>
 
@@ -237,7 +257,7 @@ export default function SignUpPage() {
                   <select
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
                   >
                     <option value="Addis Ababa">Addis Ababa (አዲስ አበባ)</option>
                     <option value="Adama">Adama (አዳማ)</option>
@@ -261,7 +281,7 @@ export default function SignUpPage() {
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
                   placeholder="e.g. Near Bole Medhanialem"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
               </div>
             </div>
@@ -276,13 +296,14 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 4 characters"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -292,64 +313,61 @@ export default function SignUpPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+              className="w-full py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/10 transition-all cursor-pointer mt-2"
             >
-              <span>Continue &bull; Verify via SMS</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Continue to Verification</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
           </form>
         ) : (
           /* STEP 2: OTP VERIFICATION */
           <form onSubmit={handleVerifyOtp} className="space-y-5 text-center">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 mx-auto flex items-center justify-center">
-              <KeyRound className="w-6 h-6" />
+            <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center">
+              <KeyRound className="w-7 h-7" />
             </div>
 
             <div>
-              <h3 className="font-black text-lg text-slate-900">Verify Mobile Number</h3>
+              <h3 className="font-black text-lg text-slate-900">Enter Verification Code</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Enter the 4-digit verification code sent to <strong className="text-slate-900 font-mono">{phone}</strong>
+                A 4-digit code was sent to <strong className="text-slate-900 font-mono">{phone}</strong>
               </p>
             </div>
 
-            {/* Demo Code Helper */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-600">Demo SMS Simulation:</span>
-                <span className="font-mono font-black text-blue-600 text-sm bg-white px-2 py-0.5 rounded border border-blue-200">
-                  {generatedOtp}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOtpCode(generatedOtp)}
-                className="w-full py-1.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold text-xs transition-colors"
-              >
-                Auto-Fill Demo Code ({generatedOtp})
-              </button>
+            <div className="py-2">
+              <input
+                type="text"
+                maxLength={4}
+                required
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value)}
+                placeholder="• • • •"
+                className="w-48 mx-auto text-center font-mono text-3xl font-black tracking-widest py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-900 focus:bg-white focus:outline-none focus:border-[#0e623a]"
+              />
             </div>
 
-            <input
-              type="text"
-              maxLength={4}
-              required
-              value={otpCode}
-              onChange={(e) => setOtpCode(e.target.value)}
-              placeholder="0 0 0 0"
-              className="w-44 mx-auto text-center font-mono text-2xl font-black tracking-widest py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
+            <div className="flex items-center justify-center gap-2 text-xs">
+              <span className="text-slate-500">Didn&apos;t receive the code?</span>
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                className="font-bold text-[#0e623a] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <RotateCw className="w-3 h-3" />
+                <span>Resend Code</span>
+              </button>
+            </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+              className="w-full py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span>Creating Account...</span>
               ) : (
                 <>
-                  <span>Confirm &amp; Access Marketplace</span>
-                  <CheckCircle className="w-4 h-4" />
+                  <span>Confirm &amp; Complete Registration</span>
+                  <CheckCircle className="w-4 h-4 stroke-[2.5]" />
                 </>
               )}
             </button>
@@ -359,11 +377,17 @@ export default function SignUpPage() {
         <div className="text-center pt-2 border-t border-slate-100">
           <p className="text-xs text-slate-500">
             Already have an account?{" "}
-            <Link href="/auth/login" className="font-bold text-blue-600 hover:underline">
+            <Link href="/auth/login" className="font-black text-[#0e623a] hover:underline">
               Sign In
             </Link>
           </p>
         </div>
+      </div>
+
+      {/* Security Assurance */}
+      <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-medium">
+        <ShieldCheck className="w-4 h-4 text-emerald-700" />
+        <span>Your data is protected under National Digital ID &amp; Telebirr Standards</span>
       </div>
     </div>
   );

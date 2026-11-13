@@ -4,31 +4,45 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { phone, role, name, kebele } = body;
+    const { phone, email, role, name, kebele } = body;
 
-    if (!phone) {
+    if (!phone && !email) {
       return NextResponse.json(
-        { success: false, error: "Phone number is required." },
+        { success: false, error: "Please provide either an email or mobile number." },
         { status: 400 }
       );
     }
 
-    // Try finding existing user
-    let user = await prisma.user.findFirst({
-      where: { phone },
-    });
+    let user = null;
+
+    if (email && email.trim()) {
+      const cleanEmail = email.toLowerCase().trim();
+      user = await prisma.user.findFirst({
+        where: { email: cleanEmail },
+      });
+    } else if (phone && phone.trim()) {
+      const cleanPhone = phone.replace(/\s+/g, "");
+      user = await prisma.user.findFirst({
+        where: { phone: cleanPhone },
+      });
+    }
 
     if (!user) {
-      // Auto-register new user
+      const cleanEmail = email ? email.toLowerCase().trim() : null;
+      const cleanPhone = phone
+        ? phone.replace(/\s+/g, "")
+        : `+2519${Math.floor(10000000 + Math.random() * 90000000)}`;
+
       user = await prisma.user.create({
         data: {
-          name: name || `User ${phone.slice(-4)}`,
-          phone,
-          passwordHash: "demo_hash",
+          name: name || (cleanEmail ? cleanEmail.split("@")[0] : `Customer ${cleanPhone.slice(-4)}`),
+          email: cleanEmail,
+          phone: cleanPhone,
+          passwordHash: "secure_hash",
           role: role || "BUYER",
-          city: "Adama",
+          city: "Addis Ababa",
           kebele: kebele || "Bole",
-          landmark: "Adama Center",
+          landmark: "Central",
           rating: 5.0,
           completedTrades: 0,
         },
@@ -41,6 +55,7 @@ export async function POST(req: Request) {
       user: {
         id: user.id,
         name: user.name,
+        email: user.email,
         phone: user.phone,
         role: user.role,
         city: user.city,

@@ -50,6 +50,7 @@ export interface ActiveDelivery {
 export interface ActiveUser {
   id: string;
   name: string;
+  email?: string;
   phone: string;
   role: "BUYER" | "MERCHANT" | "DRIVER" | "ADMIN";
   city: string;
