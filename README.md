@@ -1,6 +1,6 @@
-# Sebez Market
+# Sefed Market (ሰፌድ ገበያ)
 
-A modern peer-to-peer e-commerce and circular barter platform with hyperlocal pooled delivery logistics designed for Ethiopian urban centers.
+> **Shop Smart · Live Better** — Ethiopia's trusted national e-commerce marketplace and device barter exchange with secure Telebirr and CBE escrow.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
@@ -11,83 +11,62 @@ A modern peer-to-peer e-commerce and circular barter platform with hyperlocal po
 
 ## Project Overview
 
-**Sebez Market** is an intelligent classifieds and circular trade platform built to overcome liquidity constraints and high transportation costs in urban markets (such as Adama, Hawassa, and Addis Ababa). 
+**Sefed Market (ሰፌድ ገበያ)** is a full-scale national e-commerce platform built to provide Ethiopians with a convenient, secure, and modern shopping experience across Addis Ababa, Adama, Hawassa, Bahir Dar, Dire Dawa, and nationwide.
 
-In traditional marketplaces (like Jiji or Facebook Marketplace), a user wanting to upgrade an item must go through a slow, two-step process: wait weeks to sell their existing item for cash at a discount, then search again to purchase their target item. Meanwhile, residents in peripheral neighborhoods spend significant time and money on individual Bajaj rides to fetch products from central markets.
+Inspired by the traditional Ethiopian **Sefed (ሰፌድ)** — a woven basket tray symbolizing communal abundance, fair exchange, and unity — Sefed Market combines direct customer-to-seller commerce with two key innovations:
 
-**Sebez Market solves this through two integrated innovations:**
+1. **Smart Device Barter & Fair Value Equalizer:**
+   Allows shoppers to upgrade electronics (smartphones, laptops, cameras) by swapping directly with automated fair cash-difference balancing, eliminating liquidity bottlenecks.
 
-1. **Smart Barter and Circular Exchange Engine:** 
-   Allows users to directly swap items with automated cash top-up calculations (e.g., iPhone 13 Pro for Samsung S21 + cash difference) and uses a **graph cycle-detection algorithm** to uncover closed 3-way circular loops (A -> B -> C -> A), satisfying three traders simultaneously without requiring full cash liquidity.
-
-2. **Hyperlocal Pooled Bajaj Logistics:**
-   Clusters delivery orders bound for the same residential kebele (e.g., from Arada Market to Bole Kebele). A registered Bajaj or taxi driver picks up multiple bundled orders and delivers them in an optimized route, saving customers up to 70% in transportation costs while providing drivers with predictable, high-yield delivery runs.
+2. **Hyperlocal Pooled Logistics & Safe Escrow:**
+   Integrates clustered delivery runs and public landmark pickups with digital Telebirr / CBE Birr escrow and dual-OTP verification to ensure that buyer funds are only released after goods are inspected and approved.
 
 ---
 
-## Key Features
-
-* **Bilateral Barter with Cash Top-Up:** Swap devices directly with real-time fair market value difference balancing.
-* **3-Way Circular Trade Matching:** Graph cycle algorithm that detects multi-party exchange loops automatically.
-* **Hyperlocal Pooled Bajaj Dispatch:** Grouped delivery windows from central markets to residential kebeles with proportional fare splitting.
-* **Telebirr and CBE Birr Mobile Escrow:** Safe digital escrow with dual-OTP protection (Merchant Release OTP and Customer Delivery OTP).
-* **Driver Onboarding and KYC:** Self-registration for Bajaj and taxi drivers with national ID and driver's license verification.
-* **Telegram Bot and Low-Data Alerts:** Real-time push notifications for trade match proposals and dispatch alerts over low-bandwidth mobile connections.
-* **Multi-Language Support:** Fully localized for **English**, **Amharic (አማርኛ)**, and **Afaan Oromoo**.
-
----
-
-## System Architecture
+## Core System Architecture
 
 ```
 +-------------------------------------------------------------+
-|                       SEBEZ MARKET UI                        |
-|       (Next.js App Router, Tailwind CSS, next-intl)         |
+|                      SEFED MARKET UI                        |
+|       (Next.js App Router, Tailwind CSS, TypeScript)        |
 +-------------------------------------------------------------+
-                              │
-            ┌─────────────────┴─────────────────┐
-            ▼                                   ▼
-+-----------------------+           +-----------------------+
-|  CIRCULAR BARTER HUB  |           |  POOLED BAJAJ ENGINE  |
-| - Bilateral Swaps     |           | - Kebele Clustering   |
-| - 3-Way Graph Cycles  |           | - Scheduled Runs      |
-| - Cash Top-Up Escrow  |           | - Nearest-Neighbor    |
-+-----------------------+           +-----------------------+
-            │                                   │
-            └─────────────────┬─────────────────┘
-                              ▼
+                               │
+            ┌──────────────────┴──────────────────┐
+            ▼                                     ▼
++-----------------------+             +-----------------------+
+|  DIRECT COMMERCE HUB  |             |  POOLED BAJAJ ENGINE  |
+| - Verified Listings   |             | - Kebele Clustering   |
+| - Email / Phone Auth  |             | - Scheduled Runs      |
+| - Bilateral Swaps     |             | - Dual-OTP Release    |
++-----------------------+             +-----------------------+
+            │                                     │
+            └──────────────────┬──────────────────┘
+                               ▼
 +-------------------------------------------------------------+
 |                     CORE SERVICES & DATA                    |
-|       PostgreSQL (Prisma) | Telebirr Escrow | Telegram Bot  |
+|      Prisma ORM | Telebirr & CBE Escrow | Multi-Language    |
 +-------------------------------------------------------------+
 ```
 
 ---
 
-## 10-Day Development Sprint Roadmap
+## Production Functional Modules
 
-- [x] **Day 0:** Project charter, system architecture, and core specifications.
-- [x] **Day 1:** Core Next.js scaffolding, Tailwind theme, and Prisma schema.
-- [ ] **Day 2:** Role-based authentication & Driver KYC onboarding.
-- [ ] **Day 3:** Marketplace classifieds & barter catalog with kebele tagging.
-- [ ] **Day 4:** Bilateral (2-way) swap negotiation room & dynamic top-up calculator.
-- [ ] **Day 5:** 3-Way circular trade loop graph matching engine.
-- [ ] **Day 6:** Hyperlocal pooled Bajaj dispatch & driver routing dashboard.
-- [ ] **Day 7:** Telebirr / CBE Birr escrow checkout & dual-OTP handoff verification.
-- [ ] **Day 8:** Telegram bot dispatch integration & SMS notifications.
-- [ ] **Day 9:** Amharic and Afaan Oromoo localization & mobile responsiveness.
-- [ ] **Day 10:** Demo seed data for Adama, documentation, and deployment setup.
-
-For detailed functional specifications, view the [Full Project Proposal](docs/PROJECT_PROPOSAL.md).
+* **Brand & Landing Experience:** Custom Sefed vector identity, responsive edge-to-edge organic curves, 4 trust pillars (Secure Payment, Fast Delivery, Best Quality, 24/7 Support), and pastel category grid.
+* **Production Authentication:** Multi-method sign in supporting both **Email** and **Ethiopian Mobile Numbers** (`+251 9...` / `09...`), with dynamic active button routing.
+* **Product Catalog & Direct Purchasing:** Verified listings with real-time city filtering, price in ETB, direct seller calling/chat, and instant buy actions.
+* **Device Barter Engine:** Bilateral device swap calculator and fair cash difference balancing.
+* **Hyperlocal Delivery & Escrow:** Localized order routing, clustered kebele runs, and Telebirr/CBE Birr payment holds.
+* **Multi-Language Localization:** Built-in localization support for **English**, **Amharic (አማርኛ)**, and **Afaan Oromoo**.
 
 ---
 
-## Local Development Setup
+## Getting Started
 
 ```bash
 # Clone the repository
-git clone https://github.com/KidusT19/sebez-market.git
-cd sebez-market
+git clone https://github.com/KidusT19/sefed-gebeya.git
+cd sefed-gebeya
 
 # Install dependencies
 npm install
@@ -96,13 +75,15 @@ npm install
 cp .env.example .env
 
 # Run database migrations
-npx prisma migrate dev
+npx prisma generate
+npx prisma db push
 
-# Start development server
+# Start the development server
 npm run dev
 ```
 
 ---
 
 ## License
+
 This project is licensed under the MIT License.

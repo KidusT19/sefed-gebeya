@@ -123,18 +123,16 @@ flowchart TD
 
 ---
 
-## 6. The 10-Day Git Commit & Development Roadmap
+## 6. Functional Architecture & Engineering Modules
 
-| Day | Milestone Focus | Commit Message |
+The platform is engineered across continuous functional modules, developed and verified sequentially to ensure high software quality and continuous delivery:
+
+| Module | Architectural Scope | Key Deliverables |
 | :--- | :--- | :--- |
-| **Day 0** | **Project Charter & Proposal:** Documenting the Sebez philosophy, system architecture, and Ethiopian market strategy. | `docs: project charter, sebez cultural philosophy, and system architecture` |
-| **Day 1** | **Core Scaffolding & Schema:** Next.js setup, Tailwind theme, Prisma schemas (User, Driver, Listing, TradeOffer, DeliveryPool). | `feat(core): initialize nextjs app, tailwind theme, and prisma relational schema` |
-| **Day 2** | **Auth & Driver KYC:** Registration for Buyers, Merchants, and Bajaj Drivers with document upload and verification badges. | `feat(auth): implement role-based auth and driver onboarding kyc workflow` |
-| **Day 3** | **Marketplace Listings with Barter Flags:** Classifieds feed with Kebele/Landmark filters, swap intent, and cash top-up tags. | `feat(listings): build product catalog with kebele tagging and swap intent flags` |
-| **Day 4** | **Bilateral (2-Way) Swap Deal Room:** Interactive negotiation room with real-time cash difference calculations. | `feat(trades): build 2-way barter negotiation room with dynamic cash top-up calculator` |
-| **Day 5** | **3-Way Circular Trade Matching Engine:** Graph cycle detection algorithm identifying closed triangular trade loops. | `feat(matching): implement 3-way circular trade loop graph matching engine` |
-| **Day 6** | **Hyperlocal Pooled Bajaj Dispatch:** Kebele order grouping, scheduled market runs, and driver routing dashboard. | `feat(logistics): add hyperlocal pooled delivery engine and driver routing interface` |
-| **Day 7** | **Telebirr & CBE Birr Mobile Escrow:** Escrow hold simulation, checkout flows, and dual-OTP delivery release. | `feat(escrow): implement telebirr escrow holds and dual-otp delivery handoff` |
-| **Day 8** | **Telegram Bot & Low-Data Alerts:** Bot dispatch webhooks for instant match alerts and pickup routing. | `feat(notifications): add telegram bot dispatch alerts and sms notification webhooks` |
-| **Day 9** | **Localization & Mobile PWA Polish:** Amharic and Afaan Oromoo language switcher, responsive mobile design. | `feat(i18n): add amharic and afaan oromoo localization and mobile polish` |
-| **Day 10** | **Demo Seed Data & Production Ready:** Seed data for Adama markets (Arada, Bole, Amede), final testing, and deployment setup. | `docs: complete architecture docs, seed demo data for adama, and deployment config` |
+| **Brand & Landing Experience** | Ethiopian visual identity, Sefed basket vector emblem, high-performance hero layout. | Full-bleed responsive hero, organic curves, 4 trust pillars, pastel category grid. |
+| **Identity & Authentication** | Secure customer and merchant authentication with multi-channel credential support. | Email and phone sign-in, OTP verification, role selection, session management. |
+| **Catalog & Direct Commerce** | Nationwide verified product classifieds with city filtering and transparent ETB pricing. | Multi-category feed, landmark tags, real-time search, direct seller contact actions. |
+| **Circular Barter Engine** | Smart device upgrade and exchange mechanism with fair value equalizer. | Bilateral device exchange deal room, automated cash difference balancing. |
+| **Hyperlocal Pooled Logistics** | Kebele-clustered order bundling and scheduled delivery dispatch. | Localized route mapping, driver pickup hubs, pooled fare cost reduction. |
+| **Mobile Escrow & Trust** | Financial security layer protecting payments until physical inspection. | Telebirr / CBE Birr escrow holds, dual-OTP merchant and delivery release. |
+| **Multi-Language Localization** | Inclusive access across major Ethiopian languages. | Native localization for Amharic (አማርኛ), Afaan Oromoo, and English. |
