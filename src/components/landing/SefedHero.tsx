@@ -176,19 +176,6 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             {/* Right Column: Hero Shopper Visual & Floating Badges */}
             <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
               <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-none">
-                {/* Script Accent: "Shop Smart Live Better" */}
-                <div className="absolute -top-6 right-2 sm:right-6 z-20 select-none">
-                  <div className="relative inline-block text-right">
-                    <span className="font-serif italic text-2xl sm:text-3xl font-bold text-[#0e623a] tracking-wide block transform -rotate-3">
-                      Shop Smart
-                    </span>
-                    <span className="font-serif italic text-2xl sm:text-3xl font-black text-[#0b4d2e] tracking-wide block -mt-1 transform -rotate-3">
-                      Live Better
-                    </span>
-                    {/* Yellow accent underline flourish */}
-                    <div className="w-24 h-1 bg-amber-400 rounded-full ml-auto mt-0.5" />
-                  </div>
-                </div>
 
                 {/* Shopper Hero Frame */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-b from-emerald-50/50 to-white">
