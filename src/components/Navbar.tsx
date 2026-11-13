@@ -116,7 +116,7 @@ export default function Navbar() {
                 <select
                   value={selectedKebele}
                   onChange={(e) => setSelectedKebele(e.target.value)}
-                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-emerald-400/40 pb-0.5"
+                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-emerald-400/40 pb-0.5 max-w-[140px] sm:max-w-[200px] truncate"
                   aria-label="Select delivery city"
                 >
                   <option value="All Ethiopia" className="text-slate-900">All Ethiopia (መላው ኢትዮጵያ)</option>
