@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import SefedHero from "@/components/landing/SefedHero";
 import SefedTrustBar from "@/components/landing/SefedTrustBar";
 import SefedCategories from "@/components/landing/SefedCategories";
+import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 import AdamaRouteMap from "@/components/AdamaRouteMap";
 import { useMarketplace, PRESET_USERS } from "@/context/MarketplaceContext";
 import {
@@ -107,7 +108,10 @@ export default function HomePage() {
   });
 
   return (
-    <div className="w-full bg-white pb-16">
+    <div className="w-full bg-white pb-16 relative overflow-hidden">
+      {/* Authentic Ethiopian Sefed (ሰፌድ) Blurred Background Watermark */}
+      <SefedWatermarkBackground />
+
       {/* 1. Official Sefed Market Hero Section (Mockup Match) */}
       <SefedHero onShopNowClick={handleScrollToProducts} />
 

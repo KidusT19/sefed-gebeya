@@ -24,7 +24,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-white">
+      <section className="relative overflow-hidden bg-transparent">
         {/* Decorative Fluid Ambient Waves (Ethiopian Green & Sunshine Gold) */}
         <div className="absolute top-0 right-0 w-full sm:w-[55%] h-[50%] sm:h-[85%] pointer-events-none -z-0 opacity-80 sm:opacity-90">
           <svg

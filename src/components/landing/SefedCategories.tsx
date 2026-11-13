@@ -82,7 +82,7 @@ export default function SefedCategories() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 bg-white">
+    <section className="py-12 sm:py-16 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header with Decorative Green Accent Lines */}
         <div className="text-center max-w-xl mx-auto mb-8 sm:mb-12">
