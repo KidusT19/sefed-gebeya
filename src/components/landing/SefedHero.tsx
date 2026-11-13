@@ -26,7 +26,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
     <>
       <section className="relative overflow-hidden bg-white">
         {/* Decorative Fluid Ambient Waves (Ethiopian Green & Sunshine Gold) */}
-        <div className="absolute top-0 right-0 w-[55%] h-[85%] pointer-events-none -z-0 opacity-90 hidden md:block">
+        <div className="absolute top-0 right-0 w-full sm:w-[55%] h-[50%] sm:h-[85%] pointer-events-none -z-0 opacity-80 sm:opacity-90">
           <svg
             viewBox="0 0 700 500"
             fill="none"
@@ -116,7 +116,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 <h2 className="text-sm sm:text-xl font-extrabold text-slate-800 tracking-tight">
                   Your One-Stop Online Shopping Destination!
                 </h2>
-                <p className="text-xs sm:text-base text-slate-600 max-w-xl leading-relaxed">
+                <p className="hidden sm:block text-xs sm:text-base text-slate-600 max-w-xl leading-relaxed">
                   Discover a wide range of quality products at the best prices, and enjoy a convenient, 
                   secure shopping experience with verified sellers and fast delivery across Ethiopia.
                 </p>
@@ -159,13 +159,13 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </button>
               </div>
 
-              {/* Quick Trust Badges */}
-              <div className="pt-1.5 sm:pt-3 flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-500">
+              {/* Quick Trust Badges - Hidden on mobile because the 4-pillar trust bar is right below */}
+              <div className="hidden sm:flex pt-1.5 sm:pt-3 flex-wrap items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-500">
                 <div className="flex items-center gap-1.5 text-emerald-800">
                   <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                   <span>Escrow Protected (Telebirr / CBE)</span>
                 </div>
-                <span className="text-slate-300 hidden sm:inline">•</span>
+                <span className="text-slate-300">•</span>
                 <div className="flex items-center gap-1.5 text-slate-700">
                   <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
                   <span>Hyperlocal Express Delivery</span>
@@ -174,7 +174,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             </div>
 
             {/* Right Column: Hero Shopper Visual & Floating Badges */}
-            <div className="lg:col-span-5 relative flex justify-center lg:justify-end mt-4 lg:mt-0">
+            <div className="lg:col-span-5 relative flex justify-center lg:justify-end mt-3 lg:mt-0">
               <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-none">
 
                 {/* Shopper Hero Frame */}
@@ -182,7 +182,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   <img
                     src="/images/mockup_assets/hero_shopper.jpg"
                     alt="Ethiopian Shopper enjoying Sefed Market"
-                    className="w-full h-auto object-cover object-center max-h-[300px] sm:max-h-[380px] lg:max-h-[460px] transform hover:scale-[1.02] transition-transform duration-500"
+                    className="w-full h-auto object-cover object-center max-h-[220px] sm:max-h-[380px] lg:max-h-[460px] transform hover:scale-[1.02] transition-transform duration-500"
                     onError={(e) => {
                       // Fallback to high-res shopper portrait if local crop is unavailable
                       (e.target as HTMLImageElement).src =
