@@ -316,7 +316,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. Smart Device Swap & Equalizer Feature Card */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-br from-amber-50 via-white to-emerald-50 rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-lg">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

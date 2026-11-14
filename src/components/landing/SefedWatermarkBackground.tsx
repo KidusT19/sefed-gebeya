@@ -4,37 +4,46 @@ import React from "react";
 
 /**
  * SefedWatermarkBackground
- * Renders an authentic Ethiopian Sefed (ሰፌድ) woven basket tray as a soft,
- * blurred ambient watermark across the landing page background.
- * Symbolizes Ethiopian marketplace trust, gathering, and the heritage of Sefed Market.
+ * Renders an authentic Ethiopian Sefed (ሰፌድ) traditional handwoven straw tray
+ * as a clear, beautifully blurred ambient watermark across the landing page background.
+ * Symbolizes the heritage of Sefed Market (ሰፌድ ገበያ) — Ethiopian abundance, quality sorting, and gathering.
  */
 export default function SefedWatermarkBackground() {
   return (
     <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
-      {/* 1. Primary Hero Sefed Watermark - Positioned centrally behind the hero title and CTA */}
-      <div className="absolute -top-16 -left-20 sm:left-1/4 sm:-translate-x-1/2 sm:-top-24 w-[360px] sm:w-[680px] lg:w-[840px] h-[360px] sm:h-[680px] lg:h-[840px] opacity-[0.07] sm:opacity-[0.08] filter blur-[2px] sm:blur-[3.5px] transition-opacity">
+      {/* 1. Primary Hero Sefed Watermark - Positioned centrally behind the hero title, text, and shopper */}
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 sm:left-[35%] lg:left-[36%] w-[380px] sm:w-[720px] lg:w-[860px] h-[380px] sm:h-[720px] lg:h-[860px] opacity-[0.18] sm:opacity-[0.22] filter blur-[1px] sm:blur-[1.5px] contrast-[1.1] saturate-[1.15] mix-blend-multiply transition-all">
         <img
           src="/images/sefed_watermark.jpg"
-          alt=""
-          className="w-full h-full object-contain rounded-full transform rotate-12 [mask-image:radial-gradient(circle_at_center,black_50%,transparent_80%)]"
+          alt="Traditional Ethiopian Sefed Watermark"
+          className="w-full h-full object-contain rounded-full transform rotate-6 [mask-image:radial-gradient(circle_at_center,black_70%,transparent_98%)]"
         />
       </div>
 
-      {/* 2. Secondary Sefed Watermark - Behind "Shop by Category" on the right side */}
-      <div className="absolute top-[900px] sm:top-[750px] -right-24 sm:right-0 w-[300px] sm:w-[540px] lg:w-[650px] h-[300px] sm:h-[540px] lg:h-[650px] opacity-[0.045] sm:opacity-[0.055] filter blur-[3px] sm:blur-[4px]">
+      {/* 2. Secondary Sefed Watermark - Behind "Shop by Category" section on the right */}
+      <div className="absolute top-[820px] sm:top-[720px] -right-20 sm:-right-10 lg:right-4 w-[320px] sm:w-[560px] lg:w-[680px] h-[320px] sm:h-[560px] lg:h-[680px] opacity-[0.14] sm:opacity-[0.18] filter blur-[1.5px] sm:blur-[2px] contrast-[1.1] saturate-[1.1] mix-blend-multiply">
         <img
           src="/images/sefed_watermark.jpg"
-          alt=""
-          className="w-full h-full object-contain rounded-full transform -rotate-45 [mask-image:radial-gradient(circle_at_center,black_45%,transparent_75%)]"
+          alt="Traditional Ethiopian Sefed Watermark"
+          className="w-full h-full object-contain rounded-full transform -rotate-45 [mask-image:radial-gradient(circle_at_center,black_65%,transparent_95%)]"
         />
       </div>
 
-      {/* 3. Lower Sefed Watermark - Behind Trending Listings / Device Barter on the left side */}
-      <div className="absolute top-[1800px] -left-20 sm:-left-12 w-[340px] sm:w-[600px] h-[340px] sm:h-[600px] opacity-[0.04] sm:opacity-[0.05] filter blur-[3px] sm:blur-[4px]">
+      {/* 3. Mid-Page Sefed Watermark - Behind Featured Products Showcase on the left */}
+      <div className="absolute top-[1600px] -left-24 sm:-left-12 lg:left-2 w-[340px] sm:w-[580px] lg:w-[700px] h-[340px] sm:h-[580px] lg:h-[700px] opacity-[0.13] sm:opacity-[0.16] filter blur-[1.5px] sm:blur-[2px] contrast-[1.05] saturate-[1.1] mix-blend-multiply">
         <img
           src="/images/sefed_watermark.jpg"
-          alt=""
-          className="w-full h-full object-contain rounded-full transform rotate-30 [mask-image:radial-gradient(circle_at_center,black_45%,transparent_75%)]"
+          alt="Traditional Ethiopian Sefed Watermark"
+          className="w-full h-full object-contain rounded-full transform rotate-25 [mask-image:radial-gradient(circle_at_center,black_65%,transparent_95%)]"
+        />
+      </div>
+
+      {/* 4. Lower Barter & Swap Sefed Watermark - Perfectly represents circular exchange */}
+      <div className="absolute top-[2500px] right-1/2 translate-x-1/2 sm:right-10 lg:right-16 w-[360px] sm:w-[620px] lg:w-[750px] h-[360px] sm:h-[620px] lg:h-[750px] opacity-[0.14] sm:opacity-[0.18] filter blur-[1.5px] sm:blur-[2px] mix-blend-multiply">
+        <img
+          src="/images/sefed_watermark.jpg"
+          alt="Traditional Ethiopian Sefed Watermark"
+          className="w-full h-full object-contain rounded-full transform -rotate-15 [mask-image:radial-gradient(circle_at_center,black_65%,transparent_95%)]"
         />
       </div>
     </div>
