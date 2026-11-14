@@ -210,12 +210,17 @@ export default function CreateListingPage() {
             <Lock className="w-8 h-8" />
           </div>
 
+          {/* Reassurance Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+            <span>👁️ Public Browsing is 100% Free</span>
+          </div>
+
           <div className="space-y-1.5">
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
               Sign In to Post Free Ads
             </h2>
             <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
-              To protect Ethiopian shoppers and prevent fraudulent listings, you must be logged in with a registered account and verified contact number to publish items.
+              You are free to watch and browse all listings on Sefed Market! An account is only required when publishing your own ads or contacting sellers to protect our community against fraud.
             </p>
           </div>
 
@@ -245,6 +250,13 @@ export default function CreateListingPage() {
               className="w-full min-h-[44px] py-3 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center transition-colors"
             >
               Create Free Sefed Account
+            </Link>
+
+            <Link
+              href="/listings"
+              className="w-full py-2 text-center text-xs font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
+            >
+              ← Keep Watching &amp; Browsing All Products
             </Link>
           </div>
         </div>

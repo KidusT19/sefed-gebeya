@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { MOCK_LISTINGS } from "@/data/mockData";
 import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
@@ -31,14 +31,94 @@ import {
 } from "lucide-react";
 
 export default function ListingDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const listingId = params?.id as string;
 
-  const { isFavorite, toggleFavorite, addOffer } = useMarketplace();
+  const { isFavorite, toggleFavorite, addOffer, isLoggedIn } = useMarketplace();
 
   const [listing, setListing] = useState<ProductListing>(() => {
     return MOCK_LISTINGS.find((l) => l.id === listingId) || MOCK_LISTINGS[0];
   });
+
+  const [activeImage, setActiveImage] = useState(0);
+  const [showPhone, setShowPhone] = useState(false);
+
+  // Authentication Prompt Modal (Triggered only when attempting to buy, barter, or contact seller)
+  const [authPrompt, setAuthPrompt] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    icon: "call" | "chat" | "buy" | "offer" | "trade" | "review";
+    redirectUrl: string;
+  }>({
+    isOpen: false,
+    title: "Sign In Required",
+    description: "",
+    icon: "call",
+    redirectUrl: `/listings/${listingId}`,
+  });
+
+  // Action Auth Guard: Visitors can watch/browse freely; signing in is asked when contacting/buying
+  const handleActionWithAuth = (
+    action: "call" | "whatsapp" | "chat" | "buy" | "offer" | "trade" | "review",
+    onSuccess?: () => void
+  ) => {
+    if (isLoggedIn) {
+      if (onSuccess) onSuccess();
+      return;
+    }
+
+    let title = "Sign In to Contact Seller";
+    let description = `Please sign in or create an account to connect with ${listing.seller.name}.`;
+    let redirectUrl = `/listings/${listing.id}`;
+    let icon: "call" | "chat" | "buy" | "offer" | "trade" | "review" = "call";
+
+    if (action === "call") {
+      title = "Sign In to Call Seller";
+      description = `Sign in to reveal ${listing.seller.name}'s verified phone number and call directly.`;
+      redirectUrl = `/listings/${listing.id}?action=call`;
+      icon = "call";
+    } else if (action === "whatsapp") {
+      title = "Sign In to Chat on WhatsApp";
+      description = `Sign in to start a direct WhatsApp conversation with verified seller ${listing.seller.name}.`;
+      redirectUrl = `/listings/${listing.id}?action=whatsapp`;
+      icon = "chat";
+    } else if (action === "chat") {
+      title = "Sign In to Message Seller";
+      description = `Sign in to start an encrypted in-app chat with ${listing.seller.name} about "${listing.title}".`;
+      redirectUrl = `/messages?seller=${listing.seller.id}&listing=${listing.id}`;
+      icon = "chat";
+    } else if (action === "buy") {
+      title = "Sign In to Buy with Escrow";
+      description = `Your payment is 100% protected in Telebirr or CBE escrow until you inspect "${listing.title}". Please sign in to proceed.`;
+      redirectUrl = `/checkout/escrow?listing=${listing.id}&mode=cash`;
+      icon = "buy";
+    } else if (action === "offer") {
+      title = "Sign In to Make Cash Offer";
+      description = `Sign in to submit your custom cash offer directly to ${listing.seller.name}.`;
+      redirectUrl = `/listings/${listing.id}?action=offer`;
+      icon = "offer";
+    } else if (action === "trade") {
+      title = "Sign In to Propose Barter Deal";
+      description = `Sign in to select your registered device and calculate automated fair cash difference top-ups.`;
+      redirectUrl = `/trades/new?target=${listing.id}`;
+      icon = "trade";
+    } else if (action === "review") {
+      title = "Sign In to Write a Review";
+      description = `Only registered community members with verified phone numbers can review Ethiopian sellers.`;
+      redirectUrl = `/listings/${listing.id}?action=review`;
+      icon = "review";
+    }
+
+    setAuthPrompt({
+      isOpen: true,
+      title,
+      description,
+      icon,
+      redirectUrl,
+    });
+  };
 
   useEffect(() => {
     fetch("/api/listings")
@@ -57,8 +137,22 @@ export default function ListingDetailPage() {
 
   const saved = isFavorite(listing.id);
 
-  const [activeImage, setActiveImage] = useState(0);
-  const [showPhone, setShowPhone] = useState(false);
+  // Auto-trigger intended action if returning from login
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search);
+      const action = sp.get("action");
+      if (isLoggedIn) {
+        if (action === "call") {
+          setShowPhone(true);
+        } else if (action === "offer") {
+          setShowOfferModal(true);
+        } else if (action === "review") {
+          setShowReviewModal(true);
+        }
+      }
+    }
+  }, [isLoggedIn]);
 
   // Make Offer Modal state
   const [showOfferModal, setShowOfferModal] = useState(false);
@@ -330,7 +424,7 @@ export default function ListingDetailPage() {
                   {/* Make Offer Button */}
                   <button
                     type="button"
-                    onClick={() => setShowOfferModal(true)}
+                    onClick={() => handleActionWithAuth("offer", () => setShowOfferModal(true))}
                     className="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full transition-colors ml-auto cursor-pointer"
                   >
                     <BadgePercent className="w-3.5 h-3.5 text-emerald-700" />
@@ -421,13 +515,14 @@ export default function ListingDetailPage() {
                       </div>
                     </div>
 
-                    <Link
-                      href={`/trades/new?target=${listing.id}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center"
+                    <button
+                      type="button"
+                      onClick={() => handleActionWithAuth("trade", () => router.push(`/trades/new?target=${listing.id}`))}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center cursor-pointer"
                     >
                       <span>Propose This Trade</span>
                       <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
@@ -464,7 +559,7 @@ export default function ListingDetailPage() {
 
                 <button
                   type="button"
-                  onClick={() => setShowReviewModal(true)}
+                  onClick={() => handleActionWithAuth("review", () => setShowReviewModal(true))}
                   className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors cursor-pointer"
                 >
                   + Write a Review
@@ -541,7 +636,7 @@ export default function ListingDetailPage() {
 
               {/* Direct Contact Actions */}
               <div className="space-y-2 pt-1">
-                {showPhone ? (
+                {showPhone && isLoggedIn ? (
                   <a
                     href={`tel:${listing.seller.phone}`}
                     className="w-full py-3 px-4 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-sm flex items-center justify-center gap-2 transition-colors shadow-xs"
@@ -552,7 +647,7 @@ export default function ListingDetailPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setShowPhone(true)}
+                    onClick={() => handleActionWithAuth("call", () => setShowPhone(true))}
                     className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                   >
                     <Phone className="w-3.5 h-3.5 text-amber-400" />
@@ -560,23 +655,34 @@ export default function ListingDetailPage() {
                   </button>
                 )}
 
-                <a
-                  href={`https://wa.me/${listing.seller.whatsapp.replace("+", "")}?text=Hello%20${listing.seller.name},%20I%20am%20interested%20in%20your%20listing:%20${encodeURIComponent(listing.title)}%20on%20Sefed%20Market.`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#1ebd5b] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs"
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleActionWithAuth("whatsapp", () => {
+                      window.open(
+                        `https://wa.me/${listing.seller.whatsapp.replace("+", "")}?text=Hello%20${listing.seller.name},%20I%20am%20interested%20in%20your%20listing:%20${encodeURIComponent(listing.title)}%20on%20Sefed%20Market.`,
+                        "_blank"
+                      );
+                    })
+                  }
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#1ebd5b] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
                   Chat on WhatsApp
-                </a>
+                </button>
 
-                <Link
-                  href={`/messages?seller=${listing.seller.id}&listing=${listing.id}`}
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200"
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleActionWithAuth("chat", () => {
+                      router.push(`/messages?seller=${listing.seller.id}&listing=${listing.id}`);
+                    })
+                  }
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200 cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5 text-emerald-700" />
                   In-App Chat / Message
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -585,9 +691,14 @@ export default function ListingDetailPage() {
               <h3 className="font-black text-slate-900 text-sm">Choose How to Transact</h3>
 
               {/* 1. Buy with Telebirr / CBE Escrow */}
-              <Link
-                href={`/checkout/escrow?listing=${listing.id}&mode=cash`}
-                className="block p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 hover:bg-emerald-100/60 transition-all group"
+              <button
+                type="button"
+                onClick={() =>
+                  handleActionWithAuth("buy", () => {
+                    router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
+                  })
+                }
+                className="w-full text-left block p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 hover:bg-emerald-100/60 transition-all group cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-black text-xs text-emerald-950 flex items-center gap-1.5">
@@ -600,13 +711,18 @@ export default function ListingDetailPage() {
                 <p className="text-[11px] text-emerald-800 mt-1 font-medium leading-relaxed">
                   Funds are safely held in escrow until you inspect the item and provide your release OTP.
                 </p>
-              </Link>
+              </button>
 
               {/* 2. Swap Deal with Cash Difference */}
               {listing.allowBarter && (
-                <Link
-                  href={`/trades/new?target=${listing.id}`}
-                  className="block p-3.5 rounded-2xl border border-amber-300 bg-amber-50/80 hover:bg-amber-100 transition-colors group"
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleActionWithAuth("trade", () => {
+                      router.push(`/trades/new?target=${listing.id}`);
+                    })
+                  }
+                  className="w-full text-left block p-3.5 rounded-2xl border border-amber-300 bg-amber-50/80 hover:bg-amber-100 transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-black text-xs text-amber-950 flex items-center gap-1.5">
@@ -619,7 +735,7 @@ export default function ListingDetailPage() {
                   <p className="text-[11px] text-amber-800 mt-1 font-medium leading-relaxed">
                     Offer your device in trade and use our calculator to settle the cash difference.
                   </p>
-                </Link>
+                </button>
               )}
 
               {/* 3. Direct In-Person Meetup */}
@@ -687,31 +803,46 @@ export default function ListingDetailPage() {
 
       {/* MOBILE STICKY BOTTOM ACTION BAR (Above MobileBottomNav) */}
       <div className="sm:hidden fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2 shadow-lg flex items-center gap-2">
-        <a
-          href={`tel:${listing.seller.phone}`}
-          className="p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:bg-slate-200"
+        <button
+          type="button"
+          onClick={() =>
+            handleActionWithAuth("call", () => {
+              window.location.href = `tel:${listing.seller.phone}`;
+            })
+          }
+          className="p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:bg-slate-200 cursor-pointer"
           title="Call Seller"
         >
           <Phone className="w-4 h-4 text-emerald-700" />
-        </a>
+        </button>
 
         {listing.allowBarter ? (
-          <Link
-            href={`/trades/new?target=${listing.id}`}
-            className="flex-1 py-2 px-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 font-bold text-xs text-center flex items-center justify-center gap-1"
+          <button
+            type="button"
+            onClick={() =>
+              handleActionWithAuth("trade", () => {
+                router.push(`/trades/new?target=${listing.id}`);
+              })
+            }
+            className="flex-1 py-2 px-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 font-bold text-xs text-center flex items-center justify-center gap-1 cursor-pointer"
           >
             <Repeat className="w-3.5 h-3.5" />
             <span>Swap</span>
-          </Link>
+          </button>
         ) : null}
 
-        <Link
-          href={`/checkout/escrow?listing=${listing.id}&mode=cash`}
-          className="flex-2 py-2.5 px-4 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 shadow-xs"
+        <button
+          type="button"
+          onClick={() =>
+            handleActionWithAuth("buy", () => {
+              router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
+            })
+          }
+          className="flex-2 py-2.5 px-4 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
         >
           <ShieldCheck className="w-4 h-4" />
           <span>Buy with Escrow ({listing.price.toLocaleString()} ETB)</span>
-        </Link>
+        </button>
       </div>
 
       {/* MAKE AN OFFER MODAL */}
@@ -894,6 +1025,93 @@ export default function ListingDetailPage() {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* SIGN IN REQUIRED MODAL (Triggered when unauthenticated guest tries to buy or contact seller) */}
+      {authPrompt.isOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-4 border border-emerald-900/10 animate-in zoom-in-95 duration-150">
+            {/* Close cross */}
+            <button
+              type="button"
+              onClick={() => setAuthPrompt((prev) => ({ ...prev, isOpen: false }))}
+              className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              aria-label="Close modal and keep watching"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Free Watching Reassurance Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+              <span>👁️ Public Browsing is 100% Free</span>
+            </div>
+
+            {/* Action Header */}
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-[#0e623a] flex items-center justify-center shrink-0">
+                  {authPrompt.icon === "call" && <Phone className="w-5 h-5 text-[#0e623a]" />}
+                  {authPrompt.icon === "chat" && <MessageCircle className="w-5 h-5 text-[#0e623a]" />}
+                  {authPrompt.icon === "buy" && <ShieldCheck className="w-5 h-5 text-[#0e623a]" />}
+                  {authPrompt.icon === "offer" && <BadgePercent className="w-5 h-5 text-[#0e623a]" />}
+                  {authPrompt.icon === "trade" && <Repeat className="w-5 h-5 text-[#0e623a]" />}
+                  {authPrompt.icon === "review" && <Star className="w-5 h-5 text-amber-500 fill-amber-400" />}
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight">
+                    {authPrompt.title}
+                  </h3>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    Sefed Market Buyer &amp; Seller Protection
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed font-medium pt-1">
+                {authPrompt.description}
+              </p>
+            </div>
+
+            {/* Protection Benefits */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700 space-y-1.5">
+              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-[11px]">
+                <CheckCircle className="w-3.5 h-3.5 text-[#0e623a]" />
+                <span>Why sign in is required for this action:</span>
+              </div>
+              <ul className="text-[11px] space-y-1 text-slate-600 pl-4 list-disc font-medium">
+                <li>Protects personal contact info &amp; stops anonymous spam</li>
+                <li>Enables 100% Telebirr and CBE Escrow money protection</li>
+                <li>Connects you with verified sellers across Addis Ababa &amp; Ethiopia</li>
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-1">
+              <Link
+                href={`/auth/login?redirect=${encodeURIComponent(authPrompt.redirectUrl)}`}
+                className="w-full min-h-[46px] py-3 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-900/15 transition-all text-center"
+              >
+                <span>Sign In to Continue</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </Link>
+
+              <Link
+                href={`/auth/signup?redirect=${encodeURIComponent(authPrompt.redirectUrl)}`}
+                className="w-full min-h-[42px] py-2.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center transition-colors text-center"
+              >
+                Create Free Sefed Account
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setAuthPrompt((prev) => ({ ...prev, isOpen: false }))}
+                className="w-full py-2 text-center text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+              >
+                Keep Watching &amp; Browsing Post
+              </button>
+            </div>
           </div>
         </div>
       )}

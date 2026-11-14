@@ -32,7 +32,7 @@ function ListingsContent() {
   const initialQuery = searchParams.get("q") || "";
   const initialKebele = searchParams.get("kebele") || searchParams.get("city") || "All";
 
-  const { isFavorite, toggleFavorite, listings, selectedKebele: globalKebele, setSelectedKebele: setGlobalKebele } = useMarketplace();
+  const { isFavorite, toggleFavorite, listings, selectedKebele: globalKebele, setSelectedKebele: setGlobalKebele, isLoggedIn } = useMarketplace();
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -149,7 +149,7 @@ function ListingsContent() {
             </div>
 
             <Link
-              href="/listings/create"
+              href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-xs transition-all active:scale-95"
             >
               <span>+ Post Free Product</span>
