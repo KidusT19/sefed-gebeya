@@ -456,7 +456,7 @@ export default function HomePage() {
                   Create Free Account
                 </Link>
                 <Link
-                  href="/listings/create"
+                  href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
                   className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all"
                 >
                   + Post Free Product

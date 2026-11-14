@@ -3,14 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, PlusCircle, Repeat, MessageSquare } from "lucide-react";
+import { useMarketplace } from "@/context/MarketplaceContext";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const { isLoggedIn } = useMarketplace();
+
+  const postHref = isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create";
 
   const navItems = [
     { label: "Home", href: "/", icon: Home },
     { label: "All Ads", href: "/listings", icon: Search },
-    { label: "Post Ad", href: "/listings/create", icon: PlusCircle, isPrimary: true },
+    { label: "Post Ad", href: postHref, icon: PlusCircle, isPrimary: true },
     { label: "Swaps", href: "/swaps", icon: Repeat },
     { label: "Chat", href: "/messages", icon: MessageSquare },
   ];

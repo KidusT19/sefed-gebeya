@@ -466,8 +466,8 @@ export default function Navbar() {
             {/* Right: Sell / List an Item CTA */}
             <div className="hidden lg:flex items-center gap-3">
               <Link
-                href="/listings/create"
-                className="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-4 py-2 rounded-full shadow-2xs transition-all"
+                href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
+                className="inline-flex items-center gap-1.5 bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs px-4.5 py-2 rounded-full shadow-sm transition-all"
               >
                 <span>+ Post Free Product</span>
               </Link>

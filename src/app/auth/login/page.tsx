@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Lock,
   Smartphone,
@@ -13,13 +13,17 @@ import {
   EyeOff,
   CheckCircle2,
   Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { useMarketplace, ActiveUser } from "@/context/MarketplaceContext";
 import SefedLogo from "@/components/SefedLogo";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+
   const { login, showToast } = useMarketplace();
 
   // Login Method: "phone" (Mobile first default for Ethiopia) | "email"
@@ -49,7 +53,7 @@ export default function LoginPage() {
     } else {
       const cleanDigits = phone.replace(/\D/g, "");
       if (cleanDigits.length < 9) {
-        setErrorMessage("Please enter a valid 9-digit Ethiopian mobile number (e.g. 911 223344 or 712 334455).");
+        setErrorMessage("Please enter a valid 9-digit Ethiopian mobile number (e.g. 911 234 567 or 712 345 678).");
         setIsSubmitting(false);
         return;
       }
@@ -99,7 +103,7 @@ export default function LoginPage() {
 
         login(loggedUser);
         showToast(`Welcome back, ${loggedUser.name}!`, "success");
-        router.push("/dashboard");
+        router.push(redirectUrl);
       } else {
         // Fallback local session if API database is offline
         const cleanName = loginMethod === "email" ? email.split("@")[0] : `Customer ${cleanDigits.slice(-4)}`;
@@ -120,7 +124,7 @@ export default function LoginPage() {
         };
         login(fallbackUser);
         showToast(`Welcome back, ${fallbackUser.name}!`, "success");
-        router.push("/dashboard");
+        router.push(redirectUrl);
       }
     } catch {
       // Graceful offline fallback
@@ -139,7 +143,7 @@ export default function LoginPage() {
         sellerTier: "Individual Trader",
       };
       login(fallbackUser);
-      router.push("/dashboard");
+      router.push(redirectUrl);
     } finally {
       setIsSubmitting(false);
     }
@@ -161,6 +165,8 @@ export default function LoginPage() {
     }
   };
 
+  const signupLink = `/auth/signup${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`;
+
   return (
     <div className="relative min-h-[85vh] flex flex-col justify-center py-8 px-4 sm:px-6">
       {/* Authentic Ethiopian Sefed Watermark */}
@@ -179,6 +185,22 @@ export default function LoginPage() {
             Manage your orders, active listings, device swaps, and Telebirr escrow wallet
           </p>
         </div>
+
+        {/* Informative Redirect Notice for Protected Features */}
+        {redirectUrl === "/listings/create" ? (
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+            <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+            <div>
+              <strong className="block font-black text-amber-950">Registration Required to Post Free Ads</strong>
+              <span>Sign in or create a free account to publish your product with verified buyer trust.</span>
+            </div>
+          </div>
+        ) : redirectUrl !== "/dashboard" && (
+          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+            <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0" />
+            <span>Sign in required to access this feature and protect your personal information.</span>
+          </div>
+        )}
 
         {/* Main Login Card */}
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-6 sm:p-8 shadow-xl shadow-emerald-950/5 space-y-6">
@@ -339,7 +361,7 @@ export default function LoginPage() {
           {/* Link to Register */}
           <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-600">
             <span>New to Sefed Market? </span>
-            <Link href="/auth/signup" className="font-black text-[#0e623a] hover:underline">
+            <Link href={signupLink} className="font-black text-[#0e623a] hover:underline">
               Create Free Account &rarr;
             </Link>
           </div>
@@ -356,5 +378,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0e623a]">Loading Sefed Login...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

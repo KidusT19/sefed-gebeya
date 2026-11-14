@@ -156,7 +156,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
 
           {/* 2. Sell Product */}
           <Link
-            href="/listings/create"
+            href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
             onClick={onClose}
             className="flex items-center gap-3 p-2.5 rounded-xl bg-white hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-400 transition-colors group"
           >

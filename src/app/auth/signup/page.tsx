@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Smartphone,
   User,
@@ -23,8 +23,11 @@ import { useMarketplace, ActiveUser } from "@/context/MarketplaceContext";
 import SefedLogo from "@/components/SefedLogo";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 
-export default function SignUpPage() {
+function SignUpContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+
   const { login, showToast } = useMarketplace();
 
   const [fullName, setFullName] = useState("");
@@ -132,8 +135,10 @@ export default function SignUpPage() {
     login(newUser);
     setIsSubmitting(false);
     showToast(`✓ Account created successfully! Welcome to Sefed Market, ${newUser.name}.`, "success");
-    router.push("/dashboard");
+    router.push(redirectUrl);
   };
+
+  const loginLink = `/auth/login${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`;
 
   return (
     <div className="relative min-h-[90vh] flex flex-col justify-center py-8 px-4 sm:px-6">
@@ -153,6 +158,17 @@ export default function SignUpPage() {
             Join thousands of verified shoppers and merchants across Addis Ababa, Adama, Hawassa, and nationwide
           </p>
         </div>
+
+        {/* Informative Notice when redirected from Post Ad */}
+        {redirectUrl === "/listings/create" && (
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+            <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+            <div>
+              <strong className="block font-black text-amber-950">Registration Required to Post Free Ads</strong>
+              <span>Complete this quick sign up to start posting unlimited free listings across Ethiopia.</span>
+            </div>
+          </div>
+        )}
 
         {/* Main Registration Card */}
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-6 sm:p-8 shadow-xl shadow-emerald-950/5 space-y-6">
@@ -411,7 +427,7 @@ export default function SignUpPage() {
           <div className="text-center pt-2 border-t border-slate-100">
             <p className="text-xs text-slate-600">
               Already have an account?{" "}
-              <Link href="/auth/login" className="font-black text-[#0e623a] hover:underline">
+              <Link href={loginLink} className="font-black text-[#0e623a] hover:underline">
                 Sign In &rarr;
               </Link>
             </p>
@@ -425,5 +441,13 @@ export default function SignUpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0e623a]">Loading Sefed Registration...</div>}>
+      <SignUpContent />
+    </Suspense>
   );
 }

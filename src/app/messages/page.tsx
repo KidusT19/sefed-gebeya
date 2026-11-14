@@ -2,7 +2,9 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMarketplace } from "@/context/MarketplaceContext";
+import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 import { MOCK_LISTINGS } from "@/data/mockData";
 import {
   Send,
@@ -16,6 +18,7 @@ import {
   Phone,
   ArrowRight,
   Sparkles,
+  Lock,
 } from "lucide-react";
 
 interface Message {
@@ -41,8 +44,17 @@ interface Conversation {
 }
 
 function MessagesContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const requestedListingId = searchParams.get("listing");
+  const { isLoggedIn, showToast } = useMarketplace();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      showToast("Please sign in to access your direct messages.", "info");
+      router.replace(`/auth/login?redirect=/messages${requestedListingId ? `?listing=${requestedListingId}` : ""}`);
+    }
+  }, [isLoggedIn, router, showToast, requestedListingId]);
 
   const [activeTab, setActiveTab] = useState<"buying" | "selling">("buying");
   const [inputText, setInputText] = useState("");
@@ -239,17 +251,57 @@ function MessagesContent() {
     setInputText(text);
   };
 
+  if (!isLoggedIn) {
+    return (
+      <div className="relative min-h-[75vh] flex items-center justify-center px-4 py-12">
+        <SefedWatermarkBackground opacity={0.15} blur="md" />
+        <div className="relative z-10 max-w-md w-full bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-8 text-center space-y-5 shadow-xl shadow-emerald-950/5">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-inner">
+            <Lock className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Direct Messages Protected
+            </h2>
+            <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
+              Direct chats, contact numbers, and price negotiation rooms are confidential and require you to sign in.
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col gap-2.5">
+            <Link
+              href={`/auth/login?redirect=/messages${requestedListingId ? `?listing=${requestedListingId}` : ""}`}
+              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer"
+            >
+              <span>Sign In to Continue</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            </Link>
+
+            <Link
+              href={`/auth/signup?redirect=/messages${requestedListingId ? `?listing=${requestedListingId}` : ""}`}
+              className="w-full min-h-[44px] py-3 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center transition-colors"
+            >
+              Create Free Sefed Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4 pb-16">
+    <div className="relative min-h-screen space-y-4 pb-16">
+      <SefedWatermarkBackground opacity={0.12} blur="md" />
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black text-[#2b1c11] tracking-tight flex items-center gap-2">
-            <MessageSquare className="w-6 h-6 text-[#1d4ed8]" />
-            Adama Direct Messenger
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <MessageSquare className="w-6 h-6 text-[#0e623a]" />
+            Sefed Direct Messenger
           </h1>
-          <p className="text-xs text-[#785437]">
-            Negotiate prices, agree on barter top-ups, and coordinate safe public meetups in Adama.
+          <p className="text-xs text-slate-500 font-medium">
+            Negotiate prices, agree on barter top-ups, and coordinate safe public meetups across Ethiopia.
           </p>
         </div>
 

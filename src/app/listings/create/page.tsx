@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { ProductListing } from "@/types/marketplace";
+import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 import {
   Upload,
   Repeat,
@@ -17,21 +18,33 @@ import {
   Star,
   Image as ImageIcon,
   Sparkles,
+  Lock,
+  ArrowRight,
+  ShieldCheck,
+  BadgeCheck,
 } from "lucide-react";
 
 export default function CreateListingPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addListing, currentUser } = useMarketplace();
+  const { addListing, currentUser, isLoggedIn, showToast } = useMarketplace();
+
+  // Authentication Guard: Redirect to login if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      showToast("Please sign in or register to publish free ads on Sefed Market.", "info");
+      router.replace("/auth/login?redirect=/listings/create");
+    }
+  }, [isLoggedIn, router, showToast]);
 
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("phones");
+  const [category, setCategory] = useState("smartphones");
   const [subcategory, setSubcategory] = useState("");
   const [price, setPrice] = useState("");
   const [isNegotiable, setIsNegotiable] = useState(true);
-  const [condition, setCondition] = useState("Like New");
-  const [city, setCity] = useState("Adama");
-  const [kebele, setKebele] = useState("Bole");
+  const [condition, setCondition] = useState<"Brand New" | "Like New" | "Excellent" | "Good" | "Fair">("Like New");
+  const [city, setCity] = useState(currentUser?.city || "Addis Ababa");
+  const [kebele, setKebele] = useState(currentUser?.kebele || "Bole");
   const [landmark, setLandmark] = useState("");
   const [description, setDescription] = useState("");
   const [allowBarter, setAllowBarter] = useState(true);
@@ -65,7 +78,7 @@ export default function CreateListingPage() {
       if (data.success && data.urls && data.urls.length > 0) {
         setImages((prev) => [...prev, ...data.urls]);
       } else {
-        // Fallback
+        // Local FileReader fallback
         Array.from(files).forEach((file) => {
           const reader = new FileReader();
           reader.onload = (event) => {
@@ -104,25 +117,13 @@ export default function CreateListingPage() {
     });
   };
 
-  const handleAddSamplePhotos = (preset: "phone" | "laptop" | "mitad") => {
-    const presets = {
-      phone: [
-        "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-      ],
-      laptop: [
-        "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-      ],
-      mitad: [
-        "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=800&auto=format&fit=crop&q=80",
-      ],
-    };
-    setImages(presets[preset]);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      router.push("/auth/login?redirect=/listings/create");
+      return;
+    }
+
     setIsSubmitting(true);
 
     const newListingObj: ProductListing = {
@@ -130,15 +131,15 @@ export default function CreateListingPage() {
       title,
       price: Number(price) || 0,
       isNegotiable,
-      condition: (condition as any) || "Like New",
+      condition,
       categorySlug: category,
       subcategory: subcategory || selectedCategoryObj?.subcategories[0] || "General",
-      city: city || "Adama",
+      city: city || "Addis Ababa",
       kebele: kebele || "Bole",
       landmark: landmark || `${kebele} Center`,
-      description: description || "Inspected device in great condition, ready for direct pickup or barter in Adama.",
+      description: description || "Inspected item in great condition, ready for direct cash purchase or barter across Ethiopia.",
       allowBarter,
-      wishlist: wishlist || (allowBarter ? "Open to trade proposals" : ""),
+      wishlist: wishlist || (allowBarter ? "Open to device trade proposals" : ""),
       allowCash: true,
       images: images.length > 0 ? images : [
         "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
@@ -148,10 +149,12 @@ export default function CreateListingPage() {
         name: currentUser.name,
         phone: currentUser.phone,
         whatsapp: currentUser.phone,
-        city: currentUser.city || "Adama",
+        city: currentUser.city || city,
         kebele: currentUser.kebele || kebele,
-        isVerified: true,
-        memberSince: "Nov 2026",
+        isVerified: currentUser.verificationStatus === "VERIFIED" || currentUser.verificationStatus === "OFFICIAL_STORE",
+        verificationStatus: currentUser.verificationStatus,
+        sellerTier: currentUser.sellerTier,
+        memberSince: currentUser.memberSince || "Nov 2026",
         rating: currentUser.rating || 5.0,
         completedDeals: (currentUser.completedTrades || 0) + 1,
         avatar: currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
@@ -161,7 +164,7 @@ export default function CreateListingPage() {
       isFeatured: false,
     };
 
-    // Add directly to live state
+    // Add to marketplace context
     addListing(newListingObj);
 
     try {
@@ -197,36 +200,98 @@ export default function CreateListingPage() {
     }, 1800);
   };
 
+  // If user is not authenticated, render secure gatekeeper view
+  if (!isLoggedIn) {
+    return (
+      <div className="relative min-h-[75vh] flex items-center justify-center px-4 py-12">
+        <SefedWatermarkBackground opacity={0.15} blur="md" />
+        <div className="relative z-10 max-w-md w-full bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-8 text-center space-y-5 shadow-xl shadow-emerald-950/5">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-inner">
+            <Lock className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Sign In to Post Free Ads
+            </h2>
+            <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
+              To protect Ethiopian shoppers and prevent fraudulent listings, you must be logged in with a registered account and verified contact number to publish items.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 text-left space-y-1.5">
+            <div className="flex items-center gap-2 font-bold text-slate-800">
+              <ShieldCheck className="w-4 h-4 text-[#0e623a]" />
+              <span>Registered Seller Benefits:</span>
+            </div>
+            <ul className="text-[11px] space-y-1 list-disc pl-5 text-slate-600">
+              <li>Direct Telebirr and CBE escrow payments</li>
+              <li>Verified seller badge for instant buyer trust</li>
+              <li>Automated circular 3-way device trade matching</li>
+            </ul>
+          </div>
+
+          <div className="pt-2 flex flex-col gap-2.5">
+            <Link
+              href="/auth/login?redirect=/listings/create"
+              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer"
+            >
+              <span>Sign In to Continue</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            </Link>
+
+            <Link
+              href="/auth/signup?redirect=/listings/create"
+              className="w-full min-h-[44px] py-3 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center transition-colors"
+            >
+              Create Free Sefed Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-16">
-      <div className="flex items-center justify-between">
-        <Link href="/listings" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-blue-600 font-bold">
-          <ArrowLeft className="w-4 h-4" /> Back to Marketplace
+    <div className="relative min-h-screen pb-24 px-4 sm:px-6 max-w-3xl mx-auto space-y-6">
+      <SefedWatermarkBackground opacity={0.12} blur="md" />
+
+      {/* Top Breadcrumb & Badge */}
+      <div className="relative z-10 flex items-center justify-between pt-2">
+        <Link
+          href="/listings"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-[#0e623a] font-bold transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Marketplace</span>
         </Link>
-        <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
-          Post Free Ad Across Ethiopia
+        <span className="text-[11px] font-black text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+          Post Free Ad Nationwide
         </span>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Post a Free Ad</h1>
+      {/* Main Form Card */}
+      <div className="relative z-10 bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="border-b border-slate-100 pb-4">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            Post a Free Product or Device
+          </h1>
           <p className="text-xs text-slate-500 mt-1 font-medium">
-            Sell for cash or enable circular barter to swap your device with buyers nationwide
+            Publish your item for cash sale or enable device swaps across Addis Ababa and all Ethiopian cities
           </p>
         </div>
 
         {isSuccess ? (
           <div className="py-12 text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 mx-auto flex items-center justify-center shadow-xs">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-xs">
               <CheckCircle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900">Your Ad Has Been Published!</h2>
+            <h2 className="text-xl font-black text-slate-900">Your Ad Has Been Published!</h2>
             <p className="text-xs text-slate-600 max-w-sm mx-auto font-medium">
-              Your item is now live across Ethiopia. Matching barter algorithms are scanning for potential circular trades.
+              Your product is now live on Sefed Market. Buyers can send cash offers or propose device barter deals.
             </p>
-            <p className="text-xs text-blue-600 font-bold animate-pulse">
-              Redirecting to marketplace...
+            <p className="text-xs text-[#0e623a] font-bold animate-pulse">
+              Redirecting to marketplace catalog...
             </p>
           </div>
         ) : (
@@ -242,7 +307,7 @@ export default function CreateListingPage() {
                 placeholder="e.g. iPhone 13 Pro 128GB (Sierra Blue) or Dell XPS 13"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
               />
             </div>
 
@@ -256,11 +321,11 @@ export default function CreateListingPage() {
                     setCategory(e.target.value);
                     setSubcategory("");
                   }}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c.id} value={c.slug}>
-                      {c.name}
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.slug}>
+                      {cat.name}
                     </option>
                   ))}
                 </select>
@@ -271,10 +336,10 @@ export default function CreateListingPage() {
                 <select
                   value={subcategory}
                   onChange={(e) => setSubcategory(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
                 >
-                  <option value="">Select subcategory...</option>
-                  {selectedCategoryObj?.subcategories.map((sub) => (
+                  <option value="">Select Subcategory...</option>
+                  {selectedCategoryObj?.subcategories?.map((sub) => (
                     <option key={sub} value={sub}>
                       {sub}
                     </option>
@@ -283,60 +348,61 @@ export default function CreateListingPage() {
               </div>
             </div>
 
-            {/* Condition & Price */}
+            {/* Price & Condition */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-800 block">Condition</label>
-                <select
-                  value={condition}
-                  onChange={(e) => setCondition(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
-                >
-                  <option value="Brand New">Brand New</option>
-                  <option value="Like New">Like New (Mint)</option>
-                  <option value="Excellent">Excellent</option>
-                  <option value="Good">Good</option>
-                  <option value="Fair">Fair</option>
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-800 block">
-                  Price / Estimated Value (ETB) <span className="text-rose-600">*</span>
+                  Price in Ethiopian Birr (ETB) <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="number"
                     required
-                    placeholder="e.g. 55000"
+                    min="1"
+                    placeholder="e.g. 45000"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full pl-3.5 pr-14 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-3.5 pr-14 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-mono font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                   />
-                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500">
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
                     ETB
                   </span>
                 </div>
-                <label className="flex items-center gap-2 cursor-pointer pt-1 text-xs text-slate-600 font-medium">
+                <label className="flex items-center gap-2 cursor-pointer mt-1">
                   <input
                     type="checkbox"
                     checked={isNegotiable}
                     onChange={(e) => setIsNegotiable(e.target.checked)}
-                    className="rounded text-blue-600 focus:ring-blue-600"
+                    className="w-3.5 h-3.5 rounded text-[#0e623a] border-slate-300 focus:ring-[#0e623a]"
                   />
-                  <span>Price is negotiable</span>
+                  <span className="text-[11px] font-medium text-slate-600">Price is negotiable</span>
                 </label>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 block">Condition</label>
+                <select
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value as any)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
+                >
+                  <option value="Brand New">Brand New (Sealed in box)</option>
+                  <option value="Like New">Like New (Flawless condition)</option>
+                  <option value="Excellent">Excellent (Minor cosmetic signs)</option>
+                  <option value="Good">Good (Fully functional)</option>
+                  <option value="Fair">Fair (Noticeable wear)</option>
+                </select>
               </div>
             </div>
 
-            {/* Location in Ethiopia */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-              <div className="space-y-1">
+            {/* City & Kebele Location */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-800 block">City</label>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
                 >
                   <option value="Addis Ababa">Addis Ababa (አዲስ አበባ)</option>
                   <option value="Adama">Adama (አዳማ)</option>
@@ -351,133 +417,85 @@ export default function CreateListingPage() {
                 </select>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800 block">Sub-City / Area</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 block">Kebele / Sub-City</label>
                 <input
                   type="text"
-                  placeholder="e.g. Bole, Piassa, Arada, Piazza"
+                  placeholder="e.g. Bole"
                   value={kebele}
                   onChange={(e) => setKebele(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800 block">Meeting Landmark</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 block">Landmark (Meetup)</label>
                 <input
                   type="text"
-                  placeholder="e.g. Near CBE Branch or Mall"
+                  placeholder="e.g. Near Edna Mall"
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                 />
               </div>
             </div>
 
-            {/* INTERACTIVE PHOTO UPLOADER WITH INSTANT PREVIEWS */}
+            {/* Photos Upload Section */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-800 block">
-                  Product Photos ({images.length}/5)
-                </label>
-                {/* Sample Presets for Fast Testing */}
-                <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-                  <span>Load Sample:</span>
-                  <button
-                    type="button"
-                    onClick={() => handleAddSamplePhotos("phone")}
-                    className="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border border-slate-200"
-                  >
-                    Phone
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleAddSamplePhotos("laptop")}
-                    className="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border border-slate-200"
-                  >
-                    Laptop
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleAddSamplePhotos("mitad")}
-                    className="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border border-slate-200"
-                  >
-                    Mitad
-                  </button>
-                </div>
+                <label className="text-xs font-bold text-slate-800">Product Photos</label>
+                <span className="text-[10px] text-slate-400 font-medium">Add up to 5 clear photos</span>
               </div>
 
-              {/* Upload Dropzone */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-
-              <div
-                onClick={() => !isUploading && fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors space-y-2 group ${
-                  isUploading
-                    ? "border-blue-600 bg-blue-50/50 cursor-wait"
-                    : "border-slate-300 hover:border-blue-500 bg-slate-50 hover:bg-slate-100/70 cursor-pointer"
-                }`}
-              >
-                <div className="w-10 h-10 rounded-full bg-slate-200 group-hover:bg-blue-100 text-slate-600 group-hover:text-blue-600 mx-auto flex items-center justify-center transition-colors">
-                  {isUploading ? (
-                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Upload className="w-5 h-5" />
-                  )}
-                </div>
-                <div className="text-xs font-bold text-slate-800">
-                  {isUploading ? "Uploading photos to server..." : "Click to select photos from your device or drag & drop"}
-                </div>
-                <div className="text-[11px] text-slate-500">
-                  Supports PNG, JPG, or WEBP up to 5MB each. First photo will be your cover image.
-                </div>
-              </div>
-
-              {/* Image Previews Grid */}
-              {images.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                  {images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 aspect-[4/3] group shadow-2xs"
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {images.map((imgUrl, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-square rounded-2xl overflow-hidden border border-slate-200 group bg-slate-100"
+                  >
+                    <img src={imgUrl} alt={`Upload ${idx + 1}`} className="w-full h-full object-cover" />
+                    {idx === 0 && (
+                      <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md bg-[#0e623a] text-white text-[9px] font-black uppercase shadow-xs">
+                        Cover
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(idx)}
+                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-rose-600 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <img src={img} alt={`Upload ${idx + 1}`} className="w-full h-full object-cover" />
-
-                      {/* Cover Photo Badge */}
-                      {idx === 0 ? (
-                        <span className="absolute top-1.5 left-1.5 bg-blue-600 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
-                          Cover Photo
-                        </span>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleMakeCover(idx)}
-                          className="absolute top-1.5 left-1.5 bg-slate-900/80 hover:bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          Make Cover
-                        </button>
-                      )}
-
-                      {/* Remove Button */}
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    {idx !== 0 && (
                       <button
                         type="button"
-                        onClick={() => handleRemoveImage(idx)}
-                        className="absolute top-1.5 right-1.5 p-1 rounded-full bg-rose-600/90 text-white hover:bg-rose-700 opacity-90 transition-opacity"
-                        title="Remove photo"
+                        onClick={() => handleMakeCover(idx)}
+                        className="absolute bottom-1.5 left-1.5 right-1.5 py-1 rounded bg-slate-900/80 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        Set as Cover
                       </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    )}
+                  </div>
+                ))}
+
+                {images.length < 5 && (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-slate-300 hover:border-[#0e623a] rounded-2xl aspect-square flex flex-col items-center justify-center p-3 text-center cursor-pointer bg-slate-50 transition-colors"
+                  >
+                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
+                    <span className="text-[11px] font-bold text-slate-700">Add Photo</span>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Description */}
@@ -488,7 +506,7 @@ export default function CreateListingPage() {
                 placeholder="Describe your item in detail (battery health, specs, included accessories, reason for selling)..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
               />
             </div>
 
@@ -497,10 +515,10 @@ export default function CreateListingPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
-                    <Repeat className="w-4 h-4 text-amber-600" /> Enable Circular Barter / Swap
+                    <Repeat className="w-4 h-4 text-amber-600" /> Enable Circular Barter / Device Swap
                   </span>
                   <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                    Allow other users to propose their devices in trade, with cash top-up for value differences
+                    Allow other verified users to propose their devices in trade, with cash top-up for value differences
                   </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -510,7 +528,7 @@ export default function CreateListingPage() {
                     onChange={(e) => setAllowBarter(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0e623a]"></div>
                 </label>
               </div>
 
@@ -524,23 +542,36 @@ export default function CreateListingPage() {
                     placeholder="e.g. Looking for iPhone 13 Pro or Samsung S22 (+/- cash difference)"
                     value={wishlist}
                     onChange={(e) => setWishlist(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                   />
                   <p className="text-[11px] text-slate-500 flex items-center gap-1 font-medium">
-                    <Info className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
-                    Our graph algorithm uses this wishlist to automatically discover 3-way circular trade loops!
+                    <Info className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <span>Our barter engine matches your wishlist to discover direct &amp; 3-way circular trade deals!</span>
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Submit Button in Blue */}
+            {/* Seller Contact Info Preview */}
+            <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5">
+                <BadgeCheck className="w-4 h-4 text-emerald-700" />
+                <span className="text-slate-700 font-medium">
+                  Posting as: <strong className="text-slate-900 font-bold">{currentUser.name}</strong> ({currentUser.phone})
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                Verified Seller
+              </span>
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+              className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-sm transition-all shadow-lg shadow-emerald-900/15 disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? "Publishing Ad Nationwide..." : "Publish My Ad for Free"}
+              {isSubmitting ? "Publishing Ad Nationwide..." : "Publish Free Ad on Sefed Market"}
             </button>
           </form>
         )}
