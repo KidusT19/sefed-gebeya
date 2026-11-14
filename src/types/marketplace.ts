@@ -8,6 +8,21 @@ export interface Category {
   subcategories: string[];
 }
 
+export type VerificationStatus = "UNVERIFIED" | "PENDING" | "VERIFIED" | "OFFICIAL_STORE";
+export type SellerTier = "Individual Trader" | "Verified Seller" | "Official Merchant";
+
+export interface SellerVerificationDoc {
+  docType: "KEBELE_ID" | "PASSPORT" | "TRADE_LICENSE" | "TIN_CERTIFICATE";
+  docNumber: string;
+  businessName?: string;
+  tinNumber?: string;
+  frontImageUrl?: string;
+  backImageUrl?: string;
+  submittedAt: string;
+  status: VerificationStatus;
+  rejectionReason?: string;
+}
+
 export interface Seller {
   id: string;
   name: string;
@@ -16,6 +31,9 @@ export interface Seller {
   city: string;
   kebele: string;
   isVerified: boolean;
+  verificationStatus?: VerificationStatus;
+  sellerTier?: SellerTier;
+  businessName?: string;
   memberSince: string;
   rating: number;
   completedDeals: number;

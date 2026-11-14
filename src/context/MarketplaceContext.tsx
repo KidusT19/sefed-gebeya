@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { ProductListing, PooledRun } from "@/types/marketplace";
+import { ProductListing, PooledRun, VerificationStatus, SellerTier, SellerVerificationDoc } from "@/types/marketplace";
 import { MOCK_LISTINGS, MOCK_POOLED_RUNS } from "@/data/mockData";
 import { TRANSLATIONS, Language } from "@/data/translations";
 
@@ -60,6 +60,15 @@ export interface ActiveUser {
   rating?: number;
   completedTrades?: number;
   walletBalance: number;
+  verificationStatus?: VerificationStatus;
+  sellerTier?: SellerTier;
+  businessName?: string;
+  memberSince?: string;
+  bio?: string;
+  kebeleIdNumber?: string;
+  tradeLicenseNumber?: string;
+  tinNumber?: string;
+  verificationDoc?: SellerVerificationDoc;
 }
 
 export const PRESET_USERS: ActiveUser[] = [
@@ -67,6 +76,7 @@ export const PRESET_USERS: ActiveUser[] = [
     id: "sel-1",
     name: "Henok Tadesse",
     phone: "+251911448822",
+    email: "henok.tadesse@sefed.et",
     role: "MERCHANT",
     city: "Addis Ababa",
     kebele: "Bole",
@@ -75,11 +85,18 @@ export const PRESET_USERS: ActiveUser[] = [
     rating: 4.9,
     completedTrades: 19,
     walletBalance: 14250,
+    verificationStatus: "VERIFIED",
+    sellerTier: "Verified Seller",
+    businessName: "Henok Electronics Bole",
+    memberSince: "Nov 2024",
+    bio: "Certified electronics dealer & device specialist based in Bole Medhanialem.",
+    kebeleIdNumber: "ADD-BOL-882194",
   },
   {
     id: "sel-2",
     name: "Dawit Bekele (Tech Hub)",
     phone: "+251922771133",
+    email: "dawit.bekele@arada.et",
     role: "MERCHANT",
     city: "Addis Ababa",
     kebele: "Piassa",
@@ -88,11 +105,19 @@ export const PRESET_USERS: ActiveUser[] = [
     rating: 4.8,
     completedTrades: 27,
     walletBalance: 28500,
+    verificationStatus: "OFFICIAL_STORE",
+    sellerTier: "Official Merchant",
+    businessName: "Arada Tech Store",
+    memberSince: "Jan 2024",
+    bio: "Official importer of high-end Apple, Dell and HP computers with warranty.",
+    tradeLicenseNumber: "TL-AA-094821",
+    tinNumber: "0094821944",
   },
   {
     id: "sel-3",
     name: "Chaltu Girma",
     phone: "+251933880011",
+    email: "chaltu.g@gmail.com",
     role: "BUYER",
     city: "Hawassa",
     kebele: "Piazza",
@@ -101,11 +126,16 @@ export const PRESET_USERS: ActiveUser[] = [
     rating: 5.0,
     completedTrades: 12,
     walletBalance: 8400,
+    verificationStatus: "UNVERIFIED",
+    sellerTier: "Individual Trader",
+    memberSince: "March 2025",
+    bio: "Student and gadget trader in Hawassa. Verified phone user.",
   },
   {
     id: "sel-4",
     name: "Yonas Worku (Studio)",
     phone: "+251911223344",
+    email: "yonas.worku@studio.et",
     role: "BUYER",
     city: "Bahir Dar",
     kebele: "Kebele 04",
@@ -114,11 +144,17 @@ export const PRESET_USERS: ActiveUser[] = [
     rating: 4.9,
     completedTrades: 15,
     walletBalance: 19800,
+    verificationStatus: "PENDING",
+    sellerTier: "Individual Trader",
+    businessName: "Yonas Studio Bahir Dar",
+    memberSince: "April 2025",
+    bio: "Pro sound engineer trading musical gear and cameras in Bahir Dar.",
   },
   {
     id: "adm-1",
     name: "Sefed Operations Admin",
     phone: "+251900000000",
+    email: "admin@sefed.et",
     role: "ADMIN",
     city: "Addis Ababa",
     kebele: "Bole",
@@ -126,6 +162,10 @@ export const PRESET_USERS: ActiveUser[] = [
     rating: 5.0,
     completedTrades: 500,
     walletBalance: 64200,
+    verificationStatus: "OFFICIAL_STORE",
+    sellerTier: "Official Merchant",
+    businessName: "Sefed Market Headquarters",
+    memberSince: "Jan 2024",
   },
 ];
 
@@ -163,6 +203,8 @@ interface MarketplaceContextType {
   addDelivery: (delivery: Omit<ActiveDelivery, "id" | "trackingCode" | "merchantReleaseOtp" | "customerDeliveryOtp" | "status">) => ActiveDelivery;
   selectedKebele: string;
   setSelectedKebele: (kebele: string) => void;
+  updateUserProfile: (updates: Partial<ActiveUser>) => void;
+  submitSellerVerification: (doc: Omit<SellerVerificationDoc, "submittedAt" | "status">) => void;
   toast: ToastNotification | null;
   showToast: (message: string, type?: "success" | "info" | "error") => void;
 }
@@ -411,6 +453,44 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     return newDel;
   };
 
+  const updateUserProfile = (updates: Partial<ActiveUser>) => {
+    setCurrentUser((prev) => {
+      const updated = { ...prev, ...updates };
+      try {
+        localStorage.setItem("sefed_current_user", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    showToast("Profile details updated successfully!", "success");
+  };
+
+  const submitSellerVerification = (doc: Omit<SellerVerificationDoc, "submittedAt" | "status">) => {
+    const isBusiness = doc.docType === "TRADE_LICENSE" || doc.docType === "TIN_CERTIFICATE";
+    const verificationDoc: SellerVerificationDoc = {
+      ...doc,
+      submittedAt: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      status: "VERIFIED",
+    };
+
+    setCurrentUser((prev) => {
+      const updated: ActiveUser = {
+        ...prev,
+        verificationStatus: "VERIFIED",
+        sellerTier: isBusiness ? "Official Merchant" : "Verified Seller",
+        businessName: doc.businessName || prev.businessName,
+        kebeleIdNumber: doc.docType === "KEBELE_ID" ? doc.docNumber : prev.kebeleIdNumber,
+        tradeLicenseNumber: doc.docType === "TRADE_LICENSE" ? doc.docNumber : prev.tradeLicenseNumber,
+        tinNumber: doc.tinNumber || prev.tinNumber,
+        verificationDoc,
+      };
+      try {
+        localStorage.setItem("sefed_current_user", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    showToast("✓ Identity verified! You are now a Verified Seller on Sefed Market.", "success");
+  };
+
   const t = (key: string): string => {
     return TRANSLATIONS[language]?.[key] || TRANSLATIONS.en[key] || key;
   };
@@ -445,6 +525,8 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         addDelivery,
         selectedKebele,
         setSelectedKebele,
+        updateUserProfile,
+        submitSellerVerification,
         toast,
         showToast,
       }}

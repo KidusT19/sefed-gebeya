@@ -8,9 +8,25 @@ import React from "react";
  * as a clear, beautifully blurred ambient watermark across the landing page background.
  * Symbolizes the heritage of Sefed Market (ሰፌድ ገበያ) — Ethiopian abundance, quality sorting, and gathering.
  */
-export default function SefedWatermarkBackground() {
+interface SefedWatermarkBackgroundProps {
+  opacity?: number;
+  blur?: "sm" | "md" | "lg" | string;
+  className?: string;
+}
+
+export default function SefedWatermarkBackground({
+  opacity,
+  blur,
+  className = "",
+}: SefedWatermarkBackgroundProps = {}) {
+  const customOpacity = opacity ? `opacity-[${opacity}]` : "";
+  const customBlur = blur === "sm" ? "blur-[1px]" : blur === "md" ? "blur-[2px]" : blur === "lg" ? "blur-[4px]" : "";
+
   return (
-    <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
+    <div
+      className={`absolute inset-0 pointer-events-none select-none overflow-hidden z-0 ${className}`}
+      aria-hidden="true"
+    >
       {/* 1. Primary Hero Sefed Watermark - Positioned centrally behind the hero title, text, and shopper */}
       <div className="absolute -top-10 left-1/2 -translate-x-1/2 sm:left-[35%] lg:left-[36%] w-[380px] sm:w-[720px] lg:w-[860px] h-[380px] sm:h-[720px] lg:h-[860px] opacity-[0.18] sm:opacity-[0.22] filter blur-[1px] sm:blur-[1.5px] contrast-[1.1] saturate-[1.15] mix-blend-multiply transition-all">
         <img
