@@ -80,8 +80,8 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
         </div>
 
         {/* Hero Content Container */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-8 sm:pt-10 sm:pb-16 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-6 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-4 sm:pt-6 sm:pb-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center">
             {/* Left Column: Headlines & Call to Action */}
             <div className="lg:col-span-7 space-y-3 sm:space-y-5 text-left">
               {/* "Welcome to" Intro */}
@@ -146,7 +146,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   </Link>
                 )}
 
-                {/* Secondary Button: Watch Video / How It Works */}
+                {/* Secondary Button: How Escrow Works Walkthrough */}
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(true)}
@@ -155,7 +155,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center">
                     <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white ml-0.5" />
                   </div>
-                  <span>Watch Video</span>
+                  <span>How Escrow Works</span>
                 </button>
               </div>
 
@@ -182,7 +182,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   <img
                     src="/images/mockup_assets/hero_shopper.jpg"
                     alt="Ethiopian Shopper enjoying Sefed Market"
-                    className="w-full h-auto object-cover object-center max-h-[220px] sm:max-h-[380px] lg:max-h-[460px] transform hover:scale-[1.02] transition-transform duration-500"
+                    className="w-full h-auto object-cover object-center max-h-[180px] sm:max-h-[300px] lg:max-h-[360px] transform hover:scale-[1.02] transition-transform duration-500"
                     onError={(e) => {
                       // Fallback to high-res shopper portrait if local crop is unavailable
                       (e.target as HTMLImageElement).src =

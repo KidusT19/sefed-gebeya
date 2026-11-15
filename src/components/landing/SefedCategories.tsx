@@ -82,19 +82,19 @@ export default function SefedCategories() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 bg-transparent">
+    <section className="py-5 sm:py-7 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header with Decorative Green Accent Lines */}
-        <div className="text-center max-w-xl mx-auto mb-8 sm:mb-12">
+        <div className="text-center max-w-xl mx-auto mb-4 sm:mb-6">
           <div className="flex items-center justify-center gap-3">
             <div className="h-0.5 w-10 sm:w-16 bg-emerald-600/30 rounded-full" />
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0b4d2e] tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0b4d2e] tracking-tight">
               Shop by Category
             </h2>
             <div className="h-0.5 w-10 sm:w-16 bg-emerald-600/30 rounded-full" />
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1.5">
-            Find what you need, all in one place
+          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+            Browse authentic products from verified sellers across Ethiopia
           </p>
         </div>
 
