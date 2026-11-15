@@ -17,6 +17,17 @@ import {
   Tag,
   Info,
   Phone,
+  User,
+  Settings,
+  LogOut,
+  Package,
+  Repeat,
+  ShieldCheck,
+  MessageSquare,
+  Wallet,
+  CheckCircle2,
+  Heart,
+  ChevronRight,
 } from "lucide-react";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { MOCK_LISTINGS, CATEGORIES } from "@/data/mockData";
@@ -28,6 +39,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const categoriesDropdownRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const {
     selectedKebele,
@@ -36,6 +48,7 @@ export default function Navbar() {
     setLanguage,
     currentUser,
     isLoggedIn,
+    logout,
   } = useMarketplace();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,6 +56,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCategoriesMenuOpen, setIsCategoriesMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // Suggestions filtered based on query
   const matchingListings = searchQuery.trim()
@@ -58,7 +72,13 @@ export default function Navbar() {
     ? CATEGORIES.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 3)
     : [];
 
-  // Close search and dropdowns on outside click
+  // Close search and dropdowns on outside click or route change
+  useEffect(() => {
+    setIsUserMenuOpen(false);
+    setIsSearchOpen(false);
+    setIsCategoriesMenuOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -66,6 +86,9 @@ export default function Navbar() {
       }
       if (categoriesDropdownRef.current && !categoriesDropdownRef.current.contains(event.target as Node)) {
         setIsCategoriesMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -293,23 +316,207 @@ export default function Navbar() {
             {/* Right: Distinct Auth Buttons with Dynamic Green Shift (No Cart!) */}
             <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
               {isLoggedIn ? (
-                <div className="relative group">
-                  <Link
-                    href="/dashboard"
-                    className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all"
+                <div ref={userMenuRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    aria-expanded={isUserMenuOpen}
+                    aria-label="User account menu"
+                    className="flex items-center gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0e623a]/20"
                   >
-                    <img
-                      src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
-                      alt={currentUser.name}
-                      className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-emerald-600"
-                    />
+                    <div className="relative">
+                      <img
+                        src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
+                        alt={currentUser.name}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-emerald-600 shadow-2xs"
+                      />
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+                    </div>
                     <div className="hidden xl:block text-left text-xs leading-tight">
                       <div className="font-bold text-slate-900 line-clamp-1">{currentUser.name.split(" ")[0]}</div>
                       <div className="text-[10px] font-bold text-emerald-700">
                         {currentUser.walletBalance?.toLocaleString()} ETB
                       </div>
                     </div>
-                  </Link>
+                    <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180 text-emerald-700" : ""}`} />
+                  </button>
+
+                  {/* Vertical Pro Dropdown Menu */}
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 divide-y divide-slate-100">
+                      {/* User Header Profile Card */}
+                      <div className="p-3.5 bg-gradient-to-br from-emerald-50/70 via-white to-slate-50">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
+                            alt={currentUser.name}
+                            className="w-11 h-11 rounded-full object-cover border-2 border-emerald-600 shadow-xs"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <h4 className="font-black text-sm text-slate-900 truncate">
+                                {currentUser.name}
+                              </h4>
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 fill-emerald-100 shrink-0" />
+                            </div>
+                            <p className="text-[11px] font-medium text-slate-500 truncate">
+                              {currentUser.phone || currentUser.email || "Verified Member"}
+                            </p>
+                            <span className="inline-block px-2 py-0.5 mt-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                              {currentUser.role === "MERCHANT" ? "Verified Merchant" : "Active Member"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Telebirr / CBE Escrow Balance Strip */}
+                        <Link
+                          href="/dashboard?tab=wallet"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="mt-3 p-2.5 rounded-xl bg-white border border-emerald-200/80 hover:border-emerald-500 flex items-center justify-between transition-colors shadow-2xs group"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                              <Wallet className="w-3.5 h-3.5" />
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Escrow Wallet</div>
+                              <div className="text-xs font-black text-emerald-700">
+                                {currentUser.walletBalance?.toLocaleString()} ETB
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-bold text-emerald-700 group-hover:translate-x-0.5 transition-transform">
+                            Manage →
+                          </span>
+                        </Link>
+                      </div>
+
+                      {/* Vertical Menu Options */}
+                      <div className="p-1.5 space-y-0.5 text-xs font-bold text-slate-700">
+                        <Link
+                          href="/dashboard?tab=profile"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                            <User className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">My Profile</div>
+                            <div className="text-[10px] text-slate-400 font-normal">View &amp; edit personal bio and ratings</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                        </Link>
+
+                        <Link
+                          href="/dashboard?tab=ads"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                            <Package className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">My Product Posts</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Manage active listings and bump ads</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                        </Link>
+
+                        <Link
+                          href="/dashboard?tab=trades"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-amber-50 group-hover:bg-amber-100 text-amber-700 flex items-center justify-center transition-colors">
+                            <Repeat className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">My Device Swaps</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Active trade proposals &amp; cash equalizer</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
+                        </Link>
+
+                        <Link
+                          href="/messages"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                            <MessageSquare className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">Messages &amp; Inquiries</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Chat with buyers and sellers</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                        </Link>
+
+                        <Link
+                          href="/dashboard?tab=saved"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-rose-50 group-hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors">
+                            <Heart className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">Saved &amp; Watchlist</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Products you saved for later</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-rose-700" />
+                        </Link>
+
+                        <Link
+                          href="/dashboard?tab=kyc"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                            <ShieldCheck className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">Seller Verification (KYC)</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Verified badge &amp; national ID</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                        </Link>
+
+                        <Link
+                          href="/dashboard?tab=profile"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                            <Settings className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="leading-tight">Settings</div>
+                            <div className="text-[10px] text-slate-400 font-normal">Security &amp; notifications</div>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                        </Link>
+                      </div>
+
+                      {/* Log Out Button */}
+                      <div className="p-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            logout();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-rose-50 group-hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors">
+                            <LogOut className="w-4 h-4" />
+                          </div>
+                          <span className="flex-1 text-left">Log Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center gap-1 sm:gap-2.5">
