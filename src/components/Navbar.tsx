@@ -115,17 +115,17 @@ export default function Navbar() {
 
       <header className="sticky top-0 z-40 bg-white shadow-xs border-b border-slate-100">
         {/* Top Slim Utility Bar */}
-        <div className="bg-[#0b3d26] text-white text-[11px] sm:text-xs px-4 py-1.5 transition-colors">
+        <div className="bg-[#0f172a] text-white text-[11px] sm:text-xs px-4 py-1.5 transition-colors">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             {/* Left: Location and Slogan */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 font-medium text-emerald-200">
+              <div className="flex items-center gap-1.5 font-medium text-slate-300">
                 <MapPin className="w-3.5 h-3.5 text-amber-400" />
                 <span>Deliver to:</span>
                 <select
                   value={selectedKebele}
                   onChange={(e) => setSelectedKebele(e.target.value)}
-                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-emerald-400/40 pb-0.5 max-w-[110px] sm:max-w-[200px] truncate text-[10px] sm:text-xs"
+                  className="bg-transparent font-bold text-white focus:outline-none cursor-pointer border-b border-amber-400/40 pb-0.5 max-w-[110px] sm:max-w-[200px] truncate text-[10px] sm:text-xs"
                   aria-label="Select delivery city"
                 >
                   <option value="All Ethiopia" className="text-slate-900">All Ethiopia (መላው ኢትዮጵያ)</option>
@@ -139,48 +139,48 @@ export default function Navbar() {
                 </select>
               </div>
 
-              <span className="text-emerald-500/50 hidden md:inline">|</span>
-              <span className="text-emerald-100/90 hidden md:inline font-normal">
+              <span className="text-slate-600 hidden md:inline">|</span>
+              <span className="text-slate-200 hidden md:inline font-normal">
                 🇪🇹 Ethiopia&apos;s National E-Commerce &amp; Barter Marketplace
               </span>
             </div>
 
             {/* Right: Hotline & Multi-Language Toggle */}
-            <div className="flex items-center gap-2 sm:gap-4 text-emerald-100 flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-4 text-slate-300 flex-shrink-0">
               <div className="hidden sm:flex items-center gap-1 text-[11px] font-semibold">
                 <PhoneCall className="w-3 h-3 text-amber-400" />
                 <span>Support: 8082 (Toll-Free)</span>
               </div>
 
-              <span className="text-emerald-500/50 hidden sm:inline">|</span>
+              <span className="text-slate-600 hidden sm:inline">|</span>
 
               {/* Language Switcher */}
               <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold" aria-label="Language selection">
                 <button
                   type="button"
                   onClick={() => setLanguage("en")}
-                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
-                    language === "en" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
+                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                    language === "en" ? "bg-amber-400 text-slate-950 font-black" : "hover:text-white text-slate-400"
                   }`}
                 >
                   EN
                 </button>
-                <span className="text-emerald-500/40">/</span>
+                <span className="text-slate-600">/</span>
                 <button
                   type="button"
                   onClick={() => setLanguage("am")}
-                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
-                    language === "am" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
+                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                    language === "am" ? "bg-amber-400 text-slate-950 font-black" : "hover:text-white text-slate-400"
                   }`}
                 >
                   አማ
                 </button>
-                <span className="text-emerald-500/40">/</span>
+                <span className="text-slate-600">/</span>
                 <button
                   type="button"
                   onClick={() => setLanguage("om")}
-                  className={`px-1 sm:px-1.5 py-0.5 rounded transition-colors ${
-                    language === "om" ? "bg-amber-400 text-[#0b3d26] font-black" : "hover:text-white text-emerald-200"
+                  className={`px-1.5 py-0.5 rounded transition-colors ${
+                    language === "om" ? "bg-amber-400 text-slate-950 font-black" : "hover:text-white text-slate-400"
                   }`}
                   title="Afaan Oromoo"
                 >
@@ -215,7 +215,7 @@ export default function Navbar() {
               <form onSubmit={handleSearchSubmit} className="relative flex items-center">
                 <div className="relative flex-1 flex items-center">
                   <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                    <Search className="w-4 h-4 text-emerald-700" />
+                    <Search className="w-4 h-4 text-slate-400" />
                   </div>
                   <input
                     type="text"
@@ -226,7 +226,7 @@ export default function Navbar() {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search for products, electronics, groceries, fashion..."
-                    className="w-full pl-10 pr-24 py-2.5 rounded-l-full bg-slate-50 border-2 border-r-0 border-emerald-600/30 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-emerald-600 transition-colors"
+                    className="w-full pl-10 pr-24 py-2.5 rounded-l-full bg-slate-50 border-2 border-r-0 border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0f172a] transition-colors"
                   />
                   {searchQuery && (
                     <button
@@ -240,10 +240,10 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Dark Green Pill Search Button */}
+                {/* Saffron Gold Search Button */}
                 <button
                   type="submit"
-                  className="bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-r-full border-2 border-[#0e623a] transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  className="bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-sm px-6 py-2.5 rounded-r-full border-2 border-[#f59e0b] transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Search className="w-4 h-4 stroke-[2.5]" />
                   <span>Search</span>
@@ -254,8 +254,8 @@ export default function Navbar() {
               {isSearchOpen && searchQuery.trim().length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 divide-y divide-slate-100">
                   {matchingCategories.length > 0 && (
-                    <div className="p-3 bg-emerald-50/50">
-                      <span className="text-[10px] font-black text-emerald-800 uppercase tracking-wider block mb-1.5">
+                    <div className="p-3 bg-slate-50">
+                      <span className="text-[10px] font-black text-slate-700 uppercase tracking-wider block mb-1.5">
                         Matched Categories
                       </span>
                       <div className="flex flex-wrap gap-2">
@@ -264,7 +264,7 @@ export default function Navbar() {
                             key={c.id}
                             href={`/listings?category=${c.slug}`}
                             onClick={() => setIsSearchOpen(false)}
-                            className="px-3 py-1 rounded-full bg-white hover:bg-emerald-700 hover:text-white text-xs font-bold text-slate-800 border border-emerald-200 transition-colors"
+                            className="px-3 py-1 rounded-full bg-white hover:bg-[#0f172a] hover:text-white text-xs font-bold text-slate-800 border border-slate-300 transition-colors"
                           >
                             {c.name}
                           </Link>
@@ -283,7 +283,7 @@ export default function Navbar() {
                           key={item.id}
                           href={`/listings/${item.id}`}
                           onClick={() => setIsSearchOpen(false)}
-                          className="flex items-center gap-3 p-2 rounded-xl hover:bg-emerald-50/60 transition-colors group"
+                          className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors group"
                         >
                           <img
                             src={item.images[0]}
@@ -291,14 +291,14 @@ export default function Navbar() {
                             className="w-10 h-10 rounded-lg object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="font-bold text-xs text-slate-900 group-hover:text-emerald-700 line-clamp-1">
+                            <div className="font-bold text-xs text-slate-900 group-hover:text-[#0f172a] line-clamp-1">
                               {item.title}
                             </div>
-                            <div className="text-[11px] font-black text-emerald-700">
+                            <div className="text-[11px] font-black text-[#0f172a]">
                               {item.price.toLocaleString()} ETB
                             </div>
                           </div>
-                          <span className="text-[10px] font-bold text-slate-400 group-hover:text-emerald-700">
+                          <span className="text-[10px] font-bold text-slate-400 group-hover:text-[#0f172a]">
                             View →
                           </span>
                         </Link>
@@ -313,7 +313,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Right: Distinct Auth Buttons with Dynamic Green Shift (No Cart!) */}
+            {/* Right: Distinct Auth Buttons with Midnight Navy & Gold Palette */}
             <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
               {isLoggedIn ? (
                 <div ref={userMenuRef} className="relative">
@@ -322,47 +322,47 @@ export default function Navbar() {
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     aria-expanded={isUserMenuOpen}
                     aria-label="User account menu"
-                    className="flex items-center gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0e623a]/20"
+                    className="flex items-center gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20"
                   >
                     <div className="relative">
                       <img
                         src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
                         alt={currentUser.name}
-                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-emerald-600 shadow-2xs"
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#0f172a] shadow-2xs"
                       />
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                     </div>
                     <div className="hidden xl:block text-left text-xs leading-tight">
                       <div className="font-bold text-slate-900 line-clamp-1">{currentUser.name.split(" ")[0]}</div>
-                      <div className="text-[10px] font-bold text-emerald-700">
+                      <div className="text-[10px] font-bold text-[#0f172a]">
                         {currentUser.walletBalance?.toLocaleString()} ETB
                       </div>
                     </div>
-                    <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180 text-emerald-700" : ""}`} />
+                    <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180 text-[#0f172a]" : ""}`} />
                   </button>
 
                   {/* Vertical Pro Dropdown Menu */}
                   {isUserMenuOpen && (
                     <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 divide-y divide-slate-100">
                       {/* User Header Profile Card */}
-                      <div className="p-3.5 bg-gradient-to-br from-emerald-50/70 via-white to-slate-50">
+                      <div className="p-3.5 bg-gradient-to-br from-[#0b1329] via-[#0f172a] to-[#1e293b] text-white">
                         <div className="flex items-center gap-3">
                           <img
                             src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
                             alt={currentUser.name}
-                            className="w-11 h-11 rounded-full object-cover border-2 border-emerald-600 shadow-xs"
+                            className="w-11 h-11 rounded-full object-cover border-2 border-amber-400 shadow-xs"
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <h4 className="font-black text-sm text-slate-900 truncate">
+                              <h4 className="font-black text-sm text-white truncate">
                                 {currentUser.name}
                               </h4>
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 fill-emerald-100 shrink-0" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 fill-amber-400/20 shrink-0" />
                             </div>
-                            <p className="text-[11px] font-medium text-slate-500 truncate">
+                            <p className="text-[11px] font-medium text-slate-300 truncate">
                               {currentUser.phone || currentUser.email || "Verified Member"}
                             </p>
-                            <span className="inline-block px-2 py-0.5 mt-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                            <span className="inline-block px-2 py-0.5 mt-1 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black">
                               {currentUser.role === "MERCHANT" ? "Verified Merchant" : "Active Member"}
                             </span>
                           </div>
@@ -372,20 +372,20 @@ export default function Navbar() {
                         <Link
                           href="/dashboard?tab=wallet"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="mt-3 p-2.5 rounded-xl bg-white border border-emerald-200/80 hover:border-emerald-500 flex items-center justify-between transition-colors shadow-2xs group"
+                          className="mt-3 p-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 flex items-center justify-between transition-colors shadow-2xs group"
                         >
                           <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                            <div className="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
                               <Wallet className="w-3.5 h-3.5" />
                             </div>
                             <div>
-                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Escrow Wallet</div>
-                              <div className="text-xs font-black text-emerald-700">
+                              <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Escrow Wallet</div>
+                              <div className="text-xs font-black text-amber-400">
                                 {currentUser.walletBalance?.toLocaleString()} ETB
                               </div>
                             </div>
                           </div>
-                          <span className="text-[10px] font-bold text-emerald-700 group-hover:translate-x-0.5 transition-transform">
+                          <span className="text-[10px] font-bold text-amber-400 group-hover:translate-x-0.5 transition-transform">
                             Manage →
                           </span>
                         </Link>
@@ -396,37 +396,37 @@ export default function Navbar() {
                         <Link
                           href="/dashboard?tab=profile"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
                             <User className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
                             <div className="leading-tight">My Profile</div>
                             <div className="text-[10px] text-slate-400 font-normal">View &amp; edit personal bio and ratings</div>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
 
                         <Link
                           href="/dashboard?tab=ads"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
                             <Package className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
                             <div className="leading-tight">My Product Posts</div>
                             <div className="text-[10px] text-slate-400 font-normal">Manage active listings and bump ads</div>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
 
                         <Link
                           href="/dashboard?tab=trades"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
                           <div className="w-7 h-7 rounded-lg bg-amber-50 group-hover:bg-amber-100 text-amber-700 flex items-center justify-center transition-colors">
                             <Repeat className="w-4 h-4" />
@@ -441,22 +441,22 @@ export default function Navbar() {
                         <Link
                           href="/messages"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
                             <MessageSquare className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
                             <div className="leading-tight">Messages &amp; Inquiries</div>
                             <div className="text-[10px] text-slate-400 font-normal">Chat with buyers and sellers</div>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
 
                         <Link
                           href="/dashboard?tab=saved"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
                           <div className="w-7 h-7 rounded-lg bg-rose-50 group-hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors">
                             <Heart className="w-4 h-4" />
@@ -471,31 +471,31 @@ export default function Navbar() {
                         <Link
                           href="/dashboard?tab=kyc"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
                             <ShieldCheck className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
                             <div className="leading-tight">Seller Verification (KYC)</div>
                             <div className="text-[10px] text-slate-400 font-normal">Verified badge &amp; national ID</div>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
 
                         <Link
                           href="/dashboard?tab=profile"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-emerald-800 transition-colors group"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-100 text-slate-600 group-hover:text-emerald-800 flex items-center justify-center transition-colors">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
                             <Settings className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
                             <div className="leading-tight">Settings</div>
                             <div className="text-[10px] text-slate-400 font-normal">Security &amp; notifications</div>
                           </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-700" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
                       </div>
 
@@ -520,27 +520,27 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-1 sm:gap-2.5">
-                  {/* Login Button: Green when on Login page; Outlined otherwise */}
+                  {/* Login Button */}
                   <Link
                     href="/auth/login"
                     className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all shadow-xs ${
                       isLoginPage
-                        ? "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
-                        : "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
+                        ? "bg-[#0f172a] hover:bg-[#1e293b] text-white ring-2 ring-slate-900/20"
+                        : "border border-slate-300 hover:border-slate-800 hover:bg-slate-50 text-slate-800 bg-white"
                     }`}
                     title="Sign into your existing account"
                   >
-                    <LogIn className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isLoginPage ? "text-white" : "text-emerald-700"}`} />
+                    <LogIn className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isLoginPage ? "text-white" : "text-slate-800"}`} />
                     <span>Login</span>
                   </Link>
 
-                  {/* Sign Up Button: Green when on Sign Up or default; Outlined when on Login page */}
+                  {/* Sign Up Button */}
                   <Link
                     href="/auth/signup"
                     className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all shadow-xs ${
                       isLoginPage
-                        ? "border border-slate-300 hover:border-emerald-600 hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-800 bg-white"
-                        : "bg-[#0e623a] hover:bg-[#0b4d2e] text-white ring-2 ring-[#0e623a]/30"
+                        ? "border border-slate-300 hover:border-slate-800 hover:bg-slate-50 text-slate-800 bg-white"
+                        : "bg-[#0f172a] hover:bg-[#1e293b] text-white ring-2 ring-slate-900/20"
                     }`}
                     title="Create a new customer account"
                   >
@@ -560,12 +560,12 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products in Ethiopia..."
-                className="w-full pl-9 pr-20 py-2 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                className="w-full pl-9 pr-20 py-2 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <button
                 type="submit"
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#0e623a] text-white text-xs font-bold px-3 py-1.5 rounded-full"
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 text-xs font-black px-3.5 py-1.5 rounded-full transition-colors"
               >
                 Search
               </button>
@@ -577,13 +577,13 @@ export default function Navbar() {
         <nav className="bg-[#fcfdfd] border-t border-slate-200/80 px-4 py-2 hidden sm:block" aria-label="Primary Navigation">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-1.5 lg:gap-3 text-xs font-bold">
-              {/* Home Pill (Active dark green pill matching design) */}
+              {/* Home Pill */}
               <Link
                 href="/"
                 className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full transition-all ${
                   pathname === "/"
-                    ? "bg-[#0b3d26] text-white shadow-xs font-extrabold"
-                    : "text-slate-700 hover:text-emerald-800 hover:bg-slate-100"
+                    ? "bg-[#0f172a] text-white shadow-xs font-extrabold"
+                    : "text-slate-700 hover:text-slate-950 hover:bg-slate-100"
                 }`}
               >
                 <Home className="w-3.5 h-3.5" />
@@ -595,7 +595,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsCategoriesMenuOpen(!isCategoriesMenuOpen)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-700 hover:text-emerald-800 hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
                 >
                   <span>Categories</span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
@@ -611,7 +611,7 @@ export default function Navbar() {
                         key={cat.id}
                         href={`/listings?category=${cat.slug}`}
                         onClick={() => setIsCategoriesMenuOpen(false)}
-                        className="flex items-center justify-between px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors"
+                        className="flex items-center justify-between px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-950 transition-colors"
                       >
                         <span>{cat.name}</span>
                         <span className="text-[10px] text-slate-400">{cat.subcategories?.length || 0} subcategories</span>
@@ -621,7 +621,7 @@ export default function Navbar() {
                       <Link
                         href="/listings"
                         onClick={() => setIsCategoriesMenuOpen(false)}
-                        className="block px-3.5 py-2 text-xs font-bold text-emerald-700 hover:underline"
+                        className="block px-3.5 py-2 text-xs font-bold text-[#0f172a] hover:text-amber-600 transition-colors"
                       >
                         View All Categories →
                       </Link>
@@ -633,7 +633,7 @@ export default function Navbar() {
               {/* Deals */}
               <Link
                 href="/listings?tab=deals"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-emerald-800 hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Tag className="w-3.5 h-3.5 text-amber-500" />
                 <span>Deals</span>
@@ -645,16 +645,16 @@ export default function Navbar() {
               {/* Swaps & Circular Barter */}
               <Link
                 href="/swaps"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-emerald-800 hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
-                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                 <span>Device Swap</span>
               </Link>
 
               {/* About Us */}
               <Link
                 href="/about"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-emerald-800 hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Info className="w-3.5 h-3.5 text-slate-400" />
                 <span>About Us</span>
@@ -663,7 +663,7 @@ export default function Navbar() {
               {/* Contact */}
               <Link
                 href="/faq"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-emerald-800 hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-slate-400" />
                 <span>Contact</span>
@@ -674,7 +674,7 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
-                className="inline-flex items-center gap-1.5 bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs px-4.5 py-2 rounded-full shadow-sm transition-all"
+                className="inline-flex items-center gap-1.5 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs px-4.5 py-2 rounded-full shadow-sm transition-all"
               >
                 <span>+ Post Free Product</span>
               </Link>

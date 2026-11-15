@@ -13,8 +13,8 @@ export default function SefedTrustBar() {
   const pillars = [
     {
       icon: ShieldCheck,
-      iconColor: "text-emerald-700",
-      bgColor: "bg-emerald-100",
+      iconColor: "text-[#0f172a]",
+      bgColor: "bg-slate-100",
       title: "Secure Payment",
       description: "Shop with confidence",
       badge: "Telebirr & CBE",
@@ -29,16 +29,16 @@ export default function SefedTrustBar() {
     },
     {
       icon: Award,
-      iconColor: "text-emerald-700",
-      bgColor: "bg-emerald-100",
+      iconColor: "text-[#0f172a]",
+      bgColor: "bg-slate-100",
       title: "Best Quality",
       description: "Only the best for you",
       badge: "100% Genuine",
     },
     {
       icon: Headphones,
-      iconColor: "text-emerald-700",
-      bgColor: "bg-emerald-100",
+      iconColor: "text-amber-600",
+      bgColor: "bg-amber-100",
       title: "24/7 Support",
       description: "We're here to help",
       badge: "Hotline 8082",
@@ -67,7 +67,7 @@ export default function SefedTrustBar() {
 
                 {/* Text Labels */}
                 <div className="min-w-0">
-                  <h3 className="font-extrabold text-[11px] sm:text-sm text-slate-900 tracking-tight group-hover:text-emerald-800 transition-colors">
+                  <h3 className="font-extrabold text-[11px] sm:text-sm text-slate-900 tracking-tight group-hover:text-[#0f172a] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-[10px] sm:text-xs text-slate-500 font-medium line-clamp-1 mt-0.5">

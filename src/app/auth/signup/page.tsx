@@ -220,7 +220,7 @@ function SignUpContent() {
         )}
 
         {/* Main Registration Card */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-6 sm:p-8 shadow-xl shadow-emerald-950/5 space-y-6">
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xl shadow-slate-900/5 space-y-6">
           {error && (
             <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
@@ -239,8 +239,8 @@ function SignUpContent() {
                     onClick={() => setRole("BUYER")}
                     className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all cursor-pointer ${
                       role === "BUYER"
-                        ? "bg-[#0e623a] text-white border-[#0e623a] shadow-xs"
-                        : "bg-slate-50 border-slate-200 text-slate-700 hover:border-emerald-600"
+                        ? "bg-[#0f172a] text-white border-[#0f172a] shadow-xs"
+                        : "bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-800"
                     }`}
                   >
                     <User className="w-5 h-5" />
@@ -253,8 +253,8 @@ function SignUpContent() {
                     onClick={() => setRole("MERCHANT")}
                     className={`p-3 rounded-2xl border flex flex-col items-center text-center gap-1 transition-all cursor-pointer ${
                       role === "MERCHANT"
-                        ? "bg-[#0e623a] text-white border-[#0e623a] shadow-xs"
-                        : "bg-slate-50 border-slate-200 text-slate-700 hover:border-emerald-600"
+                        ? "bg-[#0f172a] text-white border-[#0f172a] shadow-xs"
+                        : "bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-800"
                     }`}
                   >
                     <Store className="w-5 h-5" />
@@ -276,7 +276,7 @@ function SignUpContent() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={role === "MERCHANT" ? "e.g. Dawit Bekele (Tech Hub)" : "e.g. Henok Tadesse"}
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   />
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
@@ -288,11 +288,11 @@ function SignUpContent() {
                   <label className="text-xs font-bold text-slate-800">
                     Ethiopian Mobile Number
                   </label>
-                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-[10px] font-semibold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                     Telebirr &amp; SMS
                   </span>
                 </div>
-                <div className="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-[#0e623a] focus-within:ring-2 focus-within:ring-[#0e623a]/20 overflow-hidden transition-all">
+                <div className="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-[#0f172a] focus-within:ring-2 focus-within:ring-[#0f172a]/20 overflow-hidden transition-all">
                   <div className="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-r border-slate-200 text-xs font-mono font-bold text-slate-700 shrink-0">
                     <span>🇪🇹</span>
                     <span>+251</span>
@@ -323,7 +323,7 @@ function SignUpContent() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   />
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
@@ -337,7 +337,7 @@ function SignUpContent() {
                     <select
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a] cursor-pointer"
+                      className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a] cursor-pointer"
                     >
                       <option value="Addis Ababa">Addis Ababa (አዲስ አበባ)</option>
                       <option value="Adama">Adama (አዳማ)</option>
@@ -361,7 +361,7 @@ function SignUpContent() {
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
                     placeholder="e.g. Bole Medhanialem"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   />
                 </div>
               </div>
@@ -376,7 +376,7 @@ function SignUpContent() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="At least 4 characters"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   />
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <button
@@ -394,7 +394,7 @@ function SignUpContent() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer mt-2 disabled:opacity-60"
+                className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0f172a] hover:bg-[#1e293b] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 transition-all cursor-pointer mt-2 disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <span>Connecting to Firebase...</span>
@@ -412,7 +412,7 @@ function SignUpContent() {
           ) : (
             /* STEP 2: OTP VERIFICATION */
             <form onSubmit={handleVerifyOtp} className="space-y-5 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-inner">
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 text-[#0f172a] mx-auto flex items-center justify-center shadow-inner">
                 <KeyRound className="w-8 h-8" />
               </div>
 
@@ -430,7 +430,7 @@ function SignUpContent() {
               {!useFirebaseSms && (
                 <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold">
                   <span>SMS simulation code: </span>
-                  <strong className="font-mono text-base font-black text-[#0e623a] ml-1">{generatedOtp}</strong>
+                  <strong className="font-mono text-base font-black text-[#0f172a] ml-1">{generatedOtp}</strong>
                   <span className="block text-[11px] text-amber-800/80 mt-0.5">
                     (or use test code <strong>123456</strong>)
                   </span>
@@ -446,7 +446,7 @@ function SignUpContent() {
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
                   placeholder="• • • • • •"
-                  className="w-56 mx-auto text-center font-mono text-2xl font-black tracking-widest py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-900 focus:bg-white focus:outline-none focus:border-[#0e623a]"
+                  className="w-56 mx-auto text-center font-mono text-2xl font-black tracking-widest py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f172a]"
                 />
               </div>
 
@@ -455,7 +455,7 @@ function SignUpContent() {
                 <button
                   type="button"
                   onClick={handleResendOtp}
-                  className="font-bold text-[#0e623a] hover:underline flex items-center gap-1 cursor-pointer"
+                  className="font-bold text-[#0f172a] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
                   <span>Resend Code</span>
@@ -473,7 +473,7 @@ function SignUpContent() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 min-h-[48px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer disabled:opacity-50"
+                  className="flex-1 min-h-[48px] py-3.5 rounded-full bg-[#0f172a] hover:bg-[#1e293b] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Verifying...</span>
@@ -491,7 +491,7 @@ function SignUpContent() {
           <div className="text-center pt-2 border-t border-slate-100">
             <p className="text-xs text-slate-600">
               Already have an account?{" "}
-              <Link href={loginLink} className="font-black text-[#0e623a] hover:underline">
+              <Link href={loginLink} className="font-black text-[#0f172a] hover:underline">
                 Sign In &rarr;
               </Link>
             </p>
@@ -500,7 +500,7 @@ function SignUpContent() {
 
         {/* Security Assurance */}
         <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-medium">
-          <ShieldCheck className="w-4 h-4 text-emerald-700" />
+          <ShieldCheck className="w-4 h-4 text-amber-500" />
           <span>Telebirr &amp; National Digital Escrow Protocol</span>
         </div>
       </div>
@@ -510,7 +510,7 @@ function SignUpContent() {
 
 export default function SignUpPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0e623a]">Loading Sefed Registration...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0f172a]">Loading Sefed Registration...</div>}>
       <SignUpContent />
     </Suspense>
   );

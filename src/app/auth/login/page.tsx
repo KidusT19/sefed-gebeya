@@ -196,14 +196,14 @@ function LoginContent() {
             </div>
           </div>
         ) : redirectUrl !== "/dashboard" && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
-            <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0" />
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-300 text-slate-900 text-xs font-semibold flex items-center gap-2.5 shadow-xs">
+            <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
             <span>Sign in required to access this feature and protect your personal information.</span>
           </div>
         )}
 
         {/* Main Login Card */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-6 sm:p-8 shadow-xl shadow-emerald-950/5 space-y-6">
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xl shadow-slate-900/5 space-y-6">
           {errorMessage && (
             <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold animate-in fade-in duration-200 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
@@ -221,11 +221,11 @@ function LoginContent() {
               }}
               className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 loginMethod === "phone"
-                  ? "bg-white text-[#0e623a] shadow-xs font-black"
+                  ? "bg-white text-[#0f172a] shadow-xs font-black"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <Smartphone className="w-4 h-4 text-emerald-700" />
+              <Smartphone className="w-4 h-4 text-slate-700" />
               <span>Phone Login</span>
             </button>
             <button
@@ -236,11 +236,11 @@ function LoginContent() {
               }}
               className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 loginMethod === "email"
-                  ? "bg-white text-[#0e623a] shadow-xs font-black"
+                  ? "bg-white text-[#0f172a] shadow-xs font-black"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <Mail className="w-4 h-4 text-emerald-700" />
+              <Mail className="w-4 h-4 text-slate-700" />
               <span>Email Login</span>
             </button>
           </div>
@@ -254,11 +254,11 @@ function LoginContent() {
                   <label className="text-xs font-bold text-slate-800">
                     Ethiopian Mobile Number
                   </label>
-                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-[10px] font-semibold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                     Ethio Telecom &amp; Safaricom
                   </span>
                 </div>
-                <div className="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-[#0e623a] focus-within:ring-2 focus-within:ring-[#0e623a]/20 overflow-hidden transition-all">
+                <div className="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-[#0f172a] focus-within:ring-2 focus-within:ring-[#0f172a]/20 overflow-hidden transition-all">
                   <div className="flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 border-r border-slate-200 text-xs font-mono font-bold text-slate-700 shrink-0">
                     <span>🇪🇹</span>
                     <span>+251</span>
@@ -293,7 +293,7 @@ function LoginContent() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
                     autoComplete="email"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   />
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
@@ -307,7 +307,7 @@ function LoginContent() {
                 <button
                   type="button"
                   onClick={handleForgotPassword}
-                  className="text-[11px] font-bold text-[#0e623a] hover:underline cursor-pointer"
+                  className="text-[11px] font-bold text-[#0f172a] hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -320,7 +320,7 @@ function LoginContent() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your account password"
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                 />
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <button
@@ -341,7 +341,7 @@ function LoginContent() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0e623a] border-slate-300 focus:ring-[#0e623a] cursor-pointer"
+                  className="w-4 h-4 rounded text-[#0f172a] border-slate-300 focus:ring-[#0f172a] cursor-pointer"
                 />
                 <span className="text-xs font-semibold text-slate-600">Remember this device</span>
               </label>
@@ -351,7 +351,7 @@ function LoginContent() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer disabled:opacity-50 mt-2"
+              className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0f172a] hover:bg-[#1e293b] active:scale-[0.99] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 transition-all cursor-pointer disabled:opacity-50 mt-2"
             >
               <span>{isSubmitting ? "Signing In..." : "Sign In to Sefed Market"}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -361,7 +361,7 @@ function LoginContent() {
           {/* Link to Register */}
           <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-600">
             <span>New to Sefed Market? </span>
-            <Link href={signupLink} className="font-black text-[#0e623a] hover:underline">
+            <Link href={signupLink} className="font-black text-[#0f172a] hover:underline">
               Create Free Account &rarr;
             </Link>
           </div>
@@ -370,7 +370,7 @@ function LoginContent() {
         {/* Security Assurance Footer */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-xs text-slate-600 font-medium text-center">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+            <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
             <span>Protected by 256-Bit SSL</span>
           </div>
           <span className="hidden sm:inline text-slate-300">&bull;</span>
@@ -383,7 +383,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0e623a]">Loading Sefed Login...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs font-bold text-[#0f172a]">Loading Sefed Login...</div>}>
       <LoginContent />
     </Suspense>
   );

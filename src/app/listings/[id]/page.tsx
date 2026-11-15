@@ -306,9 +306,9 @@ export default function ListingDetailPage() {
         <div className="flex items-center justify-between text-xs text-slate-500">
           <Link
             href="/listings"
-            className="inline-flex items-center gap-1 font-bold text-slate-700 hover:text-emerald-800 transition-colors"
+            className="inline-flex items-center gap-1 font-bold text-slate-700 hover:text-[#0f172a] transition-colors"
           >
-            <ChevronLeft className="w-4 h-4 text-emerald-700" />
+            <ChevronLeft className="w-4 h-4 text-slate-700" />
             <span>Back to All Listings</span>
           </Link>
 
@@ -378,7 +378,7 @@ export default function ListingDetailPage() {
                       onClick={() => setActiveImage(idx)}
                       className={`w-16 h-14 sm:w-20 sm:h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                         activeImage === idx
-                          ? "border-[#0e623a] scale-95 ring-2 ring-emerald-600/30"
+                          ? "border-[#0f172a] scale-95 ring-2 ring-slate-900/20"
                           : "border-transparent opacity-65 hover:opacity-100"
                       }`}
                     >
@@ -393,7 +393,7 @@ export default function ListingDetailPage() {
             <div className="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-5">
               <div>
                 <div className="flex items-center gap-2 text-xs text-slate-500 mb-1 flex-wrap">
-                  <span className="uppercase font-extrabold text-emerald-800 tracking-wider">
+                  <span className="uppercase font-extrabold text-amber-700 tracking-wider">
                     {listing.subcategory || listing.categorySlug}
                   </span>
                   <span>&bull;</span>
@@ -411,7 +411,7 @@ export default function ListingDetailPage() {
                 </h1>
 
                 <div className="flex items-center gap-3 mt-3 flex-wrap">
-                  <span className="text-2xl sm:text-3xl font-black text-[#0e623a]">
+                  <span className="text-2xl sm:text-3xl font-black text-[#0f172a]">
                     {listing.price.toLocaleString()} ETB
                   </span>
 
@@ -425,9 +425,9 @@ export default function ListingDetailPage() {
                   <button
                     type="button"
                     onClick={() => handleActionWithAuth("offer", () => setShowOfferModal(true))}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full transition-colors ml-auto cursor-pointer"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-full transition-colors ml-auto cursor-pointer"
                   >
-                    <BadgePercent className="w-3.5 h-3.5 text-emerald-700" />
+                    <BadgePercent className="w-3.5 h-3.5 text-amber-600" />
                     <span>Make Cash Offer</span>
                   </button>
                 </div>
@@ -461,15 +461,15 @@ export default function ListingDetailPage() {
 
               {/* SMART BARTER MATCHER */}
               {listing.allowBarter && (
-                <div className="bg-emerald-50/60 border-2 border-emerald-200 rounded-3xl p-4 sm:p-5 space-y-4">
+                <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-4 sm:p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-amber-500" />
-                      <h3 className="font-black text-sm text-emerald-950">
+                      <h3 className="font-black text-sm text-slate-900">
                         Smart Swap Calculator: See What You Can Trade
                       </h3>
                     </div>
-                    <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-black text-amber-950 bg-amber-100 px-2 py-0.5 rounded-full">
                       Instant Match
                     </span>
                   </div>
@@ -486,14 +486,14 @@ export default function ListingDetailPage() {
                           onClick={() => setSelectedMyDeviceId(d.id)}
                           className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
                             selectedMyDeviceId === d.id
-                              ? "bg-white border-emerald-600 shadow-xs ring-2 ring-emerald-600/30"
+                              ? "bg-white border-[#0f172a] shadow-xs ring-2 ring-slate-900/20"
                               : "bg-white/80 border-slate-200 hover:bg-white"
                           }`}
                         >
                           <img src={d.image} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
                           <div className="min-w-0">
                             <div className="font-bold text-xs text-slate-900 truncate">{d.title}</div>
-                            <div className="text-[11px] font-extrabold text-emerald-800">
+                            <div className="text-[11px] font-extrabold text-[#0f172a]">
                               Value: {d.value.toLocaleString()} ETB
                             </div>
                           </div>
@@ -503,10 +503,10 @@ export default function ListingDetailPage() {
                   </div>
 
                   {/* Calculation Result */}
-                  <div className="bg-white p-3.5 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div className="bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
                     <div>
                       <span className="text-slate-500 font-medium">Calculated Fair Top-Up:</span>
-                      <div className="text-base font-black text-[#0b4d2e] mt-0.5">
+                      <div className="text-base font-black text-[#0f172a] mt-0.5">
                         {tradeCashDiff > 0
                           ? `You add +${tradeCashDiff.toLocaleString()} ETB cash`
                           : tradeCashDiff < 0
@@ -518,7 +518,7 @@ export default function ListingDetailPage() {
                     <button
                       type="button"
                       onClick={() => handleActionWithAuth("trade", () => router.push(`/trades/new?target=${listing.id}`))}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center cursor-pointer"
                     >
                       <span>Propose This Trade</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -531,7 +531,7 @@ export default function ListingDetailPage() {
               <div className="space-y-2 pt-2">
                 <h3 className="font-extrabold text-sm text-slate-900">Location</h3>
                 <div className="flex items-start gap-2.5 text-xs bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                  <MapPin className="w-4 h-4 text-emerald-700 mt-0.5 shrink-0" />
+                  <MapPin className="w-4 h-4 text-[#0f172a] mt-0.5 shrink-0" />
                   <div>
                     <div className="font-black text-slate-900">
                       {listing.kebele} Kebele, {listing.city}
@@ -574,7 +574,7 @@ export default function ListingDetailPage() {
                         <span className="font-bold text-xs text-slate-900">{rev.author}</span>
                         <span className="text-[10px] text-slate-400">({rev.city})</span>
                         {rev.verifiedBuyer && (
-                          <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded-full">
+                          <span className="text-[9px] font-bold text-amber-950 bg-amber-100 px-1.5 py-0.2 rounded-full">
                             ✓ Verified Buyer
                           </span>
                         )}
@@ -612,7 +612,7 @@ export default function ListingDetailPage() {
                 <img
                   src={listing.seller.avatar}
                   alt={listing.seller.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-emerald-600"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#0f172a]"
                 />
                 <div>
                   <div className="flex items-center gap-1.5">
@@ -620,7 +620,7 @@ export default function ListingDetailPage() {
                       {listing.seller.name}
                     </span>
                     {listing.seller.isVerified && (
-                      <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-100" />
+                      <CheckCircle className="w-4 h-4 text-amber-500 fill-amber-100" />
                     )}
                   </div>
                   <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5 font-medium">
@@ -639,7 +639,7 @@ export default function ListingDetailPage() {
                 {showPhone && isLoggedIn ? (
                   <a
                     href={`tel:${listing.seller.phone}`}
-                    className="w-full py-3 px-4 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-sm flex items-center justify-center gap-2 transition-colors shadow-xs"
+                    className="w-full py-3 px-4 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-black text-sm flex items-center justify-center gap-2 transition-colors shadow-xs"
                   >
                     <Phone className="w-4 h-4" />
                     Call: {listing.seller.phone}
@@ -680,7 +680,7 @@ export default function ListingDetailPage() {
                   }
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200 cursor-pointer"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 text-emerald-700" />
+                  <MessageCircle className="w-3.5 h-3.5 text-slate-700" />
                   In-App Chat / Message
                 </button>
               </div>
@@ -698,17 +698,17 @@ export default function ListingDetailPage() {
                     router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
                   })
                 }
-                className="w-full text-left block p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 hover:bg-emerald-100/60 transition-all group cursor-pointer"
+                className="w-full text-left block p-3.5 rounded-2xl border-2 border-[#0f172a] bg-slate-50 hover:bg-slate-100 transition-all group cursor-pointer"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-black text-xs text-emerald-950 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-700" /> 1. Buy with Telebirr / CBE Escrow
+                  <span className="font-black text-xs text-slate-950 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-amber-500" /> 1. Buy with Telebirr / CBE Escrow
                   </span>
-                  <span className="text-[11px] font-black text-emerald-800 group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-[11px] font-black text-slate-950 group-hover:translate-x-0.5 transition-transform">
                     &rarr;
                   </span>
                 </div>
-                <p className="text-[11px] text-emerald-800 mt-1 font-medium leading-relaxed">
+                <p className="text-[11px] text-slate-600 mt-1 font-medium leading-relaxed">
                   Funds are safely held in escrow until you inspect the item and provide your release OTP.
                 </p>
               </button>
@@ -744,7 +744,7 @@ export default function ListingDetailPage() {
                   <span className="font-bold text-xs text-slate-800 flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-slate-600" /> 3. Direct In-Person Handover
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-amber-950 bg-amber-100 px-2 py-0.5 rounded-full">
                     Recommended
                   </span>
                 </div>
@@ -773,7 +773,7 @@ export default function ListingDetailPage() {
           <div className="space-y-4 pt-6 border-t border-slate-200">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-black text-slate-900">Similar Verified Items</h2>
-              <Link href="/listings" className="text-xs font-bold text-emerald-700 hover:underline">
+              <Link href="/listings" className="text-xs font-bold text-[#0f172a] hover:underline">
                 View All Catalog &rarr;
               </Link>
             </div>
@@ -783,16 +783,16 @@ export default function ListingDetailPage() {
                 <Link
                   key={sim.id}
                   href={`/listings/${sim.id}`}
-                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden p-3 hover:border-emerald-500 transition-all group shadow-2xs"
+                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden p-3 hover:border-amber-400 transition-all group shadow-2xs"
                 >
                   <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 mb-2">
                     <img src={sim.images[0]} alt={sim.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-800 uppercase">{sim.subcategory || sim.categorySlug}</span>
-                  <h4 className="font-bold text-xs text-slate-900 line-clamp-1 group-hover:text-emerald-700 transition-colors">{sim.title}</h4>
-                  <div className="font-black text-sm text-[#0e623a] mt-1">{sim.price.toLocaleString()} ETB</div>
+                  <span className="text-[10px] font-bold text-amber-800 uppercase">{sim.subcategory || sim.categorySlug}</span>
+                  <h4 className="font-bold text-xs text-slate-900 line-clamp-1 group-hover:text-[#0f172a] transition-colors">{sim.title}</h4>
+                  <div className="font-black text-sm text-[#0f172a] mt-1">{sim.price.toLocaleString()} ETB</div>
                   <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-emerald-700" /> {sim.city}
+                    <MapPin className="w-3 h-3 text-slate-600" /> {sim.city}
                   </div>
                 </Link>
               ))}
@@ -813,7 +813,7 @@ export default function ListingDetailPage() {
           className="p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:bg-slate-200 cursor-pointer"
           title="Call Seller"
         >
-          <Phone className="w-4 h-4 text-emerald-700" />
+          <Phone className="w-4 h-4 text-slate-800" />
         </button>
 
         {listing.allowBarter ? (
@@ -838,9 +838,9 @@ export default function ListingDetailPage() {
               router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
             })
           }
-          className="flex-2 py-2.5 px-4 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+          className="flex-2 py-2.5 px-4 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
         >
-          <ShieldCheck className="w-4 h-4" />
+          <ShieldCheck className="w-4 h-4 text-amber-400" />
           <span>Buy with Escrow ({listing.price.toLocaleString()} ETB)</span>
         </button>
       </div>
@@ -851,7 +851,7 @@ export default function ListingDetailPage() {
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <BadgePercent className="w-5 h-5 text-emerald-700" />
+                <BadgePercent className="w-5 h-5 text-amber-600" />
                 <h3 className="font-black text-base text-slate-900">Make Cash Offer</h3>
               </div>
               <button
@@ -865,7 +865,7 @@ export default function ListingDetailPage() {
 
             {offerSent ? (
               <div className="py-6 text-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
                   <Check className="w-6 h-6" />
                 </div>
                 <h4 className="font-black text-base text-slate-900">Offer Sent to Seller!</h4>
@@ -895,7 +895,7 @@ export default function ListingDetailPage() {
                     value={offerPrice}
                     onChange={(e) => setOfferPrice(Number(e.target.value))}
                     min={100}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-black text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                     required
                   />
                   <span className="text-[10px] text-slate-400 block">
@@ -909,7 +909,7 @@ export default function ListingDetailPage() {
                     rows={2}
                     value={offerMessage}
                     onChange={(e) => setOfferMessage(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   ></textarea>
                 </div>
 
@@ -923,7 +923,7 @@ export default function ListingDetailPage() {
                   </button>
                   <button
                     type="submit"
-                    className="w-1/2 py-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs transition-colors shadow-xs"
+                    className="w-1/2 py-2.5 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold text-xs transition-colors shadow-xs"
                   >
                     Send Offer
                   </button>
@@ -954,7 +954,7 @@ export default function ListingDetailPage() {
 
             {reviewSent ? (
               <div className="py-6 text-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
                   <Check className="w-6 h-6" />
                 </div>
                 <h4 className="font-black text-base text-slate-900">Review Published!</h4>
@@ -991,7 +991,7 @@ export default function ListingDetailPage() {
                     type="text"
                     value={reviewKebele}
                     onChange={(e) => setReviewKebele(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                     placeholder="e.g. Addis Ababa or Adama"
                   />
                 </div>
@@ -1004,7 +1004,7 @@ export default function ListingDetailPage() {
                     placeholder="Describe the handover, item condition, or seller communication..."
                     value={reviewComment}
                     onChange={(e) => setReviewComment(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                   ></textarea>
                 </div>
 
@@ -1018,7 +1018,7 @@ export default function ListingDetailPage() {
                   </button>
                   <button
                     type="submit"
-                    className="w-1/2 py-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs transition-colors shadow-xs"
+                    className="w-1/2 py-2.5 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold text-xs transition-colors shadow-xs"
                   >
                     Post Review
                   </button>
@@ -1032,7 +1032,7 @@ export default function ListingDetailPage() {
       {/* SIGN IN REQUIRED MODAL (Triggered when unauthenticated guest tries to buy or contact seller) */}
       {authPrompt.isOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-4 border border-emerald-900/10 animate-in zoom-in-95 duration-150">
+          <div className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-4 border border-slate-200 animate-in zoom-in-95 duration-150">
             {/* Close cross */}
             <button
               type="button"
@@ -1044,19 +1044,19 @@ export default function ListingDetailPage() {
             </button>
 
             {/* Free Watching Reassurance Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-bold">
               <span>👁️ Public Browsing is 100% Free</span>
             </div>
 
             {/* Action Header */}
             <div className="space-y-1.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-[#0e623a] flex items-center justify-center shrink-0">
-                  {authPrompt.icon === "call" && <Phone className="w-5 h-5 text-[#0e623a]" />}
-                  {authPrompt.icon === "chat" && <MessageCircle className="w-5 h-5 text-[#0e623a]" />}
-                  {authPrompt.icon === "buy" && <ShieldCheck className="w-5 h-5 text-[#0e623a]" />}
-                  {authPrompt.icon === "offer" && <BadgePercent className="w-5 h-5 text-[#0e623a]" />}
-                  {authPrompt.icon === "trade" && <Repeat className="w-5 h-5 text-[#0e623a]" />}
+                <div className="w-11 h-11 rounded-2xl bg-slate-100 text-[#0f172a] flex items-center justify-center shrink-0">
+                  {authPrompt.icon === "call" && <Phone className="w-5 h-5 text-[#0f172a]" />}
+                  {authPrompt.icon === "chat" && <MessageCircle className="w-5 h-5 text-[#0f172a]" />}
+                  {authPrompt.icon === "buy" && <ShieldCheck className="w-5 h-5 text-amber-500" />}
+                  {authPrompt.icon === "offer" && <BadgePercent className="w-5 h-5 text-amber-600" />}
+                  {authPrompt.icon === "trade" && <Repeat className="w-5 h-5 text-amber-600" />}
                   {authPrompt.icon === "review" && <Star className="w-5 h-5 text-amber-500 fill-amber-400" />}
                 </div>
                 <div>
@@ -1077,7 +1077,7 @@ export default function ListingDetailPage() {
             {/* Protection Benefits */}
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-700 space-y-1.5">
               <div className="font-bold text-slate-900 flex items-center gap-1.5 text-[11px]">
-                <CheckCircle className="w-3.5 h-3.5 text-[#0e623a]" />
+                <CheckCircle className="w-3.5 h-3.5 text-amber-500" />
                 <span>Why sign in is required for this action:</span>
               </div>
               <ul className="text-[11px] space-y-1 text-slate-600 pl-4 list-disc font-medium">
@@ -1091,7 +1091,7 @@ export default function ListingDetailPage() {
             <div className="space-y-2 pt-1">
               <Link
                 href={`/auth/login?redirect=${encodeURIComponent(authPrompt.redirectUrl)}`}
-                className="w-full min-h-[46px] py-3 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-900/15 transition-all text-center"
+                className="w-full min-h-[46px] py-3 rounded-full bg-[#0f172a] hover:bg-[#1e293b] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all text-center"
               >
                 <span>Sign In to Continue</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />

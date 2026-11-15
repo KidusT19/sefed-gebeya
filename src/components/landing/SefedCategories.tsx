@@ -84,14 +84,14 @@ export default function SefedCategories() {
   return (
     <section className="py-5 sm:py-7 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Section Header with Decorative Green Accent Lines */}
+        {/* Section Header with Decorative Saffron Gold Accent Lines */}
         <div className="text-center max-w-xl mx-auto mb-4 sm:mb-6">
           <div className="flex items-center justify-center gap-3">
-            <div className="h-0.5 w-10 sm:w-16 bg-emerald-600/30 rounded-full" />
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0b4d2e] tracking-tight">
+            <div className="h-0.5 w-10 sm:w-16 bg-amber-500/40 rounded-full" />
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0f172a] tracking-tight">
               Shop by Category
             </h2>
-            <div className="h-0.5 w-10 sm:w-16 bg-emerald-600/30 rounded-full" />
+            <div className="h-0.5 w-10 sm:w-16 bg-amber-500/40 rounded-full" />
           </div>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
             Browse authentic products from verified sellers across Ethiopia
@@ -121,8 +121,8 @@ export default function SefedCategories() {
 
               {/* Category Footer Label with Chevron */}
               <div className="text-center pt-1">
-                <span className="inline-flex items-center gap-1 font-bold text-xs sm:text-sm text-slate-800 group-hover:text-emerald-800 transition-colors">
-                  <span className="text-emerald-700 font-black">&gt;</span>
+                <span className="inline-flex items-center gap-1 font-bold text-xs sm:text-sm text-slate-800 group-hover:text-[#0f172a] transition-colors">
+                  <span className="text-amber-500 font-black">&gt;</span>
                   <span>{cat.name}</span>
                 </span>
                 <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
@@ -132,25 +132,25 @@ export default function SefedCategories() {
             </Link>
           ))}
 
-          {/* 6th Card: "More Categories" with Green Grid Icon */}
+          {/* 6th Card: "More Categories" with Midnight Navy Grid Icon */}
           <Link
             href="/listings"
-            className="group flex flex-col justify-between p-3.5 rounded-2xl bg-[#eef7f2] hover:bg-[#e0f1e7] border border-[#cbe6d4] shadow-xs hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+            className="group flex flex-col justify-between p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 border border-slate-300 shadow-xs hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
           >
-            {/* Green 4-dot Grid Icon */}
+            {/* Midnight Navy & Gold Grid Icon */}
             <div className="relative w-full aspect-square rounded-xl bg-white/70 flex items-center justify-center p-2 mb-3">
-              <div className="w-16 h-16 rounded-2xl bg-[#0e623a] text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 rounded-2xl bg-[#0f172a] text-amber-400 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
                 <Grid className="w-8 h-8 stroke-[2.2]" />
               </div>
             </div>
 
             {/* Category Footer Label with Chevron */}
             <div className="text-center pt-1">
-              <span className="inline-flex items-center gap-1 font-black text-xs sm:text-sm text-emerald-900 group-hover:text-[#0b4d2e] transition-colors">
-                <span className="text-emerald-700 font-black">&gt;</span>
+              <span className="inline-flex items-center gap-1 font-black text-xs sm:text-sm text-slate-900 group-hover:text-[#0f172a] transition-colors">
+                <span className="text-amber-500 font-black">&gt;</span>
                 <span>More Categories</span>
               </span>
-              <span className="block text-[10px] text-emerald-700 mt-0.5 font-bold">
+              <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
                 15+ Subcategories
               </span>
             </div>

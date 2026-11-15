@@ -114,7 +114,7 @@ export default function HomePage() {
       <SefedWatermarkBackground />
 
       {/* 1. Compact Ethiopian Sefed Marketplace Welcome & Quick Action Bar */}
-      <div className="bg-gradient-to-r from-[#0b4d2e] via-[#0e623a] to-[#15803d] text-white py-2.5 sm:py-3.5 px-3 sm:px-6 shadow-xs border-b border-emerald-700/50 relative z-10">
+      <div className="bg-gradient-to-r from-[#0b1329] via-[#0f172a] to-[#1e293b] text-white py-2.5 sm:py-3.5 px-3 sm:px-6 shadow-xs border-b border-slate-800 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-xs">
@@ -123,11 +123,11 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs sm:text-sm font-black tracking-tight">ሰፌድ ገበያ (Sefed Market)</span>
-                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-emerald-100">
+                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-amber-300">
                   Shop Smart · Live Better
                 </span>
               </div>
-              <p className="text-[10px] sm:text-xs text-emerald-100/90 font-medium">
+              <p className="text-[10px] sm:text-xs text-slate-300 font-medium">
                 Public Browsing 100% Free · Watch &amp; Explore All Posts Across Ethiopia · Telebirr &amp; CBE Escrow
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <Link
               href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
-              className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-[11px] sm:text-xs shadow-xs flex items-center gap-1 transition-all"
+              className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] sm:text-xs shadow-xs flex items-center gap-1 transition-all"
             >
               <Plus className="w-3.5 h-3.5 stroke-[3]" />
               <span>+ Post Free Ad</span>
@@ -156,8 +156,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-slate-200 pb-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] sm:text-[11px] font-bold mb-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 text-[10px] sm:text-[11px] font-bold mb-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600 fill-amber-400" />
                 <span>Verified Marketplace Feed · Public &amp; Free to Watch</span>
               </div>
               <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
@@ -175,7 +175,7 @@ export default function HomePage() {
                 onClick={() => setActiveFeedTab("all")}
                 className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   activeFeedTab === "all"
-                    ? "bg-[#0e623a] text-white shadow-xs"
+                    ? "bg-[#0f172a] text-white shadow-xs font-extrabold"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -186,7 +186,7 @@ export default function HomePage() {
                 onClick={() => setActiveFeedTab("electronics")}
                 className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   activeFeedTab === "electronics"
-                    ? "bg-[#0e623a] text-white shadow-xs"
+                    ? "bg-[#0f172a] text-white shadow-xs font-extrabold"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -197,7 +197,7 @@ export default function HomePage() {
                 onClick={() => setActiveFeedTab("fashion")}
                 className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   activeFeedTab === "fashion"
-                    ? "bg-[#0e623a] text-white shadow-xs"
+                    ? "bg-[#0f172a] text-white shadow-xs font-extrabold"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -208,7 +208,7 @@ export default function HomePage() {
                 onClick={() => setActiveFeedTab("swap")}
                 className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1 cursor-pointer ${
                   activeFeedTab === "swap"
-                    ? "bg-amber-600 text-white shadow-xs"
+                    ? "bg-amber-500 text-slate-950 font-black shadow-xs"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -220,7 +220,7 @@ export default function HomePage() {
                 onClick={() => setActiveFeedTab("budget")}
                 className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                   activeFeedTab === "budget"
-                    ? "bg-slate-900 text-white shadow-xs"
+                    ? "bg-slate-900 text-white shadow-xs font-extrabold"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -237,7 +237,7 @@ export default function HomePage() {
               return (
                 <div
                   key={item.id}
-                  className="group bg-white rounded-2xl border border-slate-200 hover:border-emerald-500 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                  className="group bg-white rounded-2xl border border-slate-200 hover:border-amber-400 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden"
                 >
                   <div>
                     {/* Product Image Frame */}
@@ -252,7 +252,7 @@ export default function HomePage() {
 
                       {/* City Badge */}
                       <div className="absolute top-2 left-2 flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-slate-900 bg-white/95 backdrop-blur-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-xs border border-slate-200">
-                        <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-700" />
+                        <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#0f172a]" />
                         <span className="truncate max-w-[80px] sm:max-w-none">{item.city}</span>
                       </div>
 
@@ -270,7 +270,7 @@ export default function HomePage() {
 
                       {/* Swap Badge if Barter is Allowed */}
                       {item.allowBarter && (
-                        <div className="absolute bottom-2 left-2 flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-amber-900 bg-amber-400/95 px-2 py-0.5 rounded-full shadow-xs">
+                        <div className="absolute bottom-2 left-2 flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-amber-950 bg-amber-400/95 px-2 py-0.5 rounded-full shadow-xs">
                           <Repeat className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.5]" />
                           <span>Swap</span>
                         </div>
@@ -288,14 +288,14 @@ export default function HomePage() {
                       </div>
 
                       <Link href={`/listings/${item.id}`} className="block">
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-snug">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#0f172a] transition-colors line-clamp-2 leading-snug">
                           {item.title}
                         </h3>
                       </Link>
 
                       {/* Price in ETB */}
                       <div className="pt-0.5">
-                        <span className="text-sm sm:text-lg font-black text-[#0e623a]">
+                        <span className="text-sm sm:text-lg font-black text-[#0f172a]">
                           {item.price.toLocaleString()} ETB
                         </span>
                       </div>
@@ -304,7 +304,7 @@ export default function HomePage() {
                       <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100 text-[10px] sm:text-[11px] text-slate-500">
                         <span className="font-semibold text-slate-700 truncate">{item.seller?.name || "Direct Seller"}</span>
                         <span>•</span>
-                        <span className="text-emerald-700 font-bold shrink-0">Verified</span>
+                        <span className="text-amber-600 font-bold shrink-0">Verified</span>
                       </div>
                     </div>
                   </div>
@@ -323,7 +323,7 @@ export default function HomePage() {
                         </Link>
                         <Link
                           href={`/listings/${item.id}`}
-                          className="flex-1 py-1.5 sm:py-2 px-2 sm:px-2.5 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-[10px] sm:text-xs text-center flex items-center justify-center gap-1 transition-colors shadow-xs"
+                          className="flex-1 py-1.5 sm:py-2 px-2 sm:px-2.5 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-[10px] sm:text-xs text-center flex items-center justify-center gap-1 transition-colors shadow-xs"
                         >
                           <Eye className="w-3 h-3" />
                           <span>Watch Post</span>
@@ -332,7 +332,7 @@ export default function HomePage() {
                     ) : (
                       <Link
                         href={`/listings/${item.id}`}
-                        className="w-full py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-[10px] sm:text-xs text-center flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                        className="w-full py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-[10px] sm:text-xs text-center flex items-center justify-center gap-1.5 transition-colors shadow-xs"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>Watch Post &amp; Details</span>
@@ -369,7 +369,7 @@ export default function HomePage() {
       {/* 5. Smart Device Swap & Equalizer Feature Card */}
       <section className="py-12 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-gradient-to-br from-amber-50 via-white to-emerald-50 rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-lg">
+          <div className="bg-gradient-to-br from-slate-50 via-white to-amber-50/40 rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-lg">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-6 space-y-4">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-black">
@@ -386,15 +386,15 @@ export default function HomePage() {
 
                 <div className="pt-2 flex flex-wrap gap-4 text-xs font-bold text-slate-700">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Hardware Verified</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Automatic Fair Top-Up</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Bank Branch Meetups</span>
                   </div>
                 </div>
@@ -402,7 +402,7 @@ export default function HomePage() {
                 <div className="pt-3">
                   <Link
                     href="/swaps"
-                    className="inline-flex items-center gap-2 bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-extrabold text-sm px-6 py-3 rounded-full shadow-md transition-all"
+                    className="inline-flex items-center gap-2 bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-sm px-6 py-3 rounded-full shadow-md transition-all"
                   >
                     <span>Try Device Barter Now</span>
                     <ArrowRight className="w-4 h-4" />
@@ -414,7 +414,7 @@ export default function HomePage() {
               <div className="lg:col-span-6 bg-white rounded-2xl p-6 border border-slate-200 shadow-xl space-y-4">
                 <h3 className="font-black text-sm text-slate-900 flex items-center justify-between">
                   <span>Quick Barter Simulator</span>
-                  <span className="text-xs text-emerald-700 font-bold">Live Calculator</span>
+                  <span className="text-xs text-amber-700 font-bold">Live Calculator</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -424,7 +424,7 @@ export default function HomePage() {
                     <select
                       value={simMyDevice}
                       onChange={(e) => setSimMyDevice(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                     >
                       <option value="samsung-s21">Samsung Galaxy S21 (36,000 ETB)</option>
                       <option value="redmi-note">Redmi Note 12 Pro (24,500 ETB)</option>
@@ -432,7 +432,7 @@ export default function HomePage() {
                       <option value="dell-xps">Dell XPS 13 (68,000 ETB)</option>
                     </select>
                     <div className="text-[11px] font-bold text-slate-600 pt-1">
-                      Estimated: <span className="text-emerald-700">{myDeviceObj.value.toLocaleString()} ETB</span>
+                      Estimated: <span className="text-[#0f172a] font-black">{myDeviceObj.value.toLocaleString()} ETB</span>
                     </div>
                   </div>
 
@@ -442,7 +442,7 @@ export default function HomePage() {
                     <select
                       value={simTargetDevice}
                       onChange={(e) => setSimTargetDevice(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
                     >
                       <option value="iphone-13">iPhone 13 Pro (55,000 ETB)</option>
                       <option value="dell-xps">Dell XPS 13 (68,000 ETB)</option>
@@ -450,17 +450,17 @@ export default function HomePage() {
                       <option value="samsung-s21">Samsung Galaxy S21 (36,000 ETB)</option>
                     </select>
                     <div className="text-[11px] font-bold text-slate-600 pt-1">
-                      Estimated: <span className="text-emerald-700">{targetDeviceObj.value.toLocaleString()} ETB</span>
+                      Estimated: <span className="text-[#0f172a] font-black">{targetDeviceObj.value.toLocaleString()} ETB</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Calculation Equalizer Result */}
-                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center space-y-1">
-                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
+                <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 text-center space-y-1">
+                  <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">
                     Calculated Fair Cash Top-Up
                   </span>
-                  <div className="text-2xl font-black text-[#0b4d2e]">
+                  <div className="text-2xl font-black text-[#0f172a]">
                     {barterDifference > 0
                       ? `+ ${barterDifference.toLocaleString()} ETB Cash Needed`
                       : barterDifference < 0
@@ -487,7 +487,7 @@ export default function HomePage() {
       {/* 7. Bottom Promotional & Seller Onboarding Banner */}
       <section className="pt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-[#0b3d26] rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl">
+          <div className="bg-gradient-to-br from-[#0b1329] via-[#0f172a] to-[#1e293b] rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl">
             <div className="relative z-10 max-w-2xl space-y-4">
               <span className="text-amber-400 text-xs font-black uppercase tracking-wider block">
                 Sefed Market — Shop Smart · Live Better
@@ -495,14 +495,14 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white leading-tight">
                 Start Selling or Shopping on Ethiopia&apos;s National Marketplace Today
               </h2>
-              <p className="text-sm text-emerald-100/80 leading-relaxed">
+              <p className="text-sm text-slate-300 leading-relaxed">
                 Join thousands of verified shoppers and merchants in Addis Ababa, Adama, Hawassa, and beyond. 
                 List your products for free or enjoy safe shopping with Telebirr escrow protection.
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   href="/auth/signup"
-                  className="px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-[#0b3d26] font-black text-xs sm:text-sm shadow-md transition-all"
+                  className="px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all"
                 >
                   Create Free Account
                 </Link>

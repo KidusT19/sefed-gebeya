@@ -25,7 +25,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
   return (
     <>
       <section className="relative overflow-hidden bg-transparent">
-        {/* Decorative Fluid Ambient Waves (Ethiopian Green & Sunshine Gold) */}
+        {/* Decorative Fluid Ambient Waves (Royal Midnight Navy & Saffron Gold) */}
         <div className="absolute top-0 right-0 w-full sm:w-[55%] h-[50%] sm:h-[85%] pointer-events-none -z-0 opacity-80 sm:opacity-90">
           <svg
             viewBox="0 0 700 500"
@@ -33,21 +33,21 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             xmlns="http://www.w3.org/2000/svg"
             className="w-full h-full object-cover"
           >
-            {/* Soft background city / landmark silhouette blur */}
-            <circle cx="500" cy="180" r="160" fill="#f0fdf4" />
+            {/* Soft background blur */}
+            <circle cx="500" cy="180" r="160" fill="#f8fafc" />
             <circle cx="580" cy="260" r="140" fill="#fefce8" />
 
-            {/* Golden Sunshine Yellow Curve */}
+            {/* Saffron Gold Curve */}
             <path
               d="M320 0 C450 120 540 240 700 280 L700 0 Z"
               fill="url(#goldHeroGrad)"
               opacity="0.9"
             />
 
-            {/* Vibrant Forest Green Curve */}
+            {/* Royal Midnight Navy Curve */}
             <path
               d="M420 0 C510 130 580 280 700 360 L700 0 Z"
-              fill="url(#greenHeroGrad)"
+              fill="url(#navyHeroGrad)"
             />
 
             <defs>
@@ -55,9 +55,9 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 <stop stopColor="#fbbf24" />
                 <stop offset="1" stopColor="#f59e0b" />
               </linearGradient>
-              <linearGradient id="greenHeroGrad" x1="400" y1="0" x2="700" y2="400" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#15803d" />
-                <stop offset="1" stopColor="#0a4d2c" />
+              <linearGradient id="navyHeroGrad" x1="400" y1="0" x2="700" y2="400" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#1e293b" />
+                <stop offset="1" stopColor="#0f172a" />
               </linearGradient>
             </defs>
           </svg>
@@ -73,8 +73,8 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             />
             <path
               d="M-20 230 C90 220 170 260 220 300 L-20 300 Z"
-              fill="#15803d"
-              opacity="0.25"
+              fill="#0f172a"
+              opacity="0.15"
             />
           </svg>
         </div>
@@ -85,7 +85,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             {/* Left Column: Headlines & Call to Action */}
             <div className="lg:col-span-7 space-y-3 sm:space-y-5 text-left">
               {/* "Welcome to" Intro */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] sm:text-xs font-bold text-emerald-800">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-bold text-slate-800">
                 <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 fill-amber-500" />
                 <span>Welcome to Ethiopia&apos;s Trusted Marketplace</span>
               </div>
@@ -93,7 +93,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
               {/* Main Brand Titles (Amharic + English) */}
               <div className="space-y-0.5 sm:space-y-1">
                 <div className="relative inline-block">
-                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0b4d2e] tracking-tight leading-tight">
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0f172a] tracking-tight leading-tight">
                     ሰፌድ ገበያ
                   </h1>
                   {/* Decorative Ethiopian Sunburst Accents */}
@@ -105,8 +105,8 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </div>
 
                 <div className="block">
-                  <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0e623a] tracking-tight">
-                    Sefed Market
+                  <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#1e293b] tracking-tight">
+                    Sefed <span className="text-[#f59e0b]">Market</span>
                   </span>
                 </div>
               </div>
@@ -129,7 +129,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   <button
                     type="button"
                     onClick={onShopNowClick}
-                    className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    className="inline-flex items-center gap-2 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Shop Now</span>
@@ -138,7 +138,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 ) : (
                   <Link
                     href="/listings"
-                    className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-extrabold text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-orange-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                    className="inline-flex items-center gap-2 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-base px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                   >
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Shop Now</span>
@@ -150,19 +150,19 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(true)}
-                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-full border border-slate-200 sm:border-2 hover:border-emerald-600 shadow-xs transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-full border border-slate-300 hover:border-slate-800 shadow-xs transition-all cursor-pointer"
                 >
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f172a] text-white flex items-center justify-center">
                     <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white ml-0.5" />
                   </div>
                   <span>How Escrow Works</span>
                 </button>
               </div>
 
-              {/* Quick Trust Badges - Hidden on mobile because the 4-pillar trust bar is right below */}
+              {/* Quick Trust Badges */}
               <div className="hidden sm:flex pt-1.5 sm:pt-3 flex-wrap items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-500">
-                <div className="flex items-center gap-1.5 text-emerald-800">
-                  <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+                <div className="flex items-center gap-1.5 text-slate-800 font-bold">
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
                   <span>Escrow Protected (Telebirr / CBE)</span>
                 </div>
                 <span className="text-slate-300">•</span>
@@ -178,13 +178,12 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
               <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-none">
 
                 {/* Shopper Hero Frame */}
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-white bg-gradient-to-b from-emerald-50/50 to-white">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-white bg-gradient-to-b from-slate-100 to-white">
                   <img
                     src="/images/mockup_assets/hero_shopper.jpg"
                     alt="Ethiopian Shopper enjoying Sefed Market"
                     className="w-full h-auto object-cover object-center max-h-[180px] sm:max-h-[300px] lg:max-h-[360px] transform hover:scale-[1.02] transition-transform duration-500"
                     onError={(e) => {
-                      // Fallback to high-res shopper portrait if local crop is unavailable
                       (e.target as HTMLImageElement).src =
                         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80";
                     }}
@@ -196,7 +195,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
 
                 {/* Floating Verified Quality Badge */}
                 <div className="absolute -bottom-3 -left-2 sm:-bottom-5 sm:-left-5 bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-slate-100 p-2 sm:p-3 flex items-center gap-2 sm:gap-3 z-20">
-                  <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs sm:text-base">
+                  <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-slate-100 text-[#0f172a] flex items-center justify-center font-black text-xs sm:text-base">
                     ✓
                   </div>
                   <div className="text-left leading-tight pr-1 sm:pr-2">
@@ -227,8 +226,8 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
             </button>
 
             <div className="text-center space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center">
-                <Play className="w-7 h-7 fill-emerald-800 ml-1" />
+              <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 mx-auto flex items-center justify-center">
+                <Play className="w-7 h-7 fill-amber-700 text-amber-700 ml-1" />
               </div>
 
               <div>
@@ -241,7 +240,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
               {/* 3 Step Interactive Visual Cards */}
               <div className="space-y-3 text-left pt-2">
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-700 text-white font-black text-xs flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#0f172a] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
                     1
                   </div>
                   <div>
@@ -253,7 +252,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-xs flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#f59e0b] text-slate-950 font-black text-xs flex items-center justify-center flex-shrink-0">
                     2
                   </div>
                   <div>
@@ -265,7 +264,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#0e623a] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#1e293b] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
                     3
                   </div>
                   <div>
@@ -281,7 +280,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(false)}
-                  className="w-full py-3 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-xs transition-colors"
+                  className="w-full py-3 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-black text-xs transition-colors"
                 >
                   Start Exploring Sefed Market
                 </button>

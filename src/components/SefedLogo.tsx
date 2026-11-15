@@ -42,9 +42,9 @@ export default function SefedLogo({
         aria-hidden="true"
       >
         <defs>
-          <linearGradient id="cartGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#15803d" />
-            <stop offset="100%" stopColor="#0e623a" />
+          <linearGradient id="cartNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1e293b" />
+            <stop offset="100%" stopColor="#0f172a" />
           </linearGradient>
           <linearGradient id="goldSpeed" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.3" />
@@ -60,7 +60,7 @@ export default function SefedLogo({
         {/* Shopping Cart Basket Body */}
         <path
           d="M24 16 H68 L60 40 H31 L27 12 H21"
-          stroke="url(#cartGreen)"
+          stroke="url(#cartNavy)"
           strokeWidth="4"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -71,13 +71,13 @@ export default function SefedLogo({
         <path
           d="M36 38 L45 22 L54 38 Z"
           fill="#fef3c7"
-          stroke="#0e623a"
+          stroke="#0f172a"
           strokeWidth="2"
           strokeLinejoin="round"
         />
         <path
           d="M45 16 V22"
-          stroke="#0e623a"
+          stroke="#f59e0b"
           strokeWidth="2.5"
           strokeLinecap="round"
         />
@@ -86,25 +86,25 @@ export default function SefedLogo({
         <path d="M39 33 H51" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" />
 
         {/* Bottom Cart Base Bar */}
-        <path d="M30 46 H58" stroke="url(#cartGreen)" strokeWidth="3.5" strokeLinecap="round" />
+        <path d="M30 46 H58" stroke="url(#cartNavy)" strokeWidth="3.5" strokeLinecap="round" />
 
         {/* Cart Wheels */}
-        <circle cx="34" cy="53" r="4.5" fill="#0e623a" />
+        <circle cx="34" cy="53" r="4.5" fill="#0f172a" />
         <circle cx="34" cy="53" r="2" fill="#fef3c7" />
-        <circle cx="55" cy="53" r="4.5" fill="#0e623a" />
+        <circle cx="55" cy="53" r="4.5" fill="#0f172a" />
         <circle cx="55" cy="53" r="2" fill="#fef3c7" />
       </svg>
 
       {/* Brand Text: Dual Script (Ge'ez/Amharic + English) */}
       <div className="flex flex-col justify-center leading-none">
         <div className="flex items-baseline gap-1.5">
-          <span className={`font-black tracking-tight text-[#0e623a] ${current.textScale} font-sans`}>
+          <span className={`font-black tracking-tight text-[#0f172a] ${current.textScale} font-sans`}>
             ሰፌድ ገበያ
           </span>
         </div>
         <div className="flex items-center gap-1 mt-0.5">
-          <span className="font-extrabold tracking-tight text-[#14532d] text-sm sm:text-base">
-            Sefed <span className="text-[#0e623a]">Market</span>
+          <span className="font-extrabold tracking-tight text-[#1e293b] text-sm sm:text-base">
+            Sefed <span className="text-[#f59e0b]">Market</span>
           </span>
         </div>
         {showTagline && (

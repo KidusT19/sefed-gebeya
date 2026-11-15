@@ -32,8 +32,8 @@ export default function Footer() {
           </div>
 
           <div className="flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-emerald-950/60 text-emerald-400 border border-emerald-900/60">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <div className="p-2.5 rounded-xl bg-slate-800/80 text-amber-400 border border-slate-700">
+              <ShieldCheck className="w-5 h-5 text-amber-400" />
             </div>
             <div>
               <h4 className="font-bold text-white">Telebirr &amp; CBE Escrow</h4>
