@@ -114,23 +114,13 @@ export default function HomePage() {
       <SefedWatermarkBackground />
 
       {/* 1. Compact Ethiopian Sefed Marketplace Welcome & Quick Action Bar */}
-      <div className="bg-gradient-to-r from-[#0b1329] via-[#0f172a] to-[#1e293b] text-white py-2.5 sm:py-3.5 px-3 sm:px-6 shadow-xs border-b border-slate-800 relative z-10">
+      <div className="bg-gradient-to-r from-[#0b1329] via-[#0f172a] to-[#1e293b] text-white py-2 sm:py-2.5 px-3 sm:px-6 shadow-xs border-b border-slate-800 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-xs">
-              ሰፌድ
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-black tracking-tight">ሰፌድ ገበያ (Sefed Market)</span>
-                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-amber-300">
-                  Shop Smart · Live Better
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-xs text-slate-300 font-medium">
-                Public Browsing 100% Free · Watch &amp; Explore All Posts Across Ethiopia · Telebirr &amp; CBE Escrow
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs sm:text-sm font-black tracking-tight">ሰፌድ ገበያ (Sefed Market)</span>
+            <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-amber-300">
+              Shop Smart · Live Better
+            </span>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <Link
