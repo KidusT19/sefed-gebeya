@@ -161,7 +161,7 @@ export default function HomePage() {
                 <span>Verified Marketplace Feed · Public &amp; Free to Watch</span>
               </div>
               <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                Recent Product Posts (የተለጠፉ እቃዎች)
+                Recent Product Posts
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
                 Watch, browse and explore all authentic items posted across Ethiopia with Telebirr escrow protection
