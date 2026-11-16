@@ -125,10 +125,10 @@ export default function HomePage() {
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <Link
               href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
-              className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] sm:text-xs shadow-xs flex items-center gap-1 transition-all"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] sm:text-xs shadow-xs flex items-center gap-1.5 transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5 stroke-[3]" />
-              <span>+ Post Free Ad</span>
+              <span>Post Free Ad</span>
             </Link>
             <Link
               href="/swaps"
