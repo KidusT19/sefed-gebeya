@@ -108,9 +108,8 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 onClick={() => {
                   logout();
                   onClose();
-                  router.push("/");
                   if (typeof window !== "undefined") {
-                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    window.location.href = "/";
                   }
                 }}
                 className="text-[11px] font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1 cursor-pointer"
