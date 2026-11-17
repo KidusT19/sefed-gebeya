@@ -36,7 +36,11 @@ function ListingsContent() {
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedCity, setSelectedCity] = useState(initialKebele !== "All" ? initialKebele : globalKebele || "All");
+  const [selectedCity, setSelectedCity] = useState(
+    initialKebele && initialKebele !== "All" && initialKebele !== "All Ethiopia"
+      ? initialKebele
+      : "All"
+  );
   const [selectedCondition, setSelectedCondition] = useState("All");
   const [onlyBarter, setOnlyBarter] = useState(false);
   const [onlyVerified, setOnlyVerified] = useState(false);
