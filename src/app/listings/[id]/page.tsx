@@ -628,9 +628,6 @@ export default function ListingDetailPage() {
                     <span className="font-black text-base text-slate-900">
                       {listing.seller.name}
                     </span>
-                    {listing.seller.isVerified && (
-                      <CheckCircle className="w-4 h-4 text-amber-500 fill-amber-100" />
-                    )}
                   </div>
                   <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5 font-medium">
                     <span>★ {listing.seller.rating} Rating</span>

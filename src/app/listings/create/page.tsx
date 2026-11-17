@@ -230,19 +230,19 @@ export default function CreateListingPage() {
               <span>Registered Seller Benefits:</span>
             </div>
             <ul className="text-[11px] space-y-1 list-disc pl-5 text-slate-600">
-              <li>Direct Telebirr and CBE escrow payments</li>
-              <li>Verified seller badge for instant buyer trust</li>
-              <li>Automated circular 3-way device trade matching</li>
+              <li>Direct buyer inquiries and phone contact</li>
+              <li>Safe public landmark meetups across Ethiopia</li>
+              <li>Automated multi-item barter &amp; trade matching</li>
             </ul>
           </div>
 
           <div className="pt-2 flex flex-col gap-2.5">
             <Link
               href="/auth/login?redirect=/listings/create"
-              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer"
+              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
             >
               <span>Sign In to Continue</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              <ArrowRight className="w-4 h-4 stroke-[2.5] text-amber-400" />
             </Link>
 
             <Link
@@ -565,15 +565,15 @@ export default function CreateListingPage() {
             </div>
 
             {/* Seller Contact Info Preview */}
-            <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between text-xs">
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2.5">
-                <BadgeCheck className="w-4 h-4 text-emerald-700" />
+                <MapPin className="w-4 h-4 text-amber-500" />
                 <span className="text-slate-700 font-medium">
-                  Posting as: <strong className="text-slate-900 font-bold">{currentUser.name}</strong> ({currentUser.phone})
+                  Posting as: <strong className="text-slate-900 font-bold">{currentUser.name}</strong> ({currentUser.phone}) &bull; {city} ({landmark.trim() || "Local Hub"})
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
-                Verified Seller
+              <span className="text-[10px] font-bold text-slate-700 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full shadow-2xs">
+                Direct Contact
               </span>
             </div>
 
@@ -581,9 +581,9 @@ export default function CreateListingPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-sm transition-all shadow-lg shadow-emerald-900/15 disabled:opacity-50 cursor-pointer"
+              className="w-full min-h-[48px] py-3.5 rounded-full bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-sm transition-all shadow-md disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? "Publishing Ad Nationwide..." : "Publish Free Ad on Sefed Market"}
+              {isSubmitting ? "Publishing Product Nationwide..." : "Publish Free Product on Sefed Market"}
             </button>
           </form>
         )}

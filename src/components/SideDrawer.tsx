@@ -274,15 +274,6 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </span>
           </Link>
           <Link
-            href="/dashboard?tab=kyc"
-            onClick={onClose}
-            className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
-          >
-            <span className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-amber-600" /> Seller Verification (KYC)
-            </span>
-          </Link>
-          <Link
             href="/dashboard?tab=wallet"
             onClick={onClose}
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"

@@ -469,21 +469,6 @@ export default function Navbar() {
                         </Link>
 
                         <Link
-                          href="/dashboard?tab=kyc"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"
-                        >
-                          <div className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-amber-100 text-slate-600 group-hover:text-amber-800 flex items-center justify-center transition-colors">
-                            <ShieldCheck className="w-4 h-4" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="leading-tight">Seller Verification (KYC)</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Verified badge &amp; national ID</div>
-                          </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
-                        </Link>
-
-                        <Link
                           href="/dashboard?tab=profile"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition-colors group"

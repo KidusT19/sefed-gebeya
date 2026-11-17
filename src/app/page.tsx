@@ -148,7 +148,7 @@ export default function HomePage() {
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 text-[10px] sm:text-[11px] font-bold mb-1">
                 <Sparkles className="w-3.5 h-3.5 text-amber-600 fill-amber-400" />
-                <span>Verified Marketplace Feed · Public &amp; Free to Watch</span>
+                <span>Public Marketplace Feed · Free to Browse &amp; Watch</span>
               </div>
               <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 Recent Product Posts
@@ -294,7 +294,7 @@ export default function HomePage() {
                       <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100 text-[10px] sm:text-[11px] text-slate-500">
                         <span className="font-semibold text-slate-700 truncate">{item.seller?.name || "Direct Seller"}</span>
                         <span>•</span>
-                        <span className="text-amber-600 font-bold shrink-0">Verified</span>
+                        <span className="text-slate-500 font-medium truncate">{item.kebele || item.city}</span>
                       </div>
                     </div>
                   </div>
@@ -486,7 +486,7 @@ export default function HomePage() {
                 Start Selling or Shopping on Ethiopia&apos;s National Marketplace Today
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Join thousands of verified shoppers and merchants in Addis Ababa, Adama, Hawassa, and beyond. 
+                Join thousands of shoppers and sellers across Addis Ababa, Adama, Hawassa, and nationwide. 
                 List your products for free or enjoy safe shopping with Telebirr escrow protection.
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">

@@ -204,7 +204,7 @@ function SignUpContent() {
             Create Your Sefed Account
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto font-medium">
-            Join thousands of verified shoppers and merchants across Addis Ababa, Adama, Hawassa, and nationwide
+            Join thousands of shoppers and sellers across Addis Ababa, Adama, Hawassa, and nationwide
           </p>
         </div>
 
