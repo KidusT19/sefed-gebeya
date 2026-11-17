@@ -50,6 +50,7 @@ export default function Navbar() {
     isLoggedIn,
     logout,
     listings,
+    t,
   } = useMarketplace();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,7 +151,7 @@ export default function Navbar() {
             <div className="flex items-center gap-2 sm:gap-4 text-slate-300 flex-shrink-0">
               <div className="hidden sm:flex items-center gap-1 text-[11px] font-semibold">
                 <PhoneCall className="w-3 h-3 text-amber-400" />
-                <span>Support: 8082 (Toll-Free)</span>
+                <span>{t("nav_support")}</span>
               </div>
 
               <span className="text-slate-600 hidden sm:inline">|</span>
@@ -226,7 +227,7 @@ export default function Navbar() {
                       setIsSearchOpen(true);
                     }}
                     onFocus={() => setIsSearchOpen(true)}
-                    placeholder="Search for products, electronics, groceries, fashion..."
+                    placeholder={t("nav_search_placeholder")}
                     className="w-full pl-10 pr-24 py-2.5 rounded-l-full bg-slate-50 border-2 border-r-0 border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#0f172a] transition-colors"
                   />
                   {searchQuery && (
@@ -247,7 +248,7 @@ export default function Navbar() {
                   className="bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-sm px-6 py-2.5 rounded-r-full border-2 border-[#f59e0b] transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Search className="w-4 h-4 stroke-[2.5]" />
-                  <span>Search</span>
+                  <span>{t("nav_search")}</span>
                 </button>
               </form>
 
@@ -392,14 +393,14 @@ export default function Navbar() {
                               <Wallet className="w-3.5 h-3.5" />
                             </div>
                             <div>
-                              <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Escrow Wallet</div>
+                              <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t("nav_escrow_wallet")}</div>
                               <div className="text-xs font-black text-amber-400">
                                 {(currentUser.walletBalance || 0).toLocaleString()} ETB
                               </div>
                             </div>
                           </div>
                           <span className="text-[10px] font-bold text-amber-400 group-hover:translate-x-0.5 transition-transform">
-                            Manage →
+                            {t("nav_manage")} →
                           </span>
                         </Link>
                       </div>
@@ -415,8 +416,8 @@ export default function Navbar() {
                             <User className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">My Profile</div>
-                            <div className="text-[10px] text-slate-400 font-normal">View &amp; edit personal bio and ratings</div>
+                            <div className="leading-tight">{t("nav_my_profile")}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">{t("nav_my_profile_sub")}</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
@@ -430,8 +431,8 @@ export default function Navbar() {
                             <Package className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">My Product Posts</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Manage active listings and bump ads</div>
+                            <div className="leading-tight">{t("nav_my_posts")}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">{t("nav_my_posts_sub")}</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
@@ -445,8 +446,8 @@ export default function Navbar() {
                             <Repeat className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">My Device Swaps</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Active trade proposals &amp; cash equalizer</div>
+                            <div className="leading-tight">{t("nav_my_swaps")}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">{t("nav_my_swaps_sub")}</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
@@ -460,8 +461,8 @@ export default function Navbar() {
                             <MessageSquare className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">Messages &amp; Inquiries</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Chat with buyers and sellers</div>
+                            <div className="leading-tight">{t("nav_messages")}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">{t("nav_messages_sub")}</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
                         </Link>
@@ -475,8 +476,8 @@ export default function Navbar() {
                             <Heart className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">Saved &amp; Watchlist</div>
-                            <div className="text-[10px] text-slate-400 font-normal">Products you saved for later</div>
+                            <div className="leading-tight">{t("nav_saved")}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">{t("nav_saved_sub")}</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-rose-700" />
                         </Link>
@@ -490,7 +491,7 @@ export default function Navbar() {
                             <Settings className="w-4 h-4" />
                           </div>
                           <div className="flex-1">
-                            <div className="leading-tight">Settings</div>
+                            <div className="leading-tight">{t("nav_settings")}</div>
                             <div className="text-[10px] text-slate-400 font-normal">Security &amp; notifications</div>
                           </div>
                           <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-amber-700" />
@@ -510,7 +511,7 @@ export default function Navbar() {
                           <div className="w-7 h-7 rounded-lg bg-rose-50 group-hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors">
                             <LogOut className="w-4 h-4" />
                           </div>
-                          <span className="flex-1 text-left">Log Out</span>
+                          <span className="flex-1 text-left">{t("nav_logout")}</span>
                         </button>
                       </div>
                     </div>
@@ -529,7 +530,7 @@ export default function Navbar() {
                     title="Sign into your existing account"
                   >
                     <LogIn className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isLoginPage ? "text-white" : "text-slate-800"}`} />
-                    <span>Login</span>
+                    <span>{t("nav_login")}</span>
                   </Link>
 
                   {/* Sign Up Button */}
@@ -543,7 +544,7 @@ export default function Navbar() {
                     title="Create a new customer account"
                   >
                     <UserPlus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>Sign Up</span>
+                    <span>{t("nav_register")}</span>
                   </Link>
                 </div>
               )}
@@ -557,7 +558,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products in Ethiopia..."
+                placeholder={t("nav_mobile_search_placeholder")}
                 className="w-full pl-9 pr-20 py-2 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -565,7 +566,7 @@ export default function Navbar() {
                 type="submit"
                 className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 text-xs font-black px-3.5 py-1.5 rounded-full transition-colors"
               >
-                Search
+                {t("nav_search")}
               </button>
             </form>
           </div>
@@ -585,7 +586,7 @@ export default function Navbar() {
                 }`}
               >
                 <Home className="w-3.5 h-3.5" />
-                <span>Home</span>
+                <span>{t("nav_home")}</span>
               </Link>
 
               {/* Categories Dropdown Trigger */}
@@ -595,14 +596,14 @@ export default function Navbar() {
                   onClick={() => setIsCategoriesMenuOpen(!isCategoriesMenuOpen)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
                 >
-                  <span>Categories</span>
+                  <span>{t("nav_categories")}</span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
                 </button>
 
                 {isCategoriesMenuOpen && (
                   <div className="absolute top-full left-0 mt-1.5 w-64 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <div className="px-3 py-1.5 text-[10px] font-black uppercase text-slate-400 tracking-wider">
-                      Product Categories
+                      {t("nav_product_categories")}
                     </div>
                     {CATEGORIES.map((cat) => (
                       <Link
@@ -621,7 +622,7 @@ export default function Navbar() {
                         onClick={() => setIsCategoriesMenuOpen(false)}
                         className="block px-3.5 py-2 text-xs font-bold text-[#0f172a] hover:text-amber-600 transition-colors"
                       >
-                        View All Categories →
+                        {t("nav_all_categories")}
                       </Link>
                     </div>
                   </div>
@@ -634,9 +635,9 @@ export default function Navbar() {
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Tag className="w-3.5 h-3.5 text-amber-500" />
-                <span>Deals</span>
+                <span>{t("nav_deals")}</span>
                 <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-1.5 py-0.2 rounded-full">
-                  Hot
+                  {t("nav_hot_badge")}
                 </span>
               </Link>
 
@@ -646,7 +647,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Device Swap</span>
+                <span>{t("nav_device_swap")}</span>
               </Link>
 
               {/* About Us */}
@@ -655,7 +656,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Info className="w-3.5 h-3.5 text-slate-400" />
-                <span>About Us</span>
+                <span>{t("nav_about")}</span>
               </Link>
 
               {/* Contact */}
@@ -664,7 +665,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-slate-400" />
-                <span>Contact</span>
+                <span>{t("nav_contact")}</span>
               </Link>
             </div>
 
@@ -674,7 +675,7 @@ export default function Navbar() {
                 href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
                 className="inline-flex items-center justify-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs sm:text-[13px] px-8 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all whitespace-nowrap active:scale-[0.98]"
               >
-                <span>+ Post Free Product</span>
+                <span>{t("nav_post_free")}</span>
               </Link>
             </div>
           </div>
