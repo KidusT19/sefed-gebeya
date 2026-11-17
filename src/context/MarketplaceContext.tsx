@@ -256,7 +256,15 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.listings && data.listings.length > 0) {
-          setListings(data.listings);
+          const sanitized = data.listings.map((item: ProductListing) => ({
+            ...item,
+            seller: {
+              ...item.seller,
+              avatar: item.seller.avatar?.includes("images.unsplash.com") ? "" : (item.seller.avatar || ""),
+              isVerified: false,
+            },
+          }));
+          setListings(sanitized);
         }
       })
       .catch(() => {});
@@ -274,6 +282,11 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     const listingWithStatus: ProductListing = {
       ...newListing,
       status: newListing.status || "ACTIVE",
+      seller: {
+        ...newListing.seller,
+        avatar: newListing.seller.avatar?.includes("images.unsplash.com") ? "" : (newListing.seller.avatar || ""),
+        isVerified: false,
+      },
     };
     setListings((prev) => [listingWithStatus, ...prev]);
     try {

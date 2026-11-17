@@ -151,10 +151,7 @@ function SignUpContent() {
       city,
       kebele: landmark.trim() ? `${city} (${landmark.trim()})` : city,
       landmark: landmark.trim() || `${city} Center`,
-      avatarUrl:
-        role === "MERCHANT"
-          ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80"
-          : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+      avatarUrl: "",
       rating: 5.0,
       completedTrades: 0,
       walletBalance: 0,
