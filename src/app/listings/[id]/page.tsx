@@ -748,11 +748,17 @@ export default function ListingDetailPage() {
               </div>
 
               <div className="flex items-center gap-3.5">
-                <img
-                  src={listing.seller.avatar}
-                  alt={listing.seller.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-[#0f172a]"
-                />
+                {listing.seller.avatar ? (
+                  <img
+                    src={listing.seller.avatar}
+                    alt={listing.seller.name}
+                    className="w-14 h-14 rounded-full object-cover border-2 border-[#0f172a]"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-[#0f172a] text-amber-400 flex items-center justify-center font-black text-xl border-2 border-amber-400/50 shrink-0">
+                    {listing.seller.name ? listing.seller.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "SE"}
+                  </div>
+                )}
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-black text-base text-slate-900">

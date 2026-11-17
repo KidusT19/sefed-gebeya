@@ -71,58 +71,72 @@ export interface ActiveUser {
   verificationDoc?: SellerVerificationDoc;
 }
 
+export const DEFAULT_USER: ActiveUser = {
+  id: "guest-user",
+  name: "My Account",
+  phone: "",
+  email: "",
+  role: "BUYER",
+  city: "Addis Ababa",
+  kebele: "Bole",
+  avatarUrl: "",
+  rating: 5.0,
+  completedTrades: 0,
+  walletBalance: 0,
+  verificationStatus: "UNVERIFIED",
+  sellerTier: "Individual Trader",
+  memberSince: "2026",
+};
+
 export const PRESET_USERS: ActiveUser[] = [
   {
     id: "sel-1",
-    name: "Henok Tadesse",
+    name: "Verified Trader",
     phone: "+251911448822",
-    email: "henok.tadesse@sefed.et",
+    email: "trader@sefed.et",
     role: "MERCHANT",
     city: "Addis Ababa",
     kebele: "Bole",
-    landmark: "Near Edna Mall & Medhanialem",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+    landmark: "Central Landmark",
+    avatarUrl: "",
     rating: 5.0,
     completedTrades: 0,
     walletBalance: 0,
     verificationStatus: "VERIFIED",
     sellerTier: "Verified Seller",
-    businessName: "Henok Electronics Bole",
+    businessName: "Electronics Store",
     memberSince: "Nov 2024",
-    bio: "Certified electronics dealer & device specialist based in Bole Medhanialem.",
-    kebeleIdNumber: "ADD-BOL-882194",
+    bio: "Certified electronics dealer & device specialist.",
   },
   {
     id: "sel-2",
-    name: "Dawit Bekele (Tech Hub)",
+    name: "Tech Store",
     phone: "+251922771133",
-    email: "dawit.bekele@arada.et",
+    email: "tech@sefed.et",
     role: "MERCHANT",
     city: "Addis Ababa",
     kebele: "Piassa",
-    landmark: "Mexico Square / Piassa Tech Center",
-    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+    landmark: "Tech Center",
+    avatarUrl: "",
     rating: 5.0,
     completedTrades: 0,
     walletBalance: 0,
     verificationStatus: "OFFICIAL_STORE",
     sellerTier: "Official Merchant",
-    businessName: "Arada Tech Store",
+    businessName: "Tech Store",
     memberSince: "Jan 2024",
     bio: "Official importer of high-end Apple, Dell and HP computers with warranty.",
-    tradeLicenseNumber: "TL-AA-094821",
-    tinNumber: "0094821944",
   },
   {
     id: "sel-3",
-    name: "Chaltu Girma",
+    name: "Individual Trader",
     phone: "+251933880011",
-    email: "chaltu.g@gmail.com",
+    email: "trader2@sefed.et",
     role: "BUYER",
     city: "Hawassa",
     kebele: "Piazza",
-    landmark: "Piazza Commercial Area",
-    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80",
+    landmark: "Commercial Area",
+    avatarUrl: "",
     rating: 5.0,
     completedTrades: 0,
     walletBalance: 0,
@@ -133,20 +147,20 @@ export const PRESET_USERS: ActiveUser[] = [
   },
   {
     id: "sel-4",
-    name: "Yonas Worku (Studio)",
+    name: "Studio Trader",
     phone: "+251911223344",
-    email: "yonas.worku@studio.et",
+    email: "studio@sefed.et",
     role: "BUYER",
     city: "Bahir Dar",
     kebele: "Kebele 04",
-    landmark: "Felege Hiwot Commercial Gate",
-    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
+    landmark: "Commercial Gate",
+    avatarUrl: "",
     rating: 5.0,
     completedTrades: 0,
     walletBalance: 0,
     verificationStatus: "PENDING",
     sellerTier: "Individual Trader",
-    businessName: "Yonas Studio Bahir Dar",
+    businessName: "Studio Gear",
     memberSince: "April 2025",
     bio: "Pro sound engineer trading musical gear and cameras in Bahir Dar.",
   },
@@ -158,7 +172,7 @@ export const PRESET_USERS: ActiveUser[] = [
     role: "ADMIN",
     city: "Addis Ababa",
     kebele: "Bole",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
+    avatarUrl: "",
     rating: 5.0,
     completedTrades: 0,
     walletBalance: 0,
@@ -218,7 +232,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const [language, setLanguage] = useState<Language>("en");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedKebele, setSelectedKebele] = useState<string>("All Ethiopia");
-  const [currentUser, setCurrentUser] = useState<ActiveUser>(PRESET_USERS[0]);
+  const [currentUser, setCurrentUser] = useState<ActiveUser>(DEFAULT_USER);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const [listings, setListings] = useState<ProductListing[]>([]);
@@ -377,8 +391,12 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
           // Purge legacy demo balances (e.g. 14250, 28500, 5000)
           if (parsed.walletBalance === 14250 || parsed.walletBalance === 28500 || parsed.walletBalance === 5000 || typeof parsed.walletBalance !== "number") {
             parsed.walletBalance = 0;
-            localStorage.setItem("sefed_current_user", JSON.stringify(parsed));
           }
+          // Purge legacy demo avatars from unsplash
+          if (parsed.avatarUrl && parsed.avatarUrl.includes("images.unsplash.com")) {
+            parsed.avatarUrl = "";
+          }
+          localStorage.setItem("sefed_current_user", JSON.stringify(parsed));
           setCurrentUser(parsed);
           if (storedAuth === "true") {
             setIsLoggedIn(true);
@@ -464,14 +482,32 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     return newDel;
   };
 
-  const updateUserProfile = (updates: Partial<ActiveUser>) => {
+  const updateUserProfile = async (updates: Partial<ActiveUser>) => {
+    let nextUser: ActiveUser | null = null;
     setCurrentUser((prev) => {
       const updated = { ...prev, ...updates };
+      nextUser = updated;
       try {
         localStorage.setItem("sefed_current_user", JSON.stringify(updated));
       } catch {}
       return updated;
     });
+
+    try {
+      if (currentUser?.id || currentUser?.phone || currentUser?.email) {
+        await fetch("/api/user/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: currentUser.id,
+            phone: currentUser.phone,
+            email: currentUser.email,
+            ...updates,
+          }),
+        });
+      }
+    } catch {}
+
     showToast("Profile details updated successfully!", "success");
   };
 

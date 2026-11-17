@@ -40,6 +40,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Lock,
+  Camera,
 } from "lucide-react";
 
 function DashboardContent() {
@@ -84,7 +85,70 @@ function DashboardContent() {
   const [editKebele, setEditKebele] = useState(currentUser?.kebele || "Bole");
   const [editBusinessName, setEditBusinessName] = useState(currentUser?.businessName || "");
   const [editBio, setEditBio] = useState(currentUser?.bio || "");
+  const [editAvatarUrl, setEditAvatarUrl] = useState(currentUser?.avatarUrl || "");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      setEditName(currentUser.name || "");
+      setEditEmail(currentUser.email || "");
+      setEditPhone(currentUser.phone || "");
+      setEditCity(currentUser.city || "Addis Ababa");
+      setEditKebele(currentUser.kebele || "Bole");
+      setEditBusinessName(currentUser.businessName || "");
+      setEditBio(currentUser.bio || "");
+      setEditAvatarUrl(currentUser.avatarUrl || "");
+    }
+  }, [currentUser]);
+
+  const handleAvatarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Please upload a valid image file (PNG, JPG, WEBP).", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Image file is too large. Please select a file under 5MB.", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (loadEvt) => {
+      const dataUrl = loadEvt.target?.result as string;
+      if (dataUrl) {
+        // Optimize on canvas to ~256x256 for fast loading & local storage
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const size = 256;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            const minDim = Math.min(img.width, img.height);
+            const sx = (img.width - minDim) / 2;
+            const sy = (img.height - minDim) / 2;
+            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+            const optimized = canvas.toDataURL("image/jpeg", 0.85);
+            setEditAvatarUrl(optimized);
+            updateUserProfile({ avatarUrl: optimized });
+            showToast("Profile picture updated successfully!", "success");
+          }
+        };
+        img.src = dataUrl;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    setEditAvatarUrl("");
+    updateUserProfile({ avatarUrl: "" });
+    showToast("Profile picture removed. Initials will be used.", "info");
+  };
 
   const handleDeposit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +171,7 @@ function DashboardContent() {
       kebele: editKebele.trim(),
       businessName: editBusinessName.trim() || undefined,
       bio: editBio.trim() || undefined,
+      avatarUrl: editAvatarUrl || "",
     });
     setIsSavingProfile(false);
   };
@@ -250,7 +315,7 @@ function DashboardContent() {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           {/* User Details */}
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="relative">
+            <div className="relative group">
               {currentUser?.avatarUrl ? (
                 <img
                   src={currentUser.avatarUrl}
@@ -258,16 +323,31 @@ function DashboardContent() {
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#0f172a] shadow-sm shrink-0"
                 />
               ) : (
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#0f172a] text-white flex items-center justify-center font-black text-2xl shadow-sm shrink-0">
-                  {currentUser?.name?.slice(0, 2).toUpperCase() || "SM"}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#0f172a] text-amber-400 border-2 border-amber-400/40 flex items-center justify-center font-black text-2xl shadow-sm shrink-0">
+                  {currentUser?.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
                 </div>
               )}
+              <label
+                htmlFor="header-avatar-input"
+                className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-[10px] font-bold cursor-pointer transition-opacity backdrop-blur-2xs"
+                title="Change Profile Photo"
+              >
+                <Camera className="w-5 h-5 text-amber-300 mb-0.5" />
+                <span>Upload</span>
+              </label>
+              <input
+                id="header-avatar-input"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarFile}
+                className="hidden"
+              />
             </div>
 
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  {currentUser?.name || "Henok Tadesse"}
+                  {currentUser?.name || "My Account"}
                 </h1>
               </div>
 
@@ -281,12 +361,12 @@ function DashboardContent() {
               <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-medium">
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5 text-amber-500" />
-                  {currentUser?.kebele || "Bole"}, {currentUser?.city || "Addis Ababa"}
+                  {currentUser?.kebele ? `${currentUser.kebele}, ` : ""}{currentUser?.city || "Ethiopia"}
                 </span>
                 <span>&bull;</span>
                 <span className="flex items-center gap-1 font-mono">
                   <Phone className="w-3.5 h-3.5 text-slate-500" />
-                  {currentUser?.phone || "+251 91 144 8822"}
+                  {currentUser?.phone || "No phone linked"}
                 </span>
                 <span>&bull;</span>
                 <span className="font-bold text-amber-600">★ {currentUser?.rating || 4.9} Rating</span>
@@ -774,8 +854,62 @@ function DashboardContent() {
                 Personal &amp; Store Profile Information
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Update your display name, contact numbers, and store location for buyer discovery
+                Update your display name, profile photo, contact numbers, and store location for buyer discovery
               </p>
+            </div>
+
+            {/* Profile Picture Management Section */}
+            <div className="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center gap-5">
+              <div className="relative shrink-0">
+                {editAvatarUrl ? (
+                  <img
+                    src={editAvatarUrl}
+                    alt="Profile Avatar"
+                    className="w-20 h-20 rounded-2xl object-cover border-2 border-[#0f172a] shadow-sm"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl bg-[#0f172a] text-amber-400 border-2 border-amber-400/40 flex items-center justify-center font-black text-2xl shadow-sm">
+                    {editName ? editName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 text-center sm:text-left flex-1">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900">Your Profile Photo</h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Upload your own photo or business logo (PNG, JPG, WEBP). This replaces the default initials across your listings and chats.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                  <label
+                    htmlFor="profile-tab-avatar-input"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-white font-bold text-xs cursor-pointer transition-colors shadow-2xs"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Upload New Photo</span>
+                  </label>
+                  <input
+                    id="profile-tab-avatar-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarFile}
+                    className="hidden"
+                  />
+
+                  {editAvatarUrl && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveAvatar}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove Photo</span>
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -797,7 +931,7 @@ function DashboardContent() {
                     type="text"
                     value={editBusinessName}
                     onChange={(e) => setEditBusinessName(e.target.value)}
-                    placeholder="e.g. Henok Electronics Bole"
+                    placeholder="e.g. Kidus Electronics & Trade Hub"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
                   />
                 </div>

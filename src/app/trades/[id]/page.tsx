@@ -11,7 +11,7 @@ export default function TradeDealRoomPage() {
   const params = useParams();
   const tradeId = (params?.id as string) || "deal-701";
 
-  const { listings } = useMarketplace();
+  const { listings, currentUser } = useMarketplace();
   const targetItem = listings[0];
   const offeredItem = listings[1] || listings[0];
 
@@ -101,7 +101,7 @@ export default function TradeDealRoomPage() {
                   Value: {offeredItem.price.toLocaleString()} ETB
                 </div>
                 <div className="text-[10px] text-[#785437]">
-                  Owner: Dawit B. (Kebele 04)
+                  Owner: {currentUser?.name || "Trader"} ({currentUser?.kebele || "Local"})
                 </div>
               </div>
             </div>
@@ -131,7 +131,7 @@ export default function TradeDealRoomPage() {
                   Value: {targetItem.price.toLocaleString()} ETB
                 </div>
                 <div className="text-[10px] text-[#785437]">
-                  Owner: {targetItem.seller.name} (Bole)
+                  Owner: {targetItem.seller.name} ({targetItem.kebele || targetItem.city})
                 </div>
               </div>
             </div>
@@ -147,13 +147,13 @@ export default function TradeDealRoomPage() {
             </span>
           </div>
           <p className="text-[11px] text-[#785437] leading-relaxed">
-            Dawit B. pays <strong>{topUpAmount.toLocaleString()} ETB</strong> in cash top-up to {targetItem.seller.name} to balance the difference between both devices. Funds are held in Telebirr escrow until in-person inspection and OTP release.
+            {currentUser?.name || "Buyer"} pays <strong>{topUpAmount.toLocaleString()} ETB</strong> in cash top-up to {targetItem.seller.name} to balance the difference between both devices. Funds are held in Telebirr escrow until in-person inspection and OTP release.
           </p>
 
           <div className="border-t border-[#dfd2be] pt-3 flex items-center gap-2 text-xs text-[#52361f]">
             <MapPin className="w-4 h-4 text-[#1d4ed8] flex-shrink-0" />
             <span>
-              Meetup Landmark: <strong>Posta Bet Commercial Square</strong> &bull; Direct Handover (0 ETB Fee)
+              Meetup Landmark: <strong>{targetItem.landmark || "Designated Safe Public Landmark"}</strong> &bull; Direct Handover (0 ETB Fee)
             </span>
           </div>
         </div>

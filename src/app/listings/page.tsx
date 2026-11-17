@@ -563,11 +563,17 @@ function ListingsContent() {
                           {/* Seller & Verification */}
                           <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500">
                             <div className="flex items-center gap-1.5 min-w-0">
-                              <img
-                                src={item.seller.avatar}
-                                alt={item.seller.name}
-                                className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-slate-200 shrink-0"
-                              />
+                              {item.seller.avatar ? (
+                                <img
+                                  src={item.seller.avatar}
+                                  alt={item.seller.name}
+                                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-slate-200 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#0f172a] text-amber-400 flex items-center justify-center font-bold text-[9px] shrink-0">
+                                  {item.seller.name ? item.seller.name.slice(0, 1).toUpperCase() : "U"}
+                                </div>
+                              )}
                               <span className="font-semibold text-slate-700 truncate">{item.seller.name}</span>
                             </div>
                             {item.seller.isVerified && (

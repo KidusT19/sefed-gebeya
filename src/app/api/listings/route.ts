@@ -74,7 +74,7 @@ export async function GET(req: Request) {
               memberSince: "Nov 2026",
               rating: item.user.rating || 5.0,
               completedDeals: item.user.completedTrades || 1,
-              avatar: item.user.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+              avatar: item.user.avatarUrl || "",
             },
             postedDate: "Active Now",
             views: 45,

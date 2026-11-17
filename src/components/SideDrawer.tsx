@@ -70,14 +70,20 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
               onClick={onClose}
               className="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 hover:border-slate-800 transition-all shadow-2xs"
             >
-              <img
-                src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
-                alt={currentUser.name}
-                width={40}
-                height={40}
-                style={{ width: "40px", height: "40px", objectFit: "cover" }}
-                className="w-10 h-10 rounded-full object-cover border border-slate-300"
-              />
+              {currentUser.avatarUrl ? (
+                <img
+                  src={currentUser.avatarUrl}
+                  alt={currentUser.name}
+                  width={40}
+                  height={40}
+                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                  className="w-10 h-10 rounded-full object-cover border border-slate-300"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#0f172a] text-amber-400 flex items-center justify-center font-black text-xs border border-amber-400/40 shrink-0">
+                  {currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-xs text-slate-900 truncate">{currentUser.name}</div>
                 <div className="text-[11px] font-semibold text-[#0f172a] flex items-center gap-1">

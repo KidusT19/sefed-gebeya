@@ -326,11 +326,17 @@ export default function Navbar() {
                     className="flex items-center gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20"
                   >
                     <div className="relative">
-                      <img
-                        src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
-                        alt={currentUser.name}
-                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#0f172a] shadow-2xs"
-                      />
+                      {currentUser.avatarUrl ? (
+                        <img
+                          src={currentUser.avatarUrl}
+                          alt={currentUser.name}
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#0f172a] shadow-2xs"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#0f172a] text-amber-400 flex items-center justify-center font-black text-xs border border-amber-400/40 shadow-2xs">
+                          {currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+                        </div>
+                      )}
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                     </div>
                     <div className="hidden xl:block text-left text-xs leading-tight">
@@ -348,11 +354,17 @@ export default function Navbar() {
                       {/* User Header Profile Card */}
                       <div className="p-3.5 bg-gradient-to-br from-[#0b1329] via-[#0f172a] to-[#1e293b] text-white">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
-                            alt={currentUser.name}
-                            className="w-11 h-11 rounded-full object-cover border-2 border-amber-400 shadow-xs"
-                          />
+                          {currentUser.avatarUrl ? (
+                            <img
+                              src={currentUser.avatarUrl}
+                              alt={currentUser.name}
+                              className="w-11 h-11 rounded-full object-cover border-2 border-amber-400 shadow-xs"
+                            />
+                          ) : (
+                            <div className="w-11 h-11 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-sm border-2 border-amber-300 shadow-xs shrink-0">
+                              {currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
                               <h4 className="font-black text-sm text-white truncate">

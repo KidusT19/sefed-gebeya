@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useMarketplace } from "@/context/MarketplaceContext";
 import { MOCK_CIRCULAR_CYCLES } from "@/data/mockData";
 import {
   Repeat,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 export default function CircularSwapsPage() {
+  const { currentUser } = useMarketplace();
   const [cycle, setCycle] = useState(MOCK_CIRCULAR_CYCLES[0]);
   const [hasUserApproved, setHasUserApproved] = useState(false);
   const [simStep, setSimStep] = useState(1);
@@ -236,11 +238,10 @@ export default function CircularSwapsPage() {
         <div className="bg-[#eee4d5] border border-[#dfd2be] rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center md:text-left">
             <h4 className="font-bold text-sm text-[#2b1c11]">
-              You are Trader 3 (Dawit B. - Arada Kebele)
+              You are Trader 3 ({cycle?.nodes[2]?.userName || currentUser?.name || "Participant"})
             </h4>
             <p className="text-xs text-[#6a4727] font-medium">
-              You trade your <strong>Dell XPS 13</strong>, receive an <strong>iPhone 13 Pro</strong>, and collect{" "}
-              <strong className="text-[#1d4ed8] font-bold">+13,000 ETB cash top-up</strong> held in escrow!
+              You trade your <strong>{cycle?.nodes[2]?.offeringItem?.title || "Offered Item"}</strong>, receive an <strong>{cycle?.nodes[2]?.receivingItem?.title || "Target Item"}</strong>, and settle cash top-up held safely in escrow!
             </p>
           </div>
 
