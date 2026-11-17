@@ -392,30 +392,6 @@ function DashboardContent() {
             </Link>
           </div>
         </div>
-
-        {/* Quick Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-100">
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-            <span className="text-[11px] font-bold text-slate-500 block">Active Listings</span>
-            <span className="text-xl font-black text-slate-900">
-              {userListings.filter((a) => a.status !== "SOLD").length}
-            </span>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-            <span className="text-[11px] font-bold text-slate-500 block">Saved Ads</span>
-            <span className="text-xl font-black text-slate-900">{favorites.length}</span>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-            <span className="text-[11px] font-bold text-slate-500 block">Barter Proposals</span>
-            <span className="text-xl font-black text-[#0e623a]">{offers.length + 1}</span>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-            <span className="text-[11px] font-bold text-slate-500 block">Escrow Protected</span>
-            <span className="text-xl font-black text-[#0e623a] font-mono">
-              {walletBalance.toLocaleString()} ETB
-            </span>
-          </div>
-        </div>
       </div>
 
       {/* Modern Mobile Tab Selector */}
