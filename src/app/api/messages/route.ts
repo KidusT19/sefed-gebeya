@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export interface ApiMessage {
   id: string;
   conversationId: string;
-  sender: "me" | "them";
+  senderId?: string;
   senderName: string;
+  receiverId?: string;
+  sender?: "me" | "them";
   text: string;
   time: string;
   createdAt: number;
@@ -12,8 +15,10 @@ export interface ApiMessage {
 
 export interface ApiConversation {
   id: string;
+  buyerId?: string;
+  sellerId?: string;
   participantName: string;
-  participantRole: "seller" | "merchant";
+  participantRole: "seller" | "merchant" | "buyer";
   participantKebele: string;
   participantPhone: string;
   itemTitle: string;
@@ -22,33 +27,136 @@ export interface ApiConversation {
   listingId?: string;
   quickReplies: string[];
   messages: ApiMessage[];
+  updatedAt?: number;
 }
 
-// In-memory persistent store (shared across sessions in server runtime)
+// In-memory fallback and metadata cache
 let STORED_CONVERSATIONS: ApiConversation[] = [];
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const conversationId = searchParams.get("conversationId");
+  const userId = searchParams.get("userId");
 
-  if (conversationId) {
-    const conv = STORED_CONVERSATIONS.find((c) => c.id === conversationId);
-    if (!conv) {
-      return NextResponse.json({ success: false, error: "Conversation not found" }, { status: 404 });
+  try {
+    // 1. Specific Conversation Messages
+    if (conversationId) {
+      let dbMessages: any[] = [];
+      try {
+        dbMessages = await prisma.chatMessage.findMany({
+          where: { conversationId },
+          orderBy: { createdAt: "asc" },
+        });
+      } catch (dbErr) {
+        // Fallback to in-memory if db is busy
+      }
+
+      const cachedConv = STORED_CONVERSATIONS.find((c) => c.id === conversationId);
+
+      // Merge messages from DB with cached conversation
+      const formattedMessages: ApiMessage[] = dbMessages.map((m) => ({
+        id: m.id,
+        conversationId: m.conversationId,
+        senderId: m.senderId,
+        senderName: m.senderName,
+        receiverId: m.receiverId || undefined,
+        text: m.text,
+        time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        createdAt: new Date(m.createdAt).getTime(),
+      }));
+
+      // If DB had messages, use them; otherwise use memory
+      const messagesToReturn =
+        formattedMessages.length > 0 ? formattedMessages : (cachedConv?.messages || []);
+
+      if (cachedConv) {
+        cachedConv.messages = messagesToReturn;
+        return NextResponse.json({ success: true, conversation: cachedConv });
+      }
+
+      // If conversation wasn't in memory yet, return a basic conversation shell
+      const shellConv: ApiConversation = {
+        id: conversationId,
+        participantName: "Trader",
+        participantRole: "seller",
+        participantKebele: "Adama, Ethiopia",
+        participantPhone: "",
+        itemTitle: "Product Exchange",
+        quickReplies: [],
+        messages: messagesToReturn,
+      };
+
+      return NextResponse.json({ success: true, conversation: shellConv });
     }
-    return NextResponse.json({ success: true, conversation: conv });
-  }
 
-  return NextResponse.json({
-    success: true,
-    conversations: STORED_CONVERSATIONS,
-  });
+    // 2. All Conversations for User or All Platform Conversations
+    let allConvs = [...STORED_CONVERSATIONS];
+
+    // Filter by userId if requested (user is either buyer, seller, sender, or receiver)
+    if (userId) {
+      allConvs = allConvs.filter(
+        (c) =>
+          !c.buyerId ||
+          !c.sellerId ||
+          c.buyerId === userId ||
+          c.sellerId === userId ||
+          c.messages.some((m) => m.senderId === userId || m.receiverId === userId)
+      );
+    }
+
+    // Sync latest messages for each conversation from DB
+    try {
+      for (const conv of allConvs) {
+        const msgs = await prisma.chatMessage.findMany({
+          where: { conversationId: conv.id },
+          orderBy: { createdAt: "asc" },
+        });
+        if (msgs.length > 0) {
+          conv.messages = msgs.map((m) => ({
+            id: m.id,
+            conversationId: m.conversationId,
+            senderId: m.senderId,
+            senderName: m.senderName,
+            receiverId: m.receiverId || undefined,
+            text: m.text,
+            time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            createdAt: new Date(m.createdAt).getTime(),
+          }));
+        }
+      }
+    } catch {}
+
+    return NextResponse.json({
+      success: true,
+      conversations: allConvs,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch messages" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { conversationId, text, sender = "me" } = body;
+    const {
+      conversationId,
+      text,
+      senderId,
+      senderName,
+      receiverId,
+      buyerId,
+      sellerId,
+      participantName,
+      participantPhone,
+      participantKebele,
+      itemTitle,
+      itemPrice,
+      itemImage,
+      listingId,
+    } = body;
 
     if (!conversationId || !text?.trim()) {
       return NextResponse.json(
@@ -57,38 +165,64 @@ export async function POST(req: Request) {
       );
     }
 
+    // 1. Find or create in-memory conversation metadata
     let convIndex = STORED_CONVERSATIONS.findIndex((c) => c.id === conversationId);
     if (convIndex === -1) {
       const newConv: ApiConversation = {
         id: conversationId,
-        participantName: body.participantName || "Seller",
-        participantRole: body.participantRole || "seller",
-        participantKebele: body.participantKebele || "Public Meetup",
-        participantPhone: body.participantPhone || "+2519...",
-        itemTitle: body.itemTitle || "Product",
-        itemPrice: body.itemPrice,
-        itemImage: body.itemImage,
-        listingId: body.listingId,
+        buyerId: buyerId || senderId,
+        sellerId: sellerId || receiverId,
+        participantName: participantName || "Trader",
+        participantRole: "seller",
+        participantKebele: participantKebele || "Public Landmark Meetup",
+        participantPhone: participantPhone || "+2519...",
+        itemTitle: itemTitle || "Product",
+        itemPrice,
+        itemImage,
+        listingId,
         quickReplies: [
-          "Is this still available?",
-          "Can we meet at a public CBE branch?",
-          "Are you open to a device swap with cash top-up?",
-          "I want to inspect in person.",
+          "Is this item still available?",
+          "Can we meet at a safe landmark in town?",
+          "Are you open to a device swap with cash difference?",
         ],
         messages: [],
+        updatedAt: Date.now(),
       };
-      STORED_CONVERSATIONS.push(newConv);
-      convIndex = STORED_CONVERSATIONS.length - 1;
+      STORED_CONVERSATIONS.unshift(newConv);
+      convIndex = 0;
+    } else {
+      STORED_CONVERSATIONS[convIndex].updatedAt = Date.now();
+      if (buyerId) STORED_CONVERSATIONS[convIndex].buyerId = buyerId;
+      if (sellerId) STORED_CONVERSATIONS[convIndex].sellerId = sellerId;
+    }
+
+    // 2. Persist real message to Prisma SQLite database
+    let createdDbMsg: any = null;
+    try {
+      createdDbMsg = await prisma.chatMessage.create({
+        data: {
+          conversationId,
+          senderId: senderId || "user",
+          senderName: senderName || "Trader",
+          receiverId: receiverId || null,
+          text: text.trim(),
+        },
+      });
+    } catch (dbErr) {
+      // Fallback: continue with in-memory creation if SQLite write has lock
     }
 
     const newMsg: ApiMessage = {
-      id: `msg-${Date.now()}`,
+      id: createdDbMsg?.id || `msg-${Date.now()}`,
       conversationId,
-      sender,
-      senderName: sender === "me" ? "Buyer" : STORED_CONVERSATIONS[convIndex].participantName,
+      senderId: createdDbMsg?.senderId || senderId || "user",
+      senderName: createdDbMsg?.senderName || senderName || "Trader",
+      receiverId: createdDbMsg?.receiverId || receiverId,
       text: text.trim(),
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      createdAt: Date.now(),
+      time: createdDbMsg
+        ? new Date(createdDbMsg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      createdAt: createdDbMsg ? new Date(createdDbMsg.createdAt).getTime() : Date.now(),
     };
 
     STORED_CONVERSATIONS[convIndex].messages.push(newMsg);
