@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMarketplace, ActiveUser } from "@/context/MarketplaceContext";
@@ -37,6 +37,7 @@ import {
   CheckCircle2,
   ShieldAlert,
   ArrowRight,
+  ArrowLeft,
   Lock,
 } from "lucide-react";
 
@@ -54,6 +55,9 @@ function DashboardContent() {
     isLoggedIn,
     updateUserProfile,
     showToast,
+    listings,
+    deleteListing,
+    toggleListingStatus,
   } = useMarketplace();
 
   // Authentication Guard: Redirect to login if user is not logged in
@@ -104,61 +108,151 @@ function DashboardContent() {
     setIsSavingProfile(false);
   };
 
-  // User's own mock ads
-  const [myAds, setMyAds] = useState([
-    {
-      id: "lst-1",
-      title: "iPhone 13 Pro 128GB - Sierra Blue (Factory Unlocked)",
-      price: 55000,
-      status: "ACTIVE",
-      views: 142,
-      postedDate: "2 hours ago",
-      image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&auto=format&fit=crop&q=80",
-      city: "Addis Ababa",
-      kebele: "Bole",
-      allowBarter: true,
-    },
-    {
-      id: "lst-custom-1",
-      title: "Samsung 43-inch 4K Smart Crystal UHD TV",
-      price: 34000,
-      status: "ACTIVE",
-      views: 89,
-      postedDate: "Yesterday",
-      image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&auto=format&fit=crop&q=80",
-      city: "Addis Ababa",
-      kebele: "Bole",
-      allowBarter: false,
-    },
-    {
-      id: "lst-custom-2",
-      title: "Apple Watch Series 7 (45mm Midnight Aluminum)",
-      price: 21000,
-      status: "SOLD",
-      views: 240,
-      postedDate: "1 week ago",
-      image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&auto=format&fit=crop&q=80",
-      city: "Addis Ababa",
-      kebele: "Bole",
-      allowBarter: true,
-    },
-  ]);
+  // User's own ads loaded dynamically from live marketplace listings
+  const userListings = useMemo(() => {
+    let localCreatedIds: string[] = [];
+    try {
+      localCreatedIds = JSON.parse(localStorage.getItem("sefed_user_created_listings") || "[]");
+    } catch {}
+
+    const matched = listings.filter((l) => {
+      // 1. Created by this browser session
+      if (localCreatedIds.includes(l.id)) return true;
+
+      // 2. Belongs to the current authenticated user
+      if (currentUser) {
+        if (
+          l.seller?.id &&
+          (l.seller.id === currentUser.id ||
+            l.seller.id === currentUser.id.replace("usr-", "sel-") ||
+            l.seller.id === currentUser.id.replace("sel-", "usr-"))
+        ) {
+          return true;
+        }
+        if (
+          currentUser.phone &&
+          l.seller?.phone &&
+          (l.seller.phone === currentUser.phone ||
+            l.seller.phone.replace(/\D/g, "") === currentUser.phone.replace(/\D/g, ""))
+        ) {
+          return true;
+        }
+        if (
+          currentUser.email &&
+          l.seller?.email &&
+          l.seller.email.toLowerCase() === currentUser.email.toLowerCase()
+        ) {
+          return true;
+        }
+        if (
+          currentUser.name &&
+          l.seller?.name &&
+          l.seller.name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
+        ) {
+          return true;
+        }
+        // Match first name for demo accounts e.g. "Kidus"
+        const currentFirstName = currentUser.name?.trim().toLowerCase().split(" ")[0];
+        const sellerFirstName = l.seller?.name?.trim().toLowerCase().split(" ")[0];
+        if (
+          currentFirstName &&
+          sellerFirstName &&
+          currentFirstName === sellerFirstName &&
+          (l.id === "lst-1" || l.id === "82270859-b3e6-4daa-a276-bbda1305930e")
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (matched.length > 0) {
+      return matched;
+    }
+
+    // Fallback demo items if this is a brand new user who hasn't posted anything yet
+    return [
+      {
+        id: "lst-1",
+        title: "iPhone 13 Pro 128GB - Sierra Blue (Factory Unlocked)",
+        price: 55000,
+        isNegotiable: true,
+        condition: "Like New" as const,
+        categorySlug: "phones",
+        subcategory: "Smartphones",
+        description: "Mint condition iPhone 13 Pro in Sierra Blue. 89% battery health.",
+        images: [
+          "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&auto=format&fit=crop&q=80",
+        ],
+        city: "Addis Ababa",
+        kebele: "Bole",
+        landmark: "Bole Medhanialem",
+        allowBarter: true,
+        wishlist: "Samsung Galaxy S22 Ultra",
+        allowCash: true,
+        seller: {
+          id: currentUser?.id || "sel-1",
+          name: currentUser?.name || "Kidus Tadesse",
+          phone: currentUser?.phone || "+251911448822",
+          city: currentUser?.city || "Addis Ababa",
+          kebele: currentUser?.kebele || "Bole",
+          avatar:
+            currentUser?.avatarUrl ||
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+          rating: 4.9,
+          completedDeals: 19,
+        },
+        postedDate: "2 hours ago",
+        views: 142,
+        status: "ACTIVE" as const,
+      },
+      {
+        id: "lst-custom-1",
+        title: "Samsung 43-inch 4K Smart Crystal UHD TV",
+        price: 34000,
+        isNegotiable: true,
+        condition: "Like New" as const,
+        categorySlug: "electronics",
+        subcategory: "Televisions",
+        description: "Crystal clear 4K UHD smart TV with built-in Wi-Fi and HDR.",
+        images: [
+          "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&auto=format&fit=crop&q=80",
+        ],
+        city: "Addis Ababa",
+        kebele: "Bole",
+        landmark: "Bole",
+        allowBarter: false,
+        wishlist: "",
+        allowCash: true,
+        seller: {
+          id: currentUser?.id || "sel-1",
+          name: currentUser?.name || "Kidus Tadesse",
+          phone: currentUser?.phone || "+251911448822",
+          city: "Addis Ababa",
+          kebele: "Bole",
+          avatar:
+            currentUser?.avatarUrl ||
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+          rating: 4.9,
+          completedDeals: 19,
+        },
+        postedDate: "Yesterday",
+        views: 89,
+        status: "ACTIVE" as const,
+      },
+    ];
+  }, [listings, currentUser]);
 
   // Saved listings from favorites
-  const savedListings = MOCK_LISTINGS.filter((l) => favorites.includes(l.id));
+  const savedListings = listings.filter((l) => favorites.includes(l.id));
 
   const toggleAdStatus = (id: string) => {
-    setMyAds((prev) =>
-      prev.map((ad) =>
-        ad.id === id ? { ...ad, status: ad.status === "ACTIVE" ? "SOLD" : "ACTIVE" } : ad
-      )
-    );
+    toggleListingStatus(id);
   };
 
   const deleteAd = (id: string) => {
-    if (confirm("Are you sure you want to remove this listing?")) {
-      setMyAds((prev) => prev.filter((ad) => ad.id !== id));
-      showToast("Listing removed successfully", "info");
+    if (confirm("Are you sure you want to remove this listing from Sefed Market?")) {
+      deleteListing(id);
     }
   };
 
@@ -203,6 +297,25 @@ function DashboardContent() {
 
   return (
     <div className="relative min-h-screen space-y-6 pb-24 px-4 sm:px-6 max-w-7xl mx-auto">
+      {/* Top Navigation & Back Action */}
+      <div className="relative z-10 flex items-center justify-between pt-1">
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/");
+            }
+          }}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-[#0f172a] font-bold bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer group"
+          title="Go back to previous page"
+        >
+          <ArrowLeft className="w-4 h-4 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back</span>
+        </button>
+      </div>
+
       {/* Main Profile Header Banner */}
       <div className="relative z-10 bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-xl shadow-slate-900/5">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
@@ -285,7 +398,7 @@ function DashboardContent() {
           <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
             <span className="text-[11px] font-bold text-slate-500 block">Active Listings</span>
             <span className="text-xl font-black text-slate-900">
-              {myAds.filter((a) => a.status === "ACTIVE").length}
+              {userListings.filter((a) => a.status !== "SOLD").length}
             </span>
           </div>
           <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
@@ -316,7 +429,7 @@ function DashboardContent() {
           }`}
         >
           <ShoppingBag className="w-4 h-4 text-amber-400" />
-          <span>My Posts ({myAds.length})</span>
+          <span>My Posts ({userListings.length})</span>
         </button>
 
         <button
@@ -385,71 +498,83 @@ function DashboardContent() {
           </div>
 
           <div className="space-y-3">
-            {myAds.map((ad) => (
-              <div
-                key={ad.id}
-                className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm hover:border-emerald-600/30 transition-all"
-              >
-                <div className="flex items-center gap-3.5">
-                  <img
-                    src={ad.image}
-                    alt={ad.title}
-                    className="w-20 h-20 rounded-2xl object-cover bg-slate-100 shrink-0 border border-slate-200"
-                  />
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                          ad.status === "ACTIVE"
-                            ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                            : "bg-slate-100 text-slate-600 border border-slate-200"
-                        }`}
-                      >
-                        {ad.status === "ACTIVE" ? "Active on Marketplace" : "Marked Sold"}
-                      </span>
-                      {ad.allowBarter && (
-                        <span className="text-[10px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
-                          Swap Enabled
+            {userListings.map((ad) => {
+              const imageSrc =
+                ad.images && ad.images.length > 0
+                  ? ad.images[0]
+                  : (ad as any).image ||
+                    "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&auto=format&fit=crop&q=80";
+              const isSold = ad.status === "SOLD";
+
+              return (
+                <div
+                  key={ad.id}
+                  className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm hover:border-amber-400/50 transition-all"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <img
+                      src={imageSrc}
+                      alt={ad.title}
+                      className="w-20 h-20 rounded-2xl object-cover bg-slate-100 shrink-0 border border-slate-200"
+                    />
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                            !isSold
+                              ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                              : "bg-slate-100 text-slate-600 border border-slate-200"
+                          }`}
+                        >
+                          {!isSold ? "Active on Marketplace" : "Marked Sold"}
                         </span>
-                      )}
-                    </div>
-                    <h3 className="font-bold text-sm sm:text-base text-slate-900 line-clamp-1">{ad.title}</h3>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                      <span className="font-black text-[#0e623a] text-sm font-mono">
-                        {ad.price.toLocaleString()} ETB
-                      </span>
-                      <span>&bull;</span>
-                      <span>{ad.views} Views</span>
-                      <span>&bull;</span>
-                      <span>{ad.postedDate}</span>
+                        {ad.allowBarter && (
+                          <span className="text-[10px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
+                            Swap Enabled
+                          </span>
+                        )}
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                          📍 {ad.kebele || ad.city || "Adama"}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-sm sm:text-base text-slate-900 line-clamp-1">{ad.title}</h3>
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                        <span className="font-black text-[#0f172a] text-sm font-mono">
+                          {ad.price.toLocaleString()} ETB
+                        </span>
+                        <span>&bull;</span>
+                        <span>{ad.views || 1} Views</span>
+                        <span>&bull;</span>
+                        <span>{ad.postedDate || "Recently"}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                  <button
-                    onClick={() => toggleAdStatus(ad.id)}
-                    className="px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
-                  >
-                    {ad.status === "ACTIVE" ? "Mark Sold" : "Re-activate"}
-                  </button>
-                  <Link
-                    href={`/listings/${ad.id}`}
-                    className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700"
-                    title="View public page"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </Link>
-                  <button
-                    onClick={() => deleteAd(ad.id)}
-                    className="p-2.5 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer"
-                    title="Delete listing"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <button
+                      onClick={() => toggleAdStatus(ad.id)}
+                      className="px-3.5 py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+                    >
+                      {!isSold ? "Mark Sold" : "Re-activate"}
+                    </button>
+                    <Link
+                      href={`/listings/${ad.id}`}
+                      className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700"
+                      title="View public page"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Link>
+                    <button
+                      onClick={() => deleteAd(ad.id)}
+                      className="p-2.5 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer"
+                      title="Delete listing"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

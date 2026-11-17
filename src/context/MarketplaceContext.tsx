@@ -190,6 +190,8 @@ interface MarketplaceContextType {
   isFavorite: (listingId: string) => boolean;
   listings: ProductListing[];
   addListing: (listing: ProductListing) => void;
+  deleteListing: (listingId: string) => void;
+  toggleListingStatus: (listingId: string) => void;
   cart: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">, qty?: number) => void;
   removeFromCart: (itemId: string) => void;
@@ -254,8 +256,41 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   };
 
   const addListing = (newListing: ProductListing) => {
-    setListings((prev) => [newListing, ...prev]);
+    const listingWithStatus: ProductListing = {
+      ...newListing,
+      status: newListing.status || "ACTIVE",
+    };
+    setListings((prev) => [listingWithStatus, ...prev]);
+    try {
+      const stored = JSON.parse(localStorage.getItem("sefed_user_created_listings") || "[]");
+      if (!stored.includes(listingWithStatus.id)) {
+        localStorage.setItem("sefed_user_created_listings", JSON.stringify([listingWithStatus.id, ...stored]));
+      }
+    } catch {}
     showToast(`✓ Listing "${newListing.title.slice(0, 24)}..." published to marketplace feed!`, "success");
+  };
+
+  const deleteListing = (listingId: string) => {
+    setListings((prev) => prev.filter((l) => l.id !== listingId));
+    try {
+      const stored = JSON.parse(localStorage.getItem("sefed_user_created_listings") || "[]");
+      localStorage.setItem(
+        "sefed_user_created_listings",
+        JSON.stringify(stored.filter((id: string) => id !== listingId))
+      );
+    } catch {}
+    showToast("Listing removed successfully.", "info");
+  };
+
+  const toggleListingStatus = (listingId: string) => {
+    setListings((prev) =>
+      prev.map((l) =>
+        l.id === listingId
+          ? { ...l, status: l.status === "SOLD" ? "ACTIVE" : "SOLD" }
+          : l
+      )
+    );
+    showToast("Listing status updated.", "success");
   };
 
   // Cart operations
@@ -512,6 +547,8 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         isFavorite,
         listings,
         addListing,
+        deleteListing,
+        toggleListingStatus,
         cart,
         addToCart,
         removeFromCart,

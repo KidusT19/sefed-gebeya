@@ -27,6 +27,7 @@ export interface Seller {
   id: string;
   name: string;
   phone: string;
+  email?: string;
   whatsapp: string;
   city: string;
   kebele: string;
@@ -60,6 +61,7 @@ export interface ProductListing {
   postedDate: string;
   views: number;
   isFeatured?: boolean;
+  status?: "ACTIVE" | "SOLD";
 }
 
 export interface PooledRun {

@@ -15,6 +15,7 @@ import {
   ShoppingBag,
   Phone,
   ArrowRight,
+  ArrowLeft,
   Sparkles,
   Lock,
 } from "lucide-react";
@@ -327,6 +328,25 @@ function MessagesContent() {
 
   return (
     <div className="relative min-h-screen space-y-4 pb-16">
+      {/* Back Button */}
+      <div className="relative z-10 pt-1">
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/");
+            }
+          }}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-[#0f172a] font-bold bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer group"
+          title="Go back to previous page"
+        >
+          <ArrowLeft className="w-4 h-4 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back</span>
+        </button>
+      </div>
+
       {/* Header */}
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>

@@ -196,8 +196,8 @@ export default function CreateListingPage() {
     setIsSubmitting(false);
     setIsSuccess(true);
     setTimeout(() => {
-      router.push("/listings");
-    }, 1800);
+      router.push("/dashboard?tab=ads");
+    }, 2000);
   };
 
   // If user is not authenticated, render secure gatekeeper view
@@ -270,14 +270,22 @@ export default function CreateListingPage() {
 
       {/* Top Breadcrumb & Badge */}
       <div className="relative z-10 flex items-center justify-between pt-2">
-        <Link
-          href="/listings"
-          className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-[#0e623a] font-bold transition-colors"
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/");
+            }
+          }}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-[#0f172a] font-bold bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer"
+          title="Back to previous page"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Marketplace</span>
-        </Link>
-        <span className="text-[11px] font-black text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+          <ArrowLeft className="w-4 h-4 text-slate-800" />
+          <span>Back</span>
+        </button>
+        <span className="text-[11px] font-black text-amber-900 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
           Post Free Ad Nationwide
         </span>
       </div>
@@ -294,16 +302,30 @@ export default function CreateListingPage() {
         </div>
 
         {isSuccess ? (
-          <div className="py-12 text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-xs">
-              <CheckCircle className="w-8 h-8" />
+          <div className="py-12 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#0f172a] mx-auto flex items-center justify-center shadow-xs">
+              <CheckCircle className="w-8 h-8 text-emerald-600" />
             </div>
-            <h2 className="text-xl font-black text-slate-900">Your Ad Has Been Published!</h2>
+            <h2 className="text-xl font-black text-slate-900">Your Product Has Been Published!</h2>
             <p className="text-xs text-slate-600 max-w-sm mx-auto font-medium">
-              Your product is now live on Sefed Market. Buyers can send cash offers or propose device barter deals.
+              Your item is now live across Ethiopia on Sefed Market and visible in your My Product Posts list.
             </p>
-            <p className="text-xs text-[#0e623a] font-bold animate-pulse">
-              Redirecting to marketplace catalog...
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link
+                href="/dashboard?tab=ads"
+                className="px-5 py-2.5 rounded-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+              >
+                Go to My Product Posts
+              </Link>
+              <Link
+                href="/"
+                className="px-5 py-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition-all cursor-pointer"
+              >
+                View Marketplace Feed
+              </Link>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium pt-1 animate-pulse">
+              Redirecting to My Product Posts...
             </p>
           </div>
         ) : (

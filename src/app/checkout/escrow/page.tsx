@@ -101,14 +101,22 @@ function EscrowCheckoutContent() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20">
-      {/* Back Link */}
-      <Link
-        href={`/listings/${listing.id}`}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6a4727] hover:text-[#1d4ed8] transition-colors"
+      {/* Back Button */}
+      <button
+        type="button"
+        onClick={() => {
+          if (typeof window !== "undefined" && window.history.length > 1) {
+            router.back();
+          } else {
+            router.push(`/listings/${listing.id}`);
+          }
+        }}
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-black bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer group"
+        title="Go back to previous page"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Back to Product Listing</span>
-      </Link>
+        <ArrowLeft className="w-3.5 h-3.5 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+        <span>Back</span>
+      </button>
 
       {/* Main Card */}
       <div className="bg-[#faf5ed] rounded-3xl border border-[#dfd2be] p-6 sm:p-8 shadow-xs space-y-6">

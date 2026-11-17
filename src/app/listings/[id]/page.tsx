@@ -19,6 +19,7 @@ import {
   Share2,
   Heart,
   ChevronLeft,
+  ArrowLeft,
   AlertTriangle,
   BadgePercent,
   X,
@@ -300,13 +301,21 @@ export default function ListingDetailPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-6">
         {/* Breadcrumb & Quick Actions Header */}
         <div className="flex items-center justify-between text-xs text-slate-500">
-          <Link
-            href="/listings"
-            className="inline-flex items-center gap-1 font-bold text-slate-700 hover:text-[#0f172a] transition-colors"
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/");
+              }
+            }}
+            className="inline-flex items-center gap-1.5 font-bold text-slate-800 hover:text-black bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer group"
+            title="Go back to previous page"
           >
-            <ChevronLeft className="w-4 h-4 text-slate-700" />
-            <span>Back to All Listings</span>
-          </Link>
+            <ArrowLeft className="w-4 h-4 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Back</span>
+          </button>
 
           <div className="flex items-center gap-2">
             <button

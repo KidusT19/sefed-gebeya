@@ -141,12 +141,21 @@ function NewTradeOfferContent() {
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Top Breadcrumb & Room Tag */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <Link
-          href={`/listings/${targetListing.id}`}
-          className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-950 font-bold transition-colors"
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push(`/listings/${targetListing.id}`);
+            }
+          }}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-700 hover:text-black font-bold bg-white border border-slate-200 px-3.5 py-1.5 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer group"
+          title="Go back to previous page"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to {targetListing.title.slice(0, 32)}...
-        </Link>
+          <ArrowLeft className="w-4 h-4 text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back to {targetListing.title.slice(0, 28)}...</span>
+        </button>
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-black text-slate-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5 text-amber-700" /> Multi-Item Barter Deal Room
