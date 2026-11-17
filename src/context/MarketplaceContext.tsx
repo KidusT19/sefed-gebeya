@@ -68,6 +68,7 @@ export interface ActiveUser {
   kebeleIdNumber?: string;
   tradeLicenseNumber?: string;
   tinNumber?: string;
+  preferredLanguage?: Language;
   verificationDoc?: SellerVerificationDoc;
 }
 
@@ -229,7 +230,7 @@ interface MarketplaceContextType {
 const MarketplaceContext = createContext<MarketplaceContextType | undefined>(undefined);
 
 export function MarketplaceProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguageState] = useState<Language>("en");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedKebele, setSelectedKebele] = useState<string>("All Ethiopia");
   const [currentUser, setCurrentUser] = useState<ActiveUser>(DEFAULT_USER);
@@ -237,6 +238,14 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const [listings, setListings] = useState<ProductListing[]>([]);
   const [toast, setToast] = useState<ToastNotification | null>(null);
+
+  // Persistent language setter
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    try {
+      localStorage.setItem("sefed_language", lang);
+    } catch {}
+  };
 
   // Persistent shopping cart state
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -357,6 +366,9 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const login = (user: ActiveUser) => {
     setCurrentUser(user);
     setIsLoggedIn(true);
+    if (user.preferredLanguage) {
+      setLanguage(user.preferredLanguage);
+    }
     try {
       localStorage.setItem("sefed_current_user", JSON.stringify(user));
       localStorage.setItem("sefed_is_logged_in", "true");
@@ -376,13 +388,22 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
 
   const [deliveries, setDeliveries] = useState<ActiveDelivery[]>([]);
 
-  // Load favorites, user, and cart from localStorage
+  // Load favorites, user, language, and cart from localStorage
   useEffect(() => {
     try {
+      // 1. Language persistence
+      const storedLang = (localStorage.getItem("sefed_language") || localStorage.getItem("sebez_language")) as Language | null;
+      if (storedLang && (storedLang === "en" || storedLang === "am" || storedLang === "om")) {
+        setLanguageState(storedLang);
+      }
+
+      // 2. Favorites persistence
       const storedFavs = localStorage.getItem("sefed_favorites") || localStorage.getItem("sebez_favorites");
       if (storedFavs) {
         setFavorites(JSON.parse(storedFavs));
       }
+
+      // 3. Current User & Auth persistence
       const storedUser = localStorage.getItem("sefed_current_user") || localStorage.getItem("sebez_current_user");
       const storedAuth = localStorage.getItem("sefed_is_logged_in") || localStorage.getItem("sebez_is_logged_in");
       if (storedUser) {
@@ -395,6 +416,10 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
           // Purge legacy demo avatars from unsplash
           if (parsed.avatarUrl && parsed.avatarUrl.includes("images.unsplash.com")) {
             parsed.avatarUrl = "";
+          }
+          // If user has specific preferredLanguage and no explicit global preference was set yet
+          if (parsed.preferredLanguage && !storedLang) {
+            setLanguageState(parsed.preferredLanguage);
           }
           localStorage.setItem("sefed_current_user", JSON.stringify(parsed));
           setCurrentUser(parsed);
@@ -420,6 +445,9 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     const found = PRESET_USERS.find((u) => u.id === userId);
     if (found) {
       setCurrentUser(found);
+      if (found.preferredLanguage) {
+        setLanguage(found.preferredLanguage);
+      }
       try {
         localStorage.setItem("sefed_current_user", JSON.stringify(found));
       } catch {
