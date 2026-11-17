@@ -91,9 +91,7 @@ function LoginContent() {
           role: data.user.role || "BUYER",
           city: data.user.city || "Addis Ababa",
           kebele: data.user.kebele || "Bole",
-          avatarUrl:
-            data.user.avatarUrl ||
-            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+          avatarUrl: data.user.avatarUrl || "",
           rating: data.user.rating || 5.0,
           completedTrades: data.user.completedTrades || 0,
           walletBalance: data.user.walletBalance || 0,
@@ -115,7 +113,7 @@ function LoginContent() {
           role: "BUYER",
           city: "Addis Ababa",
           kebele: "Bole",
-          avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+          avatarUrl: "",
           rating: 5.0,
           completedTrades: 0,
           walletBalance: 0,
