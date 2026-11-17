@@ -33,7 +33,7 @@ interface SideDrawerProps {
 
 export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
   const pathname = usePathname();
-  const { currentUser, language, setLanguage, favorites, isLoggedIn, logout } = useMarketplace();
+  const { currentUser, language, setLanguage, favorites, isLoggedIn, logout, t } = useMarketplace();
 
   if (!isOpen) return null;
 
@@ -100,7 +100,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 onClick={onClose}
                 className="text-[11px] font-semibold text-slate-600 hover:text-slate-950"
               >
-                Switch Account
+                {t("nav_switch_account")}
               </Link>
               <button
                 type="button"
@@ -111,7 +111,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 className="text-[11px] font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1"
               >
                 <LogOut className="w-3 h-3" />
-                <span>Sign Out</span>
+                <span>{t("nav_logout")}</span>
               </button>
             </div>
           </div>
@@ -123,14 +123,14 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
               className="w-full py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-center font-bold text-xs text-slate-800 transition-colors flex items-center justify-center gap-1.5"
             >
               <LogIn className="w-3.5 h-3.5 text-slate-700" />
-              <span>Sign In</span>
+              <span>{t("nav_login")}</span>
             </Link>
             <Link
               href="/auth/signup"
               onClick={onClose}
               className="w-full py-2.5 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-center font-bold text-xs text-white transition-colors shadow-xs"
             >
-              Register Free
+              {t("nav_register")}
             </Link>
           </div>
         )}
@@ -138,7 +138,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
         {/* THE 4 DIRECT CUSTOMER PILLARS */}
         <div className="p-3.5 space-y-2 border-b border-slate-200">
           <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider px-1 block">
-            What would you like to do?
+            {t("nav_what_to_do")}
           </span>
 
           {/* 1. Directly Buy from Seller */}
@@ -152,10 +152,10 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </div>
             <div className="flex-1">
               <div className="font-bold text-xs text-slate-900 group-hover:text-[#0f172a]">
-                Buy Directly from Seller
+                {t("nav_buy_seller")}
               </div>
               <div className="text-[10px] text-slate-500">
-                Browse phones, laptops & meet sellers nationwide
+                {t("nav_buy_seller_sub")}
               </div>
             </div>
           </Link>
@@ -171,10 +171,10 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </div>
             <div className="flex-1">
               <div className="font-bold text-xs text-slate-900 group-hover:text-[#0f172a]">
-                Sell an Item
+                {t("nav_sell_item")}
               </div>
               <div className="text-[10px] text-slate-500">
-                Post free ad with photos in 1 minute
+                {t("nav_sell_item_sub")}
               </div>
             </div>
           </Link>
@@ -190,10 +190,10 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </div>
             <div className="flex-1">
               <div className="font-bold text-xs text-slate-900 group-hover:text-amber-600">
-                Direct Swap (1-to-1)
+                {t("nav_direct_swap")}
               </div>
               <div className="text-[10px] text-slate-500">
-                Exchange items + optional cash top-up
+                {t("nav_direct_swap_sub")}
               </div>
             </div>
           </Link>
@@ -209,10 +209,10 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </div>
             <div className="flex-1">
               <div className="font-bold text-xs text-slate-900 group-hover:text-[#0f172a]">
-                Circular Swaps (3-Way)
+                {t("nav_circular_swap")}
               </div>
               <div className="text-[10px] text-slate-500">
-                Multi-trader loops when cash is tight
+                {t("nav_circular_swap_sub")}
               </div>
             </div>
           </Link>
@@ -268,7 +268,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
         {/* PERSONAL LINKS */}
         <div className="p-3.5 space-y-1.5 border-b border-slate-200">
           <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider px-1 block">
-            My Account
+            {t("admin_hub")}
           </span>
           <Link
             href="/dashboard?tab=ads"
@@ -276,7 +276,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
           >
             <span className="flex items-center gap-2">
-              <User className="w-4 h-4 text-slate-700" /> My Listings
+              <User className="w-4 h-4 text-slate-700" /> {t("nav_my_posts")}
             </span>
           </Link>
           <Link
@@ -285,7 +285,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
           >
             <span className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-[#0f172a]" /> Telebirr Wallet
+              <Wallet className="w-4 h-4 text-[#0f172a]" /> {t("nav_escrow_wallet")}
             </span>
           </Link>
           <Link
@@ -294,7 +294,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
           >
             <span className="flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-slate-700" /> Direct Messages
+              <MessageSquare className="w-4 h-4 text-slate-700" /> {t("nav_messages")}
             </span>
           </Link>
           <Link
@@ -303,7 +303,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
           >
             <span className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-rose-600" /> Saved Ads ({favorites.length})
+              <Heart className="w-4 h-4 text-rose-600" /> {t("nav_saved")} ({favorites.length})
             </span>
           </Link>
         </div>
@@ -322,7 +322,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
               <HelpCircle className="w-3.5 h-3.5 text-slate-600" /> FAQs
             </Link>
             <Link href="/about" onClick={onClose} className="hover:underline flex items-center gap-1 font-semibold">
-              <Info className="w-3.5 h-3.5 text-slate-600" /> About
+              <Info className="w-3.5 h-3.5 text-slate-600" /> {t("nav_about")}
             </Link>
           </div>
 
