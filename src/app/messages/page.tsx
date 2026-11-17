@@ -146,7 +146,7 @@ function MessagesContent() {
       });
 
       const data = await res.json();
-      if (data.success && data.autoReply) {
+      if (data.success && data.message) {
         setConversations((prev) =>
           prev.map((c) =>
             c.id === activeConv.id
@@ -155,7 +155,6 @@ function MessagesContent() {
                   messages: [
                     ...c.messages.filter((m) => m.id !== tempMsg.id),
                     data.message,
-                    data.autoReply,
                   ],
                 }
               : c

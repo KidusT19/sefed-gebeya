@@ -93,42 +93,9 @@ export async function POST(req: Request) {
 
     STORED_CONVERSATIONS[convIndex].messages.push(newMsg);
 
-    // Contextual auto-reply simulation
-    let autoReply: ApiMessage | null = null;
-    const conv = STORED_CONVERSATIONS[convIndex];
-
-    if (sender === "me") {
-      let replyText = "Understood! Let's complete this transaction safely via Sebez Escrow.";
-      const lower = text.toLowerCase();
-
-      if (lower.includes("meet") || lower.includes("arada") || lower.includes("posta")) {
-        replyText =
-          "Sounds great. Let's meet at the agreed public landmark in Adama so you can test the device in person.";
-      } else if (lower.includes("telebirr") || lower.includes("escrow") || lower.includes("buy")) {
-        replyText =
-          "Telebirr escrow works best for me as well. Once you authorize the hold, we can meet up to hand it over!";
-      } else if (lower.includes("price") || lower.includes("offer") || lower.includes("etb")) {
-        replyText =
-          "I can consider that price if you pay via Telebirr or include an acceptable phone barter top-up.";
-      }
-
-      autoReply = {
-        id: `msg-reply-${Date.now() + 1}`,
-        conversationId,
-        sender: "them",
-        senderName: conv.participantName,
-        text: replyText,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        createdAt: Date.now() + 1000,
-      };
-
-      STORED_CONVERSATIONS[convIndex].messages.push(autoReply);
-    }
-
     return NextResponse.json({
       success: true,
       message: newMsg,
-      autoReply,
       conversation: STORED_CONVERSATIONS[convIndex],
     });
   } catch (error) {
