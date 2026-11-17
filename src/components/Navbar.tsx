@@ -30,7 +30,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useMarketplace } from "@/context/MarketplaceContext";
-import { MOCK_LISTINGS, CATEGORIES } from "@/data/mockData";
+import { CATEGORIES } from "@/data/mockData";
 import SideDrawer from "@/components/SideDrawer";
 import SefedLogo from "@/components/SefedLogo";
 
@@ -49,6 +49,7 @@ export default function Navbar() {
     currentUser,
     isLoggedIn,
     logout,
+    listings,
   } = useMarketplace();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,7 +61,7 @@ export default function Navbar() {
 
   // Suggestions filtered based on query
   const matchingListings = searchQuery.trim()
-    ? MOCK_LISTINGS.filter(
+    ? listings.filter(
         (l) =>
           l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           l.categorySlug.toLowerCase().includes(searchQuery.toLowerCase()) ||

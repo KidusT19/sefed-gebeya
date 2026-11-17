@@ -24,6 +24,7 @@ import {
   Search,
   Zap,
   Eye,
+  Package,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -220,8 +221,28 @@ export default function HomePage() {
           </div>
 
           {/* Product Grid: 2 columns on mobile, 4 on desktop */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-            {filteredListings.slice(0, 16).map((item) => {
+          {filteredListings.length === 0 ? (
+            <div className="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 text-center space-y-4 max-w-md mx-auto shadow-sm my-4">
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center border border-amber-200/60 shadow-xs">
+                <Package className="w-8 h-8" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base sm:text-lg font-black text-slate-900">No Listings in Feed Yet</h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
+                  Be the first to post a product or device swap on Sefed Market!
+                </p>
+              </div>
+              <Link
+                href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
+                className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-sm transition-all"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+                <span>+ Post Free Product</span>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+              {filteredListings.slice(0, 16).map((item) => {
               const isFav = isFavorite(item.id);
 
               return (
@@ -333,6 +354,7 @@ export default function HomePage() {
               );
             })}
           </div>
+          )}
 
           {/* View All Products Link */}
           <div className="text-center pt-4 sm:pt-6">

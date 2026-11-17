@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_LISTINGS, DEFAULT_USER_BARTER_INVENTORY } from "@/data/mockData";
+import { DEFAULT_USER_BARTER_INVENTORY } from "@/data/mockData";
 import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
@@ -34,16 +34,53 @@ import {
   Square,
 } from "lucide-react";
 
+const EMPTY_LISTING: ProductListing = {
+  id: "",
+  title: "",
+  price: 0,
+  isNegotiable: true,
+  condition: "Like New",
+  categorySlug: "phones",
+  subcategory: "General",
+  description: "",
+  images: [
+    "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+  ],
+  city: "Addis Ababa",
+  kebele: "Bole",
+  landmark: "Bole",
+  allowBarter: true,
+  wishlist: "",
+  allowCash: true,
+  seller: {
+    id: "seller-default",
+    name: "Seller",
+    phone: "+251911000000",
+    whatsapp: "+251911000000",
+    city: "Addis Ababa",
+    kebele: "Bole",
+    isVerified: true,
+    memberSince: "Nov 2026",
+    rating: 5.0,
+    completedDeals: 1,
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+  },
+  postedDate: "Recently",
+  views: 1,
+};
+
 export default function ListingDetailPage() {
   const router = useRouter();
   const params = useParams();
   const listingId = params?.id as string;
 
-  const { isFavorite, toggleFavorite, addOffer, isLoggedIn } = useMarketplace();
+  const { isFavorite, toggleFavorite, addOffer, isLoggedIn, listings } = useMarketplace();
 
   const [listing, setListing] = useState<ProductListing>(() => {
-    return MOCK_LISTINGS.find((l) => l.id === listingId) || MOCK_LISTINGS[0];
+    return listings.find((l) => l.id === listingId) || EMPTY_LISTING;
   });
+  const [isLoading, setIsLoading] = useState(!listings.some((l) => l.id === listingId));
 
   const [activeImage, setActiveImage] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
@@ -125,19 +162,27 @@ export default function ListingDetailPage() {
   };
 
   useEffect(() => {
-    fetch("/api/listings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.listings) {
-          const match = data.listings.find((l: ProductListing) => l.id === listingId);
-          if (match) {
-            setListing(match);
-            setOfferPrice(match.price > 5000 ? match.price - 3000 : match.price - 500);
+    const match = listings.find((l: ProductListing) => l.id === listingId);
+    if (match) {
+      setListing(match);
+      setOfferPrice(match.price > 5000 ? match.price - 3000 : match.price - 500);
+      setIsLoading(false);
+    } else {
+      fetch("/api/listings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.listings) {
+            const m = data.listings.find((l: ProductListing) => l.id === listingId);
+            if (m) {
+              setListing(m);
+              setOfferPrice(m.price > 5000 ? m.price - 3000 : m.price - 500);
+            }
           }
-        }
-      })
-      .catch(() => {});
-  }, [listingId]);
+        })
+        .catch(() => {})
+        .finally(() => setIsLoading(false));
+    }
+  }, [listingId, listings]);
 
   const saved = isFavorite(listing.id);
 
@@ -218,8 +263,8 @@ export default function ListingDetailPage() {
   };
 
   // Similar listings
-  const similarListings = MOCK_LISTINGS.filter(
-    (l) => l.id !== listing.id && (l.categorySlug === listing.categorySlug || l.city === listing.city)
+  const similarListings = listings.filter(
+    (l) => l.id !== listing?.id && (l.categorySlug === listing?.categorySlug || l.city === listing?.city)
   ).slice(0, 3);
 
   const handleSendOffer = async (e: React.FormEvent) => {
@@ -292,6 +337,38 @@ export default function ListingDetailPage() {
       setReviewComment("");
     }, 1500);
   };
+
+  if (isLoading || !listing.id) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
+          <Eye className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900">
+          {isLoading ? "Loading Product..." : "Product Not Found"}
+        </h2>
+        <p className="text-xs text-slate-500">
+          {isLoading
+            ? "Fetching listing details from Sefed Market..."
+            : "This product listing does not exist or has been removed."}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/");
+            }
+          }}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white font-bold text-xs hover:bg-slate-50 transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-slate-50/50 pb-28 sm:pb-20">

@@ -215,25 +215,15 @@ const MarketplaceContext = createContext<MarketplaceContextType | undefined>(und
 
 export function MarketplaceProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
-  const [favorites, setFavorites] = useState<string[]>(["lst-1", "lst-3"]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedKebele, setSelectedKebele] = useState<string>("All Ethiopia");
   const [currentUser, setCurrentUser] = useState<ActiveUser>(PRESET_USERS[0]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [listings, setListings] = useState<ProductListing[]>(MOCK_LISTINGS);
+  const [listings, setListings] = useState<ProductListing[]>([]);
   const [toast, setToast] = useState<ToastNotification | null>(null);
 
   // Persistent shopping cart state
-  const [cart, setCart] = useState<CartItem[]>([
-    {
-      id: "lst-1",
-      title: "Apple iPhone 13 Pro 128GB (Sierra Blue)",
-      price: 55000,
-      image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&auto=format&fit=crop&q=80",
-      quantity: 1,
-      sellerName: "Henok Tadesse",
-      category: "electronics",
-    },
-  ]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   // Load listings from API or initial state
   useEffect(() => {
@@ -458,7 +448,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const isFavorite = (id: string) => favorites.includes(id);
 
   const addOffer = (listingId: string, offeredPrice: number, message: string) => {
-    const listing = MOCK_LISTINGS.find((l) => l.id === listingId);
+    const listing = listings.find((l) => l.id === listingId);
     const newOffer: CustomOffer = {
       id: `off-${Date.now()}`,
       listingId,

@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { MOCK_LISTINGS, DEFAULT_USER_BARTER_INVENTORY, BarterInventoryItem } from "@/data/mockData";
+import { DEFAULT_USER_BARTER_INVENTORY, BarterInventoryItem } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import {
   Repeat,
@@ -28,7 +28,7 @@ function NewTradeOfferContent() {
   const searchParams = useSearchParams();
   const targetId = searchParams.get("target") || "lst-9"; // Default to Motorcycle to match user scenario
 
-  const { isLoggedIn, showToast } = useMarketplace();
+  const { isLoggedIn, showToast, listings } = useMarketplace();
 
   // Authentication Guard: Redirect if not logged in
   useEffect(() => {
@@ -38,7 +38,7 @@ function NewTradeOfferContent() {
     }
   }, [isLoggedIn, router, showToast, targetId]);
 
-  const targetListing = MOCK_LISTINGS.find((l) => l.id === targetId) || MOCK_LISTINGS[0];
+  const targetListing = listings.find((l) => l.id === targetId) || listings[0];
 
   // User's available barter inventory (items posted by this user)
   const [myInventory, setMyInventory] = useState<BarterInventoryItem[]>(DEFAULT_USER_BARTER_INVENTORY);
@@ -50,7 +50,7 @@ function NewTradeOfferContent() {
   const totalGoodsValue = selectedItems.reduce((acc, item) => acc + item.estimatedValue, 0);
 
   // Raw benchmark mathematical difference
-  const rawDifference = targetListing.price - totalGoodsValue;
+  const rawDifference = (targetListing?.price || 0) - totalGoodsValue;
 
   const [customTopUp, setCustomTopUp] = useState<string>(rawDifference.toString());
   const [meetupLandmark, setMeetupLandmark] = useState("CBE Main Branch (Edna Mall / Bole / Mexico)");
@@ -133,6 +133,18 @@ function NewTradeOfferContent() {
             </Link>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (!targetListing) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
+        <h2 className="text-xl font-black text-slate-900">No Target Product Selected</h2>
+        <p className="text-xs text-slate-500">Please choose a product from the marketplace feed to initiate a barter swap.</p>
+        <Link href="/" className="px-5 py-2.5 rounded-full bg-[#0f172a] text-white font-bold text-xs">
+          Browse Marketplace Feed
+        </Link>
       </div>
     );
   }
