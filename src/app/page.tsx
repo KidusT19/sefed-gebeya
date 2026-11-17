@@ -114,8 +114,17 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 2. MAIN PRODUCT POSTS FEED - Elevated to the Top so every visitor immediately watches product posts! */}
-      <section ref={trendingRef} id="trending-products" className="py-4 sm:py-7 bg-slate-50/70 border-b border-slate-200/80 relative z-10">
+      {/* 1. Sefed Market Showcase & Brand Hero */}
+      <SefedHero onShopNowClick={handleScrollToProducts} />
+
+      {/* 2. 4-Pillar Trust & Confidence Bar */}
+      <SefedTrustBar />
+
+      {/* 3. Shop by Category Discovery Grid */}
+      <SefedCategories />
+
+      {/* 4. MAIN PRODUCT POSTS FEED - Marketplace Public Feed */}
+      <section ref={trendingRef} id="trending-products" className="py-8 sm:py-12 bg-slate-50/70 border-y border-slate-200/80 relative z-10">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-slate-200 pb-3">
             <div>
@@ -340,15 +349,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* 3. Shop by Category Discovery Grid */}
-      <SefedCategories />
-
-      {/* 4. Sefed Market Showcase & Brand Story */}
-      <SefedHero onShopNowClick={handleScrollToProducts} />
-
-      {/* 5. 4-Pillar Trust & Confidence Bar */}
-      <SefedTrustBar />
 
       {/* 5. Smart Device Swap & Equalizer Feature Card */}
       <section className="py-12 bg-transparent">
