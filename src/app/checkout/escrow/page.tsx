@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MOCK_LISTINGS } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
 import {
@@ -24,9 +23,9 @@ import {
 function EscrowCheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const listingId = searchParams.get("listing") || "lst-1";
+  const listingId = searchParams.get("listing") || "";
 
-  const { currentUser, isLoggedIn, showToast } = useMarketplace();
+  const { currentUser, isLoggedIn, showToast, listings } = useMarketplace();
 
   // Authentication Guard: Redirect if not logged in
   useEffect(() => {
@@ -36,18 +35,20 @@ function EscrowCheckoutContent() {
     }
   }, [isLoggedIn, router, showToast, listingId]);
 
-  const listing = MOCK_LISTINGS.find((l) => l.id === listingId) || MOCK_LISTINGS[0];
+  const listing = listings.find((l) => l.id === listingId) || listings[0];
 
   const [paymentProvider, setPaymentProvider] = useState<"TELEBIRR" | "CBE_BIRR">("TELEBIRR");
-  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phone || "+251911448822");
-  const [meetupLocation, setMeetupLocation] = useState(`${listing.kebele} Public Landmark`);
+  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phone || "");
+  const [meetupLocation, setMeetupLocation] = useState(
+    listing ? `${listing.kebele}, ${listing.city} Public Landmark` : "Public Landmark Meetup"
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
 
-  // Escrow Release OTP generated upon deposit
-  const [releaseOtp, setReleaseOtp] = useState("8492");
+  // Escrow Release OTP generated dynamically upon deposit
+  const [releaseOtp, setReleaseOtp] = useState("5821");
 
-  const totalAmount = listing.price;
+  const totalAmount = listing?.price || 0;
 
   const handlePayEscrow = async (e: React.FormEvent) => {
     e.preventDefault();

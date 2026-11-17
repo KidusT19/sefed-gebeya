@@ -82,9 +82,9 @@ export const PRESET_USERS: ActiveUser[] = [
     kebele: "Bole",
     landmark: "Near Edna Mall & Medhanialem",
     avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
-    rating: 4.9,
-    completedTrades: 19,
-    walletBalance: 14250,
+    rating: 5.0,
+    completedTrades: 0,
+    walletBalance: 0,
     verificationStatus: "VERIFIED",
     sellerTier: "Verified Seller",
     businessName: "Henok Electronics Bole",
@@ -102,9 +102,9 @@ export const PRESET_USERS: ActiveUser[] = [
     kebele: "Piassa",
     landmark: "Mexico Square / Piassa Tech Center",
     avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
-    rating: 4.8,
-    completedTrades: 27,
-    walletBalance: 28500,
+    rating: 5.0,
+    completedTrades: 0,
+    walletBalance: 0,
     verificationStatus: "OFFICIAL_STORE",
     sellerTier: "Official Merchant",
     businessName: "Arada Tech Store",
@@ -124,8 +124,8 @@ export const PRESET_USERS: ActiveUser[] = [
     landmark: "Piazza Commercial Area",
     avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80",
     rating: 5.0,
-    completedTrades: 12,
-    walletBalance: 8400,
+    completedTrades: 0,
+    walletBalance: 0,
     verificationStatus: "UNVERIFIED",
     sellerTier: "Individual Trader",
     memberSince: "March 2025",
@@ -141,9 +141,9 @@ export const PRESET_USERS: ActiveUser[] = [
     kebele: "Kebele 04",
     landmark: "Felege Hiwot Commercial Gate",
     avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
-    rating: 4.9,
-    completedTrades: 15,
-    walletBalance: 19800,
+    rating: 5.0,
+    completedTrades: 0,
+    walletBalance: 0,
     verificationStatus: "PENDING",
     sellerTier: "Individual Trader",
     businessName: "Yonas Studio Bahir Dar",
@@ -160,8 +160,8 @@ export const PRESET_USERS: ActiveUser[] = [
     kebele: "Bole",
     avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
     rating: 5.0,
-    completedTrades: 500,
-    walletBalance: 64200,
+    completedTrades: 0,
+    walletBalance: 0,
     verificationStatus: "OFFICIAL_STORE",
     sellerTier: "Official Merchant",
     businessName: "Sefed Market Headquarters",
@@ -182,6 +182,7 @@ interface MarketplaceContextType {
   currentUser: ActiveUser;
   setCurrentUser: (user: ActiveUser) => void;
   isLoggedIn: boolean;
+  isAuthReady: boolean;
   login: (user: ActiveUser) => void;
   logout: () => void;
   switchUserById: (userId: string) => void;
@@ -219,6 +220,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const [selectedKebele, setSelectedKebele] = useState<string>("All Ethiopia");
   const [currentUser, setCurrentUser] = useState<ActiveUser>(PRESET_USERS[0]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const [listings, setListings] = useState<ProductListing[]>([]);
   const [toast, setToast] = useState<ToastNotification | null>(null);
 
@@ -356,39 +358,9 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
     showToast("You have been signed out.", "info");
   };
 
-  const [offers, setOffers] = useState<CustomOffer[]>([
-    {
-      id: "off-1",
-      listingId: "lst-2",
-      listingTitle: "Dell XPS 13 (Core i7 11th Gen, 16GB RAM)",
-      listingPrice: 68000,
-      offeredPrice: 63000,
-      sellerName: "Arada Tech Store (Dawit B.)",
-      sellerPhone: "+251922771133",
-      message: "I can pay 63,000 ETB cash today via Telebirr. Can we meet at Arada?",
-      status: "PENDING",
-      date: "Today, 11:20 AM",
-    },
-  ]);
+  const [offers, setOffers] = useState<CustomOffer[]>([]);
 
-  const [deliveries, setDeliveries] = useState<ActiveDelivery[]>([
-    {
-      id: "del-101",
-      trackingCode: "ADM-RUN-101-449",
-      listingTitle: "iPhone 13 Pro 128GB - Sierra Blue",
-      itemPrice: 55000,
-      deliveryFee: 40,
-      originMarket: "Arada Central Market",
-      destinationKebele: "Bole Kebele",
-      driverName: "Abebe Demissie",
-      driverPlate: "3-B042-OR (Bajaj RE)",
-      driverPhone: "+251911223344",
-      merchantReleaseOtp: "4829",
-      customerDeliveryOtp: "9153",
-      status: "IN_TRANSIT",
-      departureTime: "2:30 PM Today",
-    },
-  ]);
+  const [deliveries, setDeliveries] = useState<ActiveDelivery[]>([]);
 
   // Load favorites, user, and cart from localStorage
   useEffect(() => {
@@ -399,9 +371,21 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
       }
       const storedUser = localStorage.getItem("sefed_current_user") || localStorage.getItem("sebez_current_user");
       const storedAuth = localStorage.getItem("sefed_is_logged_in") || localStorage.getItem("sebez_is_logged_in");
-      if (storedUser && storedAuth === "true") {
-        setCurrentUser(JSON.parse(storedUser));
-        setIsLoggedIn(true);
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          // Purge legacy demo balances (e.g. 14250, 28500, 5000)
+          if (parsed.walletBalance === 14250 || parsed.walletBalance === 28500 || parsed.walletBalance === 5000 || typeof parsed.walletBalance !== "number") {
+            parsed.walletBalance = 0;
+            localStorage.setItem("sefed_current_user", JSON.stringify(parsed));
+          }
+          setCurrentUser(parsed);
+          if (storedAuth === "true") {
+            setIsLoggedIn(true);
+          }
+        } catch {
+          // ignore parsing error
+        }
       }
       const storedCart = localStorage.getItem("sefed_cart");
       if (storedCart) {
@@ -409,6 +393,8 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
       }
     } catch {
       // ignore
+    } finally {
+      setIsAuthReady(true);
     }
   }, []);
 
@@ -529,6 +515,7 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         currentUser,
         setCurrentUser: handleSetCurrentUser,
         isLoggedIn,
+        isAuthReady,
         login,
         logout,
         switchUserById,

@@ -46,192 +46,75 @@ function MessagesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedListingId = searchParams.get("listing");
-  const { isLoggedIn, showToast } = useMarketplace();
+  const { isLoggedIn, isAuthReady, showToast, listings } = useMarketplace();
 
   useEffect(() => {
+    if (!isAuthReady) return;
     if (!isLoggedIn) {
       showToast("Please sign in to access your direct messages.", "info");
       router.replace(`/auth/login?redirect=/messages${requestedListingId ? `?listing=${requestedListingId}` : ""}`);
     }
-  }, [isLoggedIn, router, showToast, requestedListingId]);
+  }, [isAuthReady, isLoggedIn, router, showToast, requestedListingId]);
 
   const [activeTab, setActiveTab] = useState<"buying" | "selling">("buying");
   const [inputText, setInputText] = useState("");
 
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "conv-0",
-      participantName: "Tarekegn Motors",
-      participantRole: "merchant",
-      participantKebele: "Megenagna, Addis Ababa",
-      participantPhone: "+251911998877",
-      itemTitle: "TVS HLX 150cc Commercial Motorcycle (2023)",
-      itemPrice: 135000,
-      itemImage:
-        "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&auto=format&fit=crop&q=80",
-      listingId: "lst-9",
-      quickReplies: [
-        "Can you take ThinkPad + S21 + 54,000 ETB cash?",
-        "I can add brand new Nike shoes to lower the cash top-up.",
-        "Can we do physical inspection at CBE Megenagna?",
-        "Are the motorcycle ownership card and plate ready?",
-      ],
-      messages: [
-        {
-          id: "m-0-1",
-          sender: "them",
-          text: "Selam! I checked your available posts list on Sefed. The TVS HLX 150cc is in mint condition with all documents ready in Megenagna.",
-          time: "09:40 AM",
-        },
-        {
-          id: "m-0-2",
-          sender: "me",
-          text: "Selam Tarekegn! From my posts, I want to trade my Lenovo ThinkPad (45,000 ETB) and Samsung S21 (36,000 ETB) plus AirPods Pro (8,500 ETB). Would you accept these 3 products plus cash top-up via Telebirr Escrow?",
-          time: "09:45 AM",
-        },
-        {
-          id: "m-0-3",
-          sender: "them",
-          text: "Yes, absolutely! That is 89,500 ETB in products. With a 45,500 ETB cash top-up via Telebirr Escrow, the total is 100% equivalent to 135,000 ETB. Or if you also include your Nike shoes from your posts, the cash top-up drops to only 39,000 ETB!",
-          time: "09:50 AM",
-        },
-      ],
-    },
-    {
-      id: "conv-1",
-      participantName: "Henok Tadesse",
-      participantRole: "seller",
-      participantKebele: "Bole Kebele, Adama",
-      participantPhone: "+251911448822",
-      itemTitle: "iPhone 13 Pro 128GB - Sierra Blue",
-      itemPrice: 55000,
-      itemImage:
-        "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&auto=format&fit=crop&q=80",
-      listingId: "lst-1",
-      quickReplies: [
-        "Is this still available in Bole?",
-        "Can we meet at Bole High School Gate?",
-        "Are you open to barter swap + cash top-up?",
-        "I want to buy via Telebirr Escrow today.",
-      ],
-      messages: [
-        {
-          id: "m-1-1",
-          sender: "them",
-          text: "Hello! Yes, the iPhone 13 Pro is available with original box and 89% battery health in Bole.",
-          time: "10:15 AM",
-        },
-        {
-          id: "m-1-2",
-          sender: "me",
-          text: "Great! Are you open to a barter swap with Samsung S21 or cash via Telebirr escrow?",
-          time: "10:18 AM",
-        },
-        {
-          id: "m-1-3",
-          sender: "them",
-          text: "Yes, I am happy to accept S21 with fair cash top-up! You can send me a swap proposal directly through the platform.",
-          time: "10:20 AM",
-        },
-      ],
-    },
-    {
-      id: "conv-2",
-      participantName: "Dawit Bekele (Arada Tech)",
-      participantRole: "merchant",
-      participantKebele: "Arada Electronics Center, Stall 14",
-      participantPhone: "+251922771133",
-      itemTitle: "Dell XPS 13 (Core i7 11th Gen, 16GB RAM)",
-      itemPrice: 68000,
-      itemImage:
-        "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format&fit=crop&q=80",
-      listingId: "lst-2",
-      quickReplies: [
-        "Can I inspect the laptop at Arada Market?",
-        "Can you top up 8,000 ETB for the swap?",
-        "Does it come with original Dell type-C charger?",
-      ],
-      messages: [
-        {
-          id: "m-2-1",
-          sender: "them",
-          text: "Selam! I saw your barter proposal. The Dell XPS 13 is thoroughly tested and has 7+ hours battery.",
-          time: "Yesterday",
-        },
-        {
-          id: "m-2-2",
-          sender: "me",
-          text: "Can I inspect the laptop at your shop in Arada before releasing the Telebirr escrow?",
-          time: "Yesterday",
-        },
-        {
-          id: "m-2-3",
-          sender: "them",
-          text: "Absolutely! You are welcome anytime at Stall 14 in Arada Market to inspect and test it.",
-          time: "Yesterday",
-        },
-      ],
-    },
-    {
-      id: "conv-3",
-      participantName: "Chaltu Girma",
-      participantRole: "seller",
-      participantKebele: "Kebele 04, Adama",
-      participantPhone: "+251933556677",
-      itemTitle: "Sony WH-1000XM4 Wireless Headphones",
-      itemPrice: 19000,
-      itemImage:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80",
-      listingId: "lst-3",
-      quickReplies: [
-        "Is the noise cancellation working perfectly?",
-        "Can we meet at Posta Bet tomorrow?",
-        "Would you accept 17,500 ETB cash?",
-      ],
-      messages: [
-        {
-          id: "m-3-1",
-          sender: "them",
-          text: "Selam! Yes, the Sony WH-1000XM4 is in mint condition with active noise cancellation and carry case.",
-          time: "2 days ago",
-        },
-        {
-          id: "m-3-2",
-          sender: "me",
-          text: "Can we meet at Posta Bet so I can test the sound quality before purchasing?",
-          time: "2 days ago",
-        },
-        {
-          id: "m-3-3",
-          sender: "them",
-          text: "Sure! I am available around 3:00 PM near Posta Bet. Let me know when you arrive.",
-          time: "2 days ago",
-        },
-      ],
-    },
-  ]);
-
-  const [activeConvId, setActiveConvId] = useState<string>(
-    requestedListingId === "lst-9" ? "conv-0" : requestedListingId === "lst-2" ? "conv-2" : "conv-0"
-  );
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConvId, setActiveConvId] = useState<string>("");
 
   const activeConv = conversations.find((c) => c.id === activeConvId) || conversations[0];
 
   // Fetch real persistent conversations from API on mount
   useEffect(() => {
     async function loadConversations() {
+      let loadedConvs: Conversation[] = [];
       try {
         const res = await fetch("/api/messages");
         const data = await res.json();
         if (data.success && data.conversations?.length > 0) {
-          setConversations(data.conversations);
+          loadedConvs = data.conversations;
         }
       } catch {
         // use fallback initial state
       }
+
+      if (requestedListingId) {
+        const targetListing = listings.find((l) => l.id === requestedListingId);
+        if (targetListing) {
+          const existing = loadedConvs.find((c) => c.listingId === requestedListingId);
+          if (!existing) {
+            const newConv: Conversation = {
+              id: `conv-${targetListing.id}`,
+              participantName: targetListing.seller.name,
+              participantRole: ((targetListing.seller as any).role as "seller" | "merchant") || "seller",
+              participantKebele: `${targetListing.kebele}, ${targetListing.city}`,
+              participantPhone: targetListing.seller.phone || "+2519...",
+              itemTitle: targetListing.title,
+              itemPrice: targetListing.price,
+              itemImage: targetListing.images[0] || "",
+              listingId: targetListing.id,
+              quickReplies: [
+                `Is this ${targetListing.title} available?`,
+                `Can we meet at a safe landmark in ${targetListing.city}?`,
+                `Are you open to a device swap with cash top-up?`,
+                `I want to buy via Telebirr or CBE escrow.`,
+              ],
+              messages: [],
+            };
+            loadedConvs = [newConv, ...loadedConvs];
+            setActiveConvId(newConv.id);
+          } else {
+            setActiveConvId(existing.id);
+          }
+        }
+      } else if (loadedConvs.length > 0) {
+        setActiveConvId(loadedConvs[0].id);
+      }
+
+      setConversations(loadedConvs);
     }
     loadConversations();
-  }, []);
+  }, [requestedListingId, listings]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -368,7 +251,7 @@ function MessagesContent() {
                 : "hover:text-slate-900"
             }`}
           >
-            My Inquiries (3)
+            My Inquiries ({conversations.length})
           </button>
           <button
             onClick={() => setActiveTab("selling")}
@@ -383,8 +266,28 @@ function MessagesContent() {
         </div>
       </div>
 
-      {/* Main Chat Layout - Bright, Clean, High-Contrast */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xl shadow-slate-900/5 grid grid-cols-1 md:grid-cols-12 min-h-[600px]">
+      {/* Main Chat Layout or Clean Empty State */}
+      {conversations.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-4 shadow-xl shadow-slate-900/5 max-w-lg mx-auto my-8">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-600 mx-auto flex items-center justify-center">
+            <MessageSquare className="w-8 h-8 text-slate-700" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="text-lg font-black text-slate-900">No Messages Yet</h2>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+              You haven&apos;t started any direct messages. Find a product on the marketplace and click &ldquo;Message Seller&rdquo; to negotiate prices or propose a barter swap.
+            </p>
+          </div>
+          <Link
+            href="/listings"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+          >
+            <ShoppingBag className="w-4 h-4 text-amber-400" />
+            <span>Browse Products &amp; Message Sellers</span>
+          </Link>
+        </div>
+      ) : activeConv && (
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xl shadow-slate-900/5 grid grid-cols-1 md:grid-cols-12 min-h-[600px]">
         {/* Conversations Sidebar (4 cols) */}
         <aside className="md:col-span-4 border-r border-slate-200 flex flex-col bg-slate-50/70">
           <div className="p-3.5 border-b border-slate-200 bg-white font-black text-xs text-slate-900 flex items-center justify-between">
@@ -566,6 +469,7 @@ function MessagesContent() {
           </form>
         </main>
       </div>
+      )}
     </div>
   );
 }

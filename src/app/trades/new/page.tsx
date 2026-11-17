@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { DEFAULT_USER_BARTER_INVENTORY, BarterInventoryItem } from "@/data/mockData";
+import { BarterInventoryItem } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import {
   Repeat,
@@ -26,9 +26,9 @@ import {
 function NewTradeOfferContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const targetId = searchParams.get("target") || "lst-9"; // Default to Motorcycle to match user scenario
+  const targetId = searchParams.get("target") || "";
 
-  const { isLoggedIn, showToast, listings } = useMarketplace();
+  const { isLoggedIn, showToast, listings, currentUser } = useMarketplace();
 
   // Authentication Guard: Redirect if not logged in
   useEffect(() => {
@@ -40,11 +40,49 @@ function NewTradeOfferContent() {
 
   const targetListing = listings.find((l) => l.id === targetId) || listings[0];
 
-  // User's available barter inventory (items posted by this user)
-  const [myInventory, setMyInventory] = useState<BarterInventoryItem[]>(DEFAULT_USER_BARTER_INVENTORY);
+  // User's available barter inventory derived from real posted products
+  const myInventory: BarterInventoryItem[] = useMemo(() => {
+    let localCreatedIds: string[] = [];
+    try {
+      localCreatedIds = JSON.parse(localStorage.getItem("sefed_user_created_listings") || "[]");
+    } catch {}
 
-  // Multi-item selection: Start with ThinkPad + S21 selected
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>(["inv-1", "inv-2"]);
+    const myPosts = listings.filter((l) => {
+      if (targetListing && l.id === targetListing.id) return false;
+      if (localCreatedIds.includes(l.id)) return true;
+      if (currentUser) {
+        if (
+          l.seller?.id &&
+          (l.seller.id === currentUser.id ||
+            l.seller.id === currentUser.id.replace("usr-", "sel-") ||
+            l.seller.id === currentUser.id.replace("sel-", "usr-"))
+        ) {
+          return true;
+        }
+        if (
+          l.seller?.phone &&
+          currentUser.phone &&
+          l.seller.phone.replace(/\D/g, "") === currentUser.phone.replace(/\D/g, "")
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    return myPosts.map((l) => ({
+      id: l.id,
+      title: l.title,
+      estimatedValue: l.price,
+      condition: l.condition,
+      category: l.subcategory || l.categorySlug || "Product",
+      image: l.images[0] || "/placeholder.png",
+      specs: `${l.condition} · ${l.subcategory || l.categorySlug} · ${l.city}`,
+    }));
+  }, [listings, currentUser, targetListing]);
+
+  // Multi-item selection starts empty
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 
   const selectedItems = myInventory.filter((item) => selectedItemIds.includes(item.id));
   const totalGoodsValue = selectedItems.reduce((acc, item) => acc + item.estimatedValue, 0);
@@ -63,7 +101,7 @@ function NewTradeOfferContent() {
       const next = prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId];
       const nextItems = myInventory.filter((i) => next.includes(i.id));
       const nextSum = nextItems.reduce((acc, i) => acc + i.estimatedValue, 0);
-      setCustomTopUp((targetListing.price - nextSum).toString());
+      setCustomTopUp(((targetListing?.price || 0) - nextSum).toString());
       return next;
     });
   };
@@ -72,12 +110,12 @@ function NewTradeOfferContent() {
     const allIds = myInventory.map((i) => i.id);
     setSelectedItemIds(allIds);
     const sum = myInventory.reduce((acc, i) => acc + i.estimatedValue, 0);
-    setCustomTopUp((targetListing.price - sum).toString());
+    setCustomTopUp(((targetListing?.price || 0) - sum).toString());
   };
 
   const clearSelection = () => {
     setSelectedItemIds([]);
-    setCustomTopUp(targetListing.price.toString());
+    setCustomTopUp((targetListing?.price || 0).toString());
   };
 
   const numericTopUp = Number(customTopUp) || 0;
@@ -287,56 +325,74 @@ function NewTradeOfferContent() {
               </div>
 
               {/* Grid of User's Posts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                {myInventory.map((item) => {
-                  const isChecked = selectedItemIds.includes(item.id);
-                  return (
-                    <div
-                      key={item.id}
-                      onClick={() => toggleItemSelection(item.id)}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-3.5 relative ${
-                        isChecked
-                          ? "bg-amber-50/50 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
-                          : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
-                      }`}
-                    >
-                      <div className="shrink-0 text-amber-600">
-                        {isChecked ? (
-                          <CheckSquare className="w-5 h-5 text-amber-600 fill-amber-100" />
-                        ) : (
-                          <Square className="w-5 h-5 text-slate-300" />
-                        )}
-                      </div>
-
-                      <img
-                        src={item.image}
-                        alt=""
-                        className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
-                      />
-
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            {item.category}
-                          </span>
-                          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                            {item.condition}
-                          </span>
+              {myInventory.length === 0 ? (
+                <div className="p-8 rounded-2xl bg-amber-50/50 border border-amber-200 text-center space-y-3">
+                  <Repeat className="w-10 h-10 text-amber-700 mx-auto" />
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-sm text-slate-900">No products available in your barter inventory</h4>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                      Post your device or item for free on Sefed to bundle it into this trade proposal, or offer pure cash via Escrow.
+                    </p>
+                  </div>
+                  <Link
+                    href="/listings/create"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0f172a] text-white font-bold text-xs hover:bg-slate-800 transition-colors shadow-2xs"
+                  >
+                    <span>+ Post Free Product to Trade</span>
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {myInventory.map((item) => {
+                    const isChecked = selectedItemIds.includes(item.id);
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => toggleItemSelection(item.id)}
+                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-3.5 relative ${
+                          isChecked
+                            ? "bg-amber-50/50 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
+                            : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                        }`}
+                      >
+                        <div className="shrink-0 text-amber-600">
+                          {isChecked ? (
+                            <CheckSquare className="w-5 h-5 text-amber-600 fill-amber-100" />
+                          ) : (
+                            <Square className="w-5 h-5 text-slate-300" />
+                          )}
                         </div>
-                        <h4 className="font-black text-xs text-slate-900 truncate mt-0.5">
-                          {item.title}
-                        </h4>
-                        {item.specs && (
-                          <p className="text-[10px] text-slate-500 truncate">{item.specs}</p>
-                        )}
-                        <div className="text-xs font-black text-[#0f172a] mt-1">
-                          {item.estimatedValue.toLocaleString()} ETB
+
+                        <img
+                          src={item.image}
+                          alt=""
+                          className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                              {item.category}
+                            </span>
+                            <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                              {item.condition}
+                            </span>
+                          </div>
+                          <h4 className="font-black text-xs text-slate-900 truncate mt-0.5">
+                            {item.title}
+                          </h4>
+                          {item.specs && (
+                            <p className="text-[10px] text-slate-500 truncate">{item.specs}</p>
+                          )}
+                          <div className="text-xs font-black text-[#0f172a] mt-1">
+                            {item.estimatedValue.toLocaleString()} ETB
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Selected Barter Bundle Summary Pill */}
               <div className="p-3.5 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">

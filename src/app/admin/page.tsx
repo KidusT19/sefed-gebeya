@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -20,44 +20,32 @@ import {
   Sparkles,
   MapPin,
 } from "lucide-react";
-import { MOCK_LISTINGS } from "@/data/mockData";
-
 export default function AdminDashboardPage() {
-  const [escrowList, setEscrowList] = useState([
+  const [escrowList, setEscrowList] = useState<
     {
-      id: "ESC-901",
-      buyer: "Dawit B. (Kebele 04)",
-      seller: "Henok Tadesse (Bole)",
-      item: "iPhone 13 Pro 128GB",
-      amount: 55000,
-      provider: "TELEBIRR",
-      status: "HELD_IN_ESCROW",
-      meetup: "Posta Bet Commercial Square",
-      createdAt: "Today, 10:14 AM",
-    },
-    {
-      id: "ESC-902",
-      buyer: "Chaltu Girma (Kebele 04)",
-      seller: "Arada Tech Store",
-      item: "Dell XPS 13 (Core i7)",
-      amount: 68000,
-      provider: "CBE_BIRR",
-      status: "HELD_IN_ESCROW",
-      meetup: "Arada Market Hub (2nd Floor)",
-      createdAt: "Today, 9:45 AM",
-    },
-    {
-      id: "ESC-903",
-      buyer: "Yonas Studio (Posta Bet)",
-      seller: "Tirhas Kitchen Store",
-      item: "Anbessa Electric Mitad",
-      amount: 14500,
-      provider: "TELEBIRR",
-      status: "COMPLETED",
-      meetup: "Bole Gate Commercial Zone",
-      createdAt: "Yesterday, 3:20 PM",
-    },
-  ]);
+      id: string;
+      buyer: string;
+      seller: string;
+      item: string;
+      amount: number;
+      provider: string;
+      status: string;
+      meetup: string;
+      createdAt: string;
+    }[]
+  >([]);
+  const [listingsCount, setListingsCount] = useState(1);
+
+  useEffect(() => {
+    fetch("/api/listings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.listings) {
+          setListingsCount(data.listings.length);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const [scanMessage, setScanMessage] = useState<string | null>(null);
 
@@ -132,9 +120,9 @@ export default function AdminDashboardPage() {
         >
           <span className="text-[10px] font-bold text-[#8c6b51] block uppercase tracking-wider">Live Listings</span>
           <div className="text-2xl font-black text-white mt-1 group-hover:text-blue-300 transition-colors">
-            {MOCK_LISTINGS.length + 36}
+            {listingsCount}
           </div>
-          <span className="text-[10px] text-emerald-400 font-semibold">+8 new today in Adama</span>
+          <span className="text-[10px] text-emerald-400 font-semibold">Active in marketplace</span>
         </Link>
 
         <Link
@@ -143,7 +131,7 @@ export default function AdminDashboardPage() {
         >
           <span className="text-[10px] font-bold text-[#8c6b51] block uppercase tracking-wider">Active Escrow Value</span>
           <div className="text-2xl font-black text-amber-300 mt-1 font-mono group-hover:text-amber-200 transition-colors">
-            137,500 ETB
+            {escrowList.reduce((sum, e) => sum + e.amount, 0).toLocaleString()} ETB
           </div>
           <span className="text-[10px] text-blue-400 font-semibold">Protected via Telebirr &amp; CBE</span>
         </Link>
@@ -152,11 +140,11 @@ export default function AdminDashboardPage() {
           href="/admin/users"
           className="bg-[#24170f] p-4 rounded-2xl border border-[#3a271a] shadow-2xs hover:border-[#52361f] transition-all group"
         >
-          <span className="text-[10px] font-bold text-[#8c6b51] block uppercase tracking-wider">Verified Merchants</span>
+          <span className="text-[10px] font-bold text-[#8c6b51] block uppercase tracking-wider">Registered Users</span>
           <div className="text-2xl font-black text-white mt-1 group-hover:text-blue-300 transition-colors">
-            24 Active
+            3 Active
           </div>
-          <span className="text-[10px] text-amber-400 font-semibold">Arada &amp; Posta Bet hubs</span>
+          <span className="text-[10px] text-amber-400 font-semibold">Real user accounts</span>
         </Link>
 
         <Link
@@ -165,9 +153,9 @@ export default function AdminDashboardPage() {
         >
           <span className="text-[10px] font-bold text-[#8c6b51] block uppercase tracking-wider">3-Way Circular Swaps</span>
           <div className="text-2xl font-black text-emerald-400 mt-1 group-hover:text-emerald-300 transition-colors">
-            1 Active Loop
+            0 Loops
           </div>
-          <span className="text-[10px] text-emerald-300 font-semibold">3 participants matched</span>
+          <span className="text-[10px] text-emerald-300 font-semibold">Waiting for wishlist matches</span>
         </Link>
       </div>
 

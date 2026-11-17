@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { DEFAULT_USER_BARTER_INVENTORY } from "@/data/mockData";
 import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
@@ -75,7 +74,7 @@ export default function ListingDetailPage() {
   const params = useParams();
   const listingId = params?.id as string;
 
-  const { isFavorite, toggleFavorite, addOffer, isLoggedIn, listings } = useMarketplace();
+  const { isFavorite, toggleFavorite, addOffer, isLoggedIn, listings, currentUser } = useMarketplace();
 
   const [listing, setListing] = useState<ProductListing>(() => {
     return listings.find((l) => l.id === listingId) || EMPTY_LISTING;
@@ -216,43 +215,63 @@ export default function ListingDetailPage() {
   const [reviewKebele, setReviewKebele] = useState(listing.kebele || "Bole");
   const [reviewSent, setReviewSent] = useState(false);
 
-  // Customer Reviews state
-  const [reviews, setReviews] = useState([
+  // Customer Reviews state (clean for real users)
+  const [reviews, setReviews] = useState<
     {
-      id: "rev-1",
-      author: "Chaltu Girma",
-      kebele: "Bole",
-      city: "Addis Ababa",
-      rating: 5,
-      date: "3 days ago",
-      comment: "Met outside Posta Bet, verified device IMEI and battery health. 100% genuine seller!",
-      verifiedBuyer: true,
-    },
-    {
-      id: "rev-2",
-      author: "Dawit B.",
-      kebele: "Posta Bet",
-      city: "Adama",
-      rating: 5,
-      date: "1 week ago",
-      comment: "Tested device IMEI and battery health in person. Telebirr escrow released seamlessly.",
-      verifiedBuyer: true,
-    },
-    {
-      id: "rev-3",
-      author: "Yonas Studio",
-      kebele: "Kebele 04",
-      city: "Hawassa",
-      rating: 4,
-      date: "2 weeks ago",
-      comment: "Fair barter swap with cash top-up. Handover was transparent and easy.",
-      verifiedBuyer: true,
-    },
-  ]);
+      id: string;
+      author: string;
+      kebele: string;
+      city: string;
+      rating: number;
+      date: string;
+      comment: string;
+      verifiedBuyer: boolean;
+    }[]
+  >([]);
 
-  // Smart Multi-Item Barter Matcher state
-  const [selectedBarterItemIds, setSelectedBarterItemIds] = useState<string[]>(["inv-1", "inv-2"]);
-  const selectedBarterItems = DEFAULT_USER_BARTER_INVENTORY.filter((item) => selectedBarterItemIds.includes(item.id));
+  // Smart Multi-Item Barter Matcher: Live barter inventory derived from user's real posted items
+  const userBarterItems = useMemo(() => {
+    let localCreatedIds: string[] = [];
+    try {
+      localCreatedIds = JSON.parse(localStorage.getItem("sefed_user_created_listings") || "[]");
+    } catch {}
+
+    const myPosts = listings.filter((l) => {
+      if (l.id === listing.id) return false;
+      if (localCreatedIds.includes(l.id)) return true;
+      if (currentUser) {
+        if (
+          l.seller?.id &&
+          (l.seller.id === currentUser.id ||
+            l.seller.id === currentUser.id.replace("usr-", "sel-") ||
+            l.seller.id === currentUser.id.replace("sel-", "usr-"))
+        ) {
+          return true;
+        }
+        if (
+          l.seller?.phone &&
+          currentUser.phone &&
+          l.seller.phone.replace(/\D/g, "") === currentUser.phone.replace(/\D/g, "")
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    return myPosts.map((l) => ({
+      id: l.id,
+      title: l.title,
+      estimatedValue: l.price,
+      condition: l.condition,
+      category: l.subcategory || l.categorySlug || "Product",
+      image: l.images[0] || "/placeholder.png",
+      specs: `${l.condition} · ${l.subcategory || l.categorySlug} · ${l.city}`,
+    }));
+  }, [listings, currentUser, listing.id]);
+
+  const [selectedBarterItemIds, setSelectedBarterItemIds] = useState<string[]>([]);
+  const selectedBarterItems = userBarterItems.filter((item) => selectedBarterItemIds.includes(item.id));
   const totalBarterGoodsValue = selectedBarterItems.reduce((acc, item) => acc + item.estimatedValue, 0);
   const tradeCashDiff = listing.price - totalBarterGoodsValue;
 
@@ -560,38 +579,56 @@ export default function ListingDetailPage() {
                     <label className="text-xs font-bold text-slate-700 block">
                       Choose products from your available posts to bundle:
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {DEFAULT_USER_BARTER_INVENTORY.map((d) => {
-                        const isSelected = selectedBarterItemIds.includes(d.id);
-                        return (
-                          <button
-                            key={d.id}
-                            type="button"
-                            onClick={() => toggleBarterItem(d.id)}
-                            className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-                              isSelected
-                                ? "bg-amber-50/60 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
-                                : "bg-white border-slate-200 hover:bg-slate-100/70"
-                            }`}
-                          >
-                            <div className="shrink-0 text-amber-600">
-                              {isSelected ? (
-                                <CheckSquare className="w-4 h-4 text-amber-600 fill-amber-100" />
-                              ) : (
-                                <Square className="w-4 h-4 text-slate-300" />
-                              )}
-                            </div>
-                            <img src={d.image} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
-                            <div className="min-w-0">
-                              <div className="font-bold text-xs text-slate-900 truncate">{d.title}</div>
-                              <div className="text-[11px] font-extrabold text-[#0f172a]">
-                                {d.estimatedValue.toLocaleString()} ETB
+                    {userBarterItems.length === 0 ? (
+                      <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 text-xs space-y-2.5">
+                        <div className="flex items-center gap-2 text-amber-950 font-bold">
+                          <Repeat className="w-4 h-4 text-amber-700 shrink-0" />
+                          <span>No products in your barter inventory yet</span>
+                        </div>
+                        <p className="text-slate-600 text-[11px] leading-relaxed">
+                          Post your phone, laptop, or any item for free on Sefed so you can select them here for instant multi-item barter proposals!
+                        </p>
+                        <Link
+                          href="/listings/create"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-2xs"
+                        >
+                          <span>+ Post Free Product to Trade</span>
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {userBarterItems.map((d) => {
+                          const isSelected = selectedBarterItemIds.includes(d.id);
+                          return (
+                            <button
+                              key={d.id}
+                              type="button"
+                              onClick={() => toggleBarterItem(d.id)}
+                              className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
+                                isSelected
+                                  ? "bg-amber-50/60 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
+                                  : "bg-white border-slate-200 hover:bg-slate-100/70"
+                              }`}
+                            >
+                              <div className="shrink-0 text-amber-600">
+                                {isSelected ? (
+                                  <CheckSquare className="w-4 h-4 text-amber-600 fill-amber-100" />
+                                ) : (
+                                  <Square className="w-4 h-4 text-slate-300" />
+                                )}
                               </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                              <img src={d.image} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
+                              <div className="min-w-0">
+                                <div className="font-bold text-xs text-slate-900 truncate">{d.title}</div>
+                                <div className="text-[11px] font-extrabold text-[#0f172a]">
+                                  {d.estimatedValue.toLocaleString()} ETB
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   {/* Calculation Result */}
@@ -662,8 +699,14 @@ export default function ListingDetailPage() {
               </div>
 
               <div className="space-y-3">
-                {reviews.map((rev) => (
-                  <div key={rev.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                {reviews.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-1 text-xs text-slate-500">
+                    <p className="font-bold text-slate-700">No reviews yet for this seller</p>
+                    <p className="text-[11px]">Be the first to leave a review after inspecting and receiving this item!</p>
+                  </div>
+                ) : (
+                  reviews.map((rev) => (
+                    <div key={rev.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-xs text-slate-900">{rev.author}</span>
@@ -687,8 +730,9 @@ export default function ListingDetailPage() {
                       &ldquo;{rev.comment}&rdquo;
                     </p>
                   </div>
-                ))}
-              </div>
+                ))
+              )}
+            </div>
             </div>
           </div>
 

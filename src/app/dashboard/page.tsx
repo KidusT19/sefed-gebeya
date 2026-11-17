@@ -54,6 +54,7 @@ function DashboardContent() {
     deliveries,
     currentUser,
     isLoggedIn,
+    isAuthReady,
     updateUserProfile,
     showToast,
     listings,
@@ -61,16 +62,17 @@ function DashboardContent() {
     toggleListingStatus,
   } = useMarketplace();
 
-  // Authentication Guard: Redirect to login if user is not logged in
+  // Authentication Guard: Redirect to login if user is not logged in (only after auth is ready)
   useEffect(() => {
+    if (!isAuthReady) return;
     if (!isLoggedIn) {
       showToast("Please sign in to access your personal dashboard and account details.", "info");
       router.replace(`/auth/login?redirect=/dashboard${initialTab ? `?tab=${initialTab}` : ""}`);
     }
-  }, [isLoggedIn, router, showToast, initialTab]);
+  }, [isAuthReady, isLoggedIn, router, showToast, initialTab]);
 
   const [activeTab, setActiveTab] = useState<string>(initialTab);
-  const [walletBalance, setWalletBalance] = useState<number>(currentUser?.walletBalance || 14250);
+  const [walletBalance, setWalletBalance] = useState<number>(currentUser?.walletBalance || 0);
   const [depositAmount, setDepositAmount] = useState<string>("500");
   const [walletSuccessMsg, setWalletSuccessMsg] = useState<string | null>(null);
 
@@ -159,7 +161,7 @@ function DashboardContent() {
           currentFirstName &&
           sellerFirstName &&
           currentFirstName === sellerFirstName &&
-          (l.id === "lst-1" || l.id === "82270859-b3e6-4daa-a276-bbda1305930e")
+          l.id === "82270859-b3e6-4daa-a276-bbda1305930e"
         ) {
           return true;
         }
@@ -603,86 +605,66 @@ function DashboardContent() {
           </div>
 
           <div className="space-y-3">
-            {/* Mock Incoming Offer */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-5 space-y-3 shadow-sm">
-              <div className="flex justify-between items-start gap-2">
+            {offers.length === 0 ? (
+              <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-8 text-center space-y-4 shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 mx-auto flex items-center justify-center">
+                  <Repeat className="w-6 h-6 text-slate-600" />
+                </div>
                 <div>
-                  <span className="text-[10px] font-black uppercase text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">
-                    Incoming Barter Proposal
-                  </span>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 mt-1">
-                    Trade Proposal for: <strong>iPhone 13 Pro 128GB</strong>
-                  </h3>
+                  <h3 className="font-black text-sm text-slate-900">No Barter Proposals or Offers Yet</h3>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+                    When you propose a device swap with cash top-up or receive offers from buyers on your listings, they will appear here.
+                  </p>
                 </div>
-                <span className="text-xs text-slate-400 font-medium">1 hour ago</span>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Offered Item:</span>
-                  <span className="font-bold text-slate-900">Samsung Galaxy S21 5G (Like New)</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Cash Top-Up Offered to You:</span>
-                  <span className="font-black text-[#0e623a] text-sm font-mono">+ 18,000 ETB (Telebirr)</span>
-                </div>
-                <div className="flex justify-between items-center pt-2 border-t border-slate-200">
-                  <span className="text-slate-500">Proposed by:</span>
-                  <span className="font-bold text-slate-900">Chaltu Girma (Piazza, Hawassa)</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 justify-end pt-1">
                 <Link
-                  href="/trades/tr-801"
-                  className="px-5 py-2.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-xs transition-colors cursor-pointer shadow-sm"
+                  href="/listings"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-bold text-xs shadow-xs transition-colors"
                 >
-                  Open Deal Room &amp; Negotiate
+                  Explore Marketplace &rarr;
                 </Link>
               </div>
-            </div>
+            ) : (
+              offers.map((off) => (
+                <div
+                  key={off.id}
+                  className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-5 space-y-3 shadow-sm"
+                >
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <span className="text-[10px] font-black uppercase text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        Sent Cash Offer
+                      </span>
+                      <h3 className="font-bold text-sm sm:text-base text-slate-900 mt-1">{off.listingTitle}</h3>
+                    </div>
+                    <span className="text-xs text-slate-400">{off.date}</span>
+                  </div>
 
-            {/* Custom Sent Offers */}
-            {offers.map((off) => (
-              <div
-                key={off.id}
-                className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-5 space-y-3 shadow-sm"
-              >
-                <div className="flex justify-between items-start gap-2">
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                      Sent Cash Offer
-                    </span>
-                    <h3 className="font-bold text-sm sm:text-base text-slate-900 mt-1">{off.listingTitle}</h3>
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">List Price:</span>
+                      <span className="text-slate-900 font-mono">{off.listingPrice.toLocaleString()} ETB</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Your Cash Offer:</span>
+                      <span className="font-black text-[#0e623a] text-sm font-mono">{off.offeredPrice.toLocaleString()} ETB</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 pt-1 border-t border-slate-200 italic">
+                      &ldquo;{off.message}&rdquo;
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400">{off.date}</span>
-                </div>
 
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500">List Price:</span>
-                    <span className="text-slate-900 font-mono">{off.listingPrice.toLocaleString()} ETB</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500">Your Cash Offer:</span>
-                    <span className="font-black text-[#0e623a] text-sm font-mono">{off.offeredPrice.toLocaleString()} ETB</span>
-                  </div>
-                  <div className="text-[11px] text-slate-600 pt-1 border-t border-slate-200 italic">
-                    &ldquo;{off.message}&rdquo;
+                  <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+                    <span>Seller: {off.sellerName}</span>
+                    <a
+                      href={`tel:${off.sellerPhone}`}
+                      className="font-bold text-[#0e623a] hover:underline flex items-center gap-1"
+                    >
+                      <Phone className="w-3.5 h-3.5" /> Call {off.sellerPhone}
+                    </a>
                   </div>
                 </div>
-
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
-                  <span>Seller: {off.sellerName}</span>
-                  <a
-                    href={`tel:${off.sellerPhone}`}
-                    className="font-bold text-[#0e623a] hover:underline flex items-center gap-1"
-                  >
-                    <Phone className="w-3.5 h-3.5" /> Call {off.sellerPhone}
-                  </a>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       )}
@@ -700,7 +682,7 @@ function DashboardContent() {
                   {walletBalance.toLocaleString()} ETB
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
-                  Linked Phone: <strong className="font-mono text-slate-800">{currentUser?.phone || "+251 91 144 8822"}</strong>
+                  Linked Phone: <strong className="font-mono text-slate-800">{currentUser?.phone || "No phone linked"}</strong>
                 </p>
               </div>
 

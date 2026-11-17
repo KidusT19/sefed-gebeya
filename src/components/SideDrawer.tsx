@@ -82,7 +82,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 <div className="font-bold text-xs text-slate-900 truncate">{currentUser.name}</div>
                 <div className="text-[11px] font-semibold text-[#0f172a] flex items-center gap-1">
                   <Wallet className="w-3 h-3 text-amber-500" />
-                  <span>{currentUser.walletBalance?.toLocaleString()} ETB</span>
+                  <span>{(currentUser.walletBalance || 0).toLocaleString()} ETB</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-400" />

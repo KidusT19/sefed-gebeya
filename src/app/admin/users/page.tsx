@@ -18,7 +18,7 @@ import {
 import { PRESET_USERS, ActiveUser } from "@/context/MarketplaceContext";
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<ActiveUser[]>(PRESET_USERS);
+  const [users, setUsers] = useState<ActiveUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function AdminUsersPage() {
             avatarUrl: u.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
             rating: u.rating || 5.0,
             completedTrades: u.completedTrades || 0,
-            walletBalance: preset?.walletBalance || 5000,
+            walletBalance: u.walletBalance || preset?.walletBalance || 0,
           };
         });
         setUsers(merged);

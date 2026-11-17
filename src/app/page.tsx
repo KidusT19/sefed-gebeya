@@ -44,41 +44,13 @@ export default function HomePage() {
 
   const [activeFeedTab, setActiveFeedTab] = useState<"all" | "electronics" | "fashion" | "swap" | "budget">("all");
 
-  // Barter Calculator Interactive State
-  const [simMyDevice, setSimMyDevice] = useState("samsung-s21");
-  const [simTargetDevice, setSimTargetDevice] = useState("iphone-13");
+  // Barter Calculator Interactive State (Real user value calculator)
+  const [myDeviceValue, setMyDeviceValue] = useState<number | string>(10000);
+  const [targetDeviceValue, setTargetDeviceValue] = useState<number | string>(18000);
 
-  const SIM_DEVICES: Record<string, { name: string; value: number; image: string }> = {
-    "samsung-s21": {
-      name: "Samsung Galaxy S21 5G",
-      value: 36000,
-      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300&auto=format&fit=crop&q=80",
-    },
-    "iphone-13": {
-      name: "iPhone 13 Pro 128GB",
-      value: 55000,
-      image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=300&auto=format&fit=crop&q=80",
-    },
-    "dell-xps": {
-      name: "Dell XPS 13 (Core i7)",
-      value: 68000,
-      image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=300&auto=format&fit=crop&q=80",
-    },
-    "sony-camera": {
-      name: "Sony Alpha A6400 Camera",
-      value: 62000,
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&auto=format&fit=crop&q=80",
-    },
-    "redmi-note": {
-      name: "Redmi Note 12 Pro",
-      value: 24500,
-      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&auto=format&fit=crop&q=80",
-    },
-  };
-
-  const myDeviceObj = SIM_DEVICES[simMyDevice] || SIM_DEVICES["samsung-s21"];
-  const targetDeviceObj = SIM_DEVICES[simTargetDevice] || SIM_DEVICES["iphone-13"];
-  const barterDifference = targetDeviceObj.value - myDeviceObj.value;
+  const numMy = Number(myDeviceValue) || 0;
+  const numTarget = Number(targetDeviceValue) || 0;
+  const barterDifference = numTarget - numMy;
 
   const handleScrollToProducts = () => {
     trendingRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -432,37 +404,35 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Your Device */}
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-slate-500">Device You Have</label>
-                    <select
-                      value={simMyDevice}
-                      onChange={(e) => setSimMyDevice(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
-                    >
-                      <option value="samsung-s21">Samsung Galaxy S21 (36,000 ETB)</option>
-                      <option value="redmi-note">Redmi Note 12 Pro (24,500 ETB)</option>
-                      <option value="iphone-13">iPhone 13 Pro (55,000 ETB)</option>
-                      <option value="dell-xps">Dell XPS 13 (68,000 ETB)</option>
-                    </select>
+                    <label className="text-[11px] font-bold text-slate-500">Your Product Value (ETB)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="500"
+                      value={myDeviceValue}
+                      onChange={(e) => setMyDeviceValue(e.target.value)}
+                      placeholder="e.g. 10000"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
+                    />
                     <div className="text-[11px] font-bold text-slate-600 pt-1">
-                      Estimated: <span className="text-[#0f172a] font-black">{myDeviceObj.value.toLocaleString()} ETB</span>
+                      You Offer: <span className="text-[#0f172a] font-black">{numMy.toLocaleString()} ETB</span>
                     </div>
                   </div>
 
                   {/* Target Device */}
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-slate-500">Target Upgrade</label>
-                    <select
-                      value={simTargetDevice}
-                      onChange={(e) => setSimTargetDevice(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
-                    >
-                      <option value="iphone-13">iPhone 13 Pro (55,000 ETB)</option>
-                      <option value="dell-xps">Dell XPS 13 (68,000 ETB)</option>
-                      <option value="sony-camera">Sony Alpha Camera (62,000 ETB)</option>
-                      <option value="samsung-s21">Samsung Galaxy S21 (36,000 ETB)</option>
-                    </select>
+                    <label className="text-[11px] font-bold text-slate-500">Target Product Value (ETB)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="500"
+                      value={targetDeviceValue}
+                      onChange={(e) => setTargetDeviceValue(e.target.value)}
+                      placeholder="e.g. 18000"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
+                    />
                     <div className="text-[11px] font-bold text-slate-600 pt-1">
-                      Estimated: <span className="text-[#0f172a] font-black">{targetDeviceObj.value.toLocaleString()} ETB</span>
+                      You Receive: <span className="text-[#0f172a] font-black">{numTarget.toLocaleString()} ETB</span>
                     </div>
                   </div>
                 </div>
@@ -479,8 +449,8 @@ export default function HomePage() {
                       ? `+ ${Math.abs(barterDifference).toLocaleString()} ETB Cash to You!`
                       : "Even Direct Swap (0 ETB)"}
                   </div>
-                  <p className="text-[11px] text-slate-500">
-                    Trade your {myDeviceObj.name} for {targetDeviceObj.name} safely
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Exchange your goods with automated cash balancing &amp; CBE / Telebirr Escrow protection
                   </p>
                 </div>
               </div>

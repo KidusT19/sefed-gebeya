@@ -1,40 +1,7 @@
 import { NextResponse } from "next/server";
 import { ActiveDelivery } from "@/context/MarketplaceContext";
 
-let STORED_DELIVERIES: ActiveDelivery[] = [
-  {
-    id: "del-101",
-    trackingCode: "ADM-RUN-101-449",
-    listingTitle: "iPhone 13 Pro 128GB (Sierra Blue)",
-    itemPrice: 55000,
-    deliveryFee: 40,
-    originMarket: "Arada Market, Stall 14",
-    destinationKebele: "Bole Kebele, Gate 2",
-    driverName: "Abebe Demissie",
-    driverPlate: "3-B042-OR (Bajaj RE)",
-    driverPhone: "+251911448822",
-    merchantReleaseOtp: "4829",
-    customerDeliveryOtp: "9153",
-    status: "IN_TRANSIT",
-    departureTime: "In 15 mins",
-  },
-  {
-    id: "del-102",
-    trackingCode: "ADM-RUN-102-881",
-    listingTitle: "Dell XPS 13 Ultrabook (Core i7)",
-    itemPrice: 68000,
-    deliveryFee: 40,
-    originMarket: "Arada Central Hub",
-    destinationKebele: "Kebele 04, Behind Stadium",
-    driverName: "Abebe Demissie",
-    driverPlate: "3-B042-OR (Bajaj RE)",
-    driverPhone: "+251911448822",
-    merchantReleaseOtp: "5318",
-    customerDeliveryOtp: "7741",
-    status: "DISPATCHED",
-    departureTime: "In 35 mins",
-  },
-];
+let STORED_DELIVERIES: ActiveDelivery[] = [];
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

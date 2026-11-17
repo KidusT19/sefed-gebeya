@@ -17,10 +17,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { ProductListing } from "@/types/marketplace";
-import { MOCK_LISTINGS } from "@/data/mockData";
-
 export default function AdminListingsPage() {
-  const [listings, setListings] = useState<ProductListing[]>(MOCK_LISTINGS);
+  const [listings, setListings] = useState<ProductListing[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedKebele, setSelectedKebele] = useState("All");
   const [isLoading, setIsLoading] = useState(false);

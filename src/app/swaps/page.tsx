@@ -28,7 +28,7 @@ export default function CircularSwapsPage() {
     }));
   };
 
-  const allApproved = cycle.nodes.every((n) => n.hasApproved);
+  const allApproved = cycle?.nodes ? cycle.nodes.every((n) => n.hasApproved) : false;
 
   const routeSteps = [
     {
@@ -82,7 +82,34 @@ export default function CircularSwapsPage() {
         </p>
       </div>
 
-      {/* Active Matched Loop Card */}
+      {/* Active Matched Loop Card or Informative Empty State */}
+      {!cycle ? (
+        <div className="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 text-center space-y-4 shadow-sm max-w-xl mx-auto my-6">
+          <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 mx-auto flex items-center justify-center">
+            <Repeat className="w-7 h-7" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="text-lg font-black text-slate-900">No Circular Trade Loops Detected Yet</h2>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
+              Circular barter automatically discovers 3-way exchange loops when users post products with desired trade categories. Once multiple users have complementary wishlists, matching loops with balanced cash top-ups will appear here!
+            </p>
+          </div>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/listings/create"
+              className="px-5 py-2.5 rounded-full bg-[#0f172a] hover:bg-slate-800 text-white font-bold text-xs transition-colors"
+            >
+              + Post Free Product
+            </Link>
+            <Link
+              href="/listings"
+              className="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+            >
+              Browse Marketplace
+            </Link>
+          </div>
+        </div>
+      ) : (
       <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div>
@@ -310,6 +337,7 @@ export default function CircularSwapsPage() {
           </Link>
         </div>
       </div>
+      )}
     </div>
   );
 }

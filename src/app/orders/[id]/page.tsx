@@ -26,6 +26,18 @@ export default function OrderReceiptPage() {
 
   const [copied, setCopied] = useState<string | null>(null);
 
+  if (!activeDel) {
+    return (
+      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
+        <h2 className="text-xl font-bold text-slate-800">Order Not Found</h2>
+        <p className="text-xs text-slate-500">There is no active delivery or escrow voucher matching this code.</p>
+        <Link href="/dashboard" className="inline-block px-5 py-2.5 bg-[#0f172a] text-white text-xs font-bold rounded-full">
+          Back to Dashboard
+        </Link>
+      </div>
+    );
+  }
+
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     setCopied(label);

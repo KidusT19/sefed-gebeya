@@ -336,7 +336,7 @@ export default function Navbar() {
                     <div className="hidden xl:block text-left text-xs leading-tight">
                       <div className="font-bold text-slate-900 line-clamp-1">{currentUser.name.split(" ")[0]}</div>
                       <div className="text-[10px] font-bold text-[#0f172a]">
-                        {currentUser.walletBalance?.toLocaleString()} ETB
+                        {(currentUser.walletBalance || 0).toLocaleString()} ETB
                       </div>
                     </div>
                     <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180 text-[#0f172a]" : ""}`} />
@@ -382,7 +382,7 @@ export default function Navbar() {
                             <div>
                               <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Escrow Wallet</div>
                               <div className="text-xs font-black text-amber-400">
-                                {currentUser.walletBalance?.toLocaleString()} ETB
+                                {(currentUser.walletBalance || 0).toLocaleString()} ETB
                               </div>
                             </div>
                           </div>
@@ -660,7 +660,7 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href={isLoggedIn ? "/listings/create" : "/auth/login?redirect=/listings/create"}
-                className="inline-flex items-center justify-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs sm:text-[13px] px-6 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all whitespace-nowrap active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs sm:text-[13px] px-8 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all whitespace-nowrap active:scale-[0.98]"
               >
                 <span>+ Post Free Product</span>
               </Link>

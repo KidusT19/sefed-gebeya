@@ -25,147 +25,7 @@ export interface ApiConversation {
 }
 
 // In-memory persistent store (shared across sessions in server runtime)
-let STORED_CONVERSATIONS: ApiConversation[] = [
-  {
-    id: "conv-1",
-    participantName: "Henok Tadesse",
-    participantRole: "seller",
-    participantKebele: "Bole Kebele, Adama",
-    participantPhone: "+251911448822",
-    itemTitle: "iPhone 13 Pro 128GB - Sierra Blue",
-    itemPrice: 55000,
-    itemImage:
-      "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&auto=format&fit=crop&q=80",
-    listingId: "lst-1",
-    quickReplies: [
-      "Is this still available in Bole?",
-      "Can we meet at Bole High School Gate?",
-      "Are you open to barter swap + cash top-up?",
-      "I want to buy via Telebirr Escrow today.",
-    ],
-    messages: [
-      {
-        id: "m-1-1",
-        conversationId: "conv-1",
-        sender: "them",
-        senderName: "Henok Tadesse",
-        text: "Hello! Yes, the iPhone 13 Pro is available with original box and 89% battery health in Bole.",
-        time: "10:15 AM",
-        createdAt: Date.now() - 3600000,
-      },
-      {
-        id: "m-1-2",
-        conversationId: "conv-1",
-        sender: "me",
-        senderName: "Buyer",
-        text: "Great! Are you open to a barter swap with Samsung S21 or cash via Telebirr escrow?",
-        time: "10:18 AM",
-        createdAt: Date.now() - 3400000,
-      },
-      {
-        id: "m-1-3",
-        conversationId: "conv-1",
-        sender: "them",
-        senderName: "Henok Tadesse",
-        text: "Yes, I am happy to accept S21 with fair cash top-up! You can send me a swap proposal directly through the platform.",
-        time: "10:20 AM",
-        createdAt: Date.now() - 3200000,
-      },
-    ],
-  },
-  {
-    id: "conv-2",
-    participantName: "Dawit Bekele (Arada Tech)",
-    participantRole: "merchant",
-    participantKebele: "Arada Electronics Center, Stall 14",
-    participantPhone: "+251922771133",
-    itemTitle: "Dell XPS 13 (Core i7 11th Gen, 16GB RAM)",
-    itemPrice: 68000,
-    itemImage:
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format&fit=crop&q=80",
-    listingId: "lst-2",
-    quickReplies: [
-      "Can I inspect the laptop at Arada Market?",
-      "Can you top up 8,000 ETB for the swap?",
-      "Does it come with original Dell type-C charger?",
-    ],
-    messages: [
-      {
-        id: "m-2-1",
-        conversationId: "conv-2",
-        sender: "them",
-        senderName: "Dawit Bekele",
-        text: "Selam! I saw your barter proposal. The Dell XPS 13 is thoroughly tested and has 7+ hours battery.",
-        time: "Yesterday",
-        createdAt: Date.now() - 86400000,
-      },
-      {
-        id: "m-2-2",
-        conversationId: "conv-2",
-        sender: "me",
-        senderName: "Buyer",
-        text: "Can I inspect the laptop at your shop in Arada before releasing the Telebirr escrow?",
-        time: "Yesterday",
-        createdAt: Date.now() - 86000000,
-      },
-      {
-        id: "m-2-3",
-        conversationId: "conv-2",
-        sender: "them",
-        senderName: "Dawit Bekele",
-        text: "Absolutely! You are welcome anytime at Stall 14 in Arada Market to inspect and test it.",
-        time: "Yesterday",
-        createdAt: Date.now() - 85000000,
-      },
-    ],
-  },
-  {
-    id: "conv-3",
-    participantName: "Chaltu Girma",
-    participantRole: "seller",
-    participantKebele: "Kebele 04, Adama",
-    participantPhone: "+251933556677",
-    itemTitle: "Sony WH-1000XM4 Wireless Headphones",
-    itemPrice: 19000,
-    itemImage:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80",
-    listingId: "lst-3",
-    quickReplies: [
-      "Is the noise cancellation working perfectly?",
-      "Can we meet at Posta Bet tomorrow?",
-      "Would you accept 17,500 ETB cash?",
-    ],
-    messages: [
-      {
-        id: "m-3-1",
-        conversationId: "conv-3",
-        sender: "them",
-        senderName: "Chaltu Girma",
-        text: "Selam! Yes, the Sony WH-1000XM4 is in mint condition with active noise cancellation and carry case.",
-        time: "2 days ago",
-        createdAt: Date.now() - 172800000,
-      },
-      {
-        id: "m-3-2",
-        conversationId: "conv-3",
-        sender: "me",
-        senderName: "Buyer",
-        text: "Can we meet at Posta Bet so I can test the sound quality before purchasing?",
-        time: "2 days ago",
-        createdAt: Date.now() - 172000000,
-      },
-      {
-        id: "m-3-3",
-        conversationId: "conv-3",
-        sender: "them",
-        senderName: "Chaltu Girma",
-        text: "Sure! I am available around 3:00 PM near Posta Bet. Let me know when you arrive.",
-        time: "2 days ago",
-        createdAt: Date.now() - 171000000,
-      },
-    ],
-  },
-];
+let STORED_CONVERSATIONS: ApiConversation[] = [];
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -197,9 +57,28 @@ export async function POST(req: Request) {
       );
     }
 
-    const convIndex = STORED_CONVERSATIONS.findIndex((c) => c.id === conversationId);
+    let convIndex = STORED_CONVERSATIONS.findIndex((c) => c.id === conversationId);
     if (convIndex === -1) {
-      return NextResponse.json({ success: false, error: "Conversation not found" }, { status: 404 });
+      const newConv: ApiConversation = {
+        id: conversationId,
+        participantName: body.participantName || "Seller",
+        participantRole: body.participantRole || "seller",
+        participantKebele: body.participantKebele || "Public Meetup",
+        participantPhone: body.participantPhone || "+2519...",
+        itemTitle: body.itemTitle || "Product",
+        itemPrice: body.itemPrice,
+        itemImage: body.itemImage,
+        listingId: body.listingId,
+        quickReplies: [
+          "Is this still available?",
+          "Can we meet at a public CBE branch?",
+          "Are you open to a device swap with cash top-up?",
+          "I want to inspect in person.",
+        ],
+        messages: [],
+      };
+      STORED_CONVERSATIONS.push(newConv);
+      convIndex = STORED_CONVERSATIONS.length - 1;
     }
 
     const newMsg: ApiMessage = {

@@ -17,84 +17,27 @@ import {
 } from "lucide-react";
 
 export default function AdminEscrowPage() {
-  const [escrows, setEscrows] = useState([
+  const [escrows, setEscrows] = useState<
     {
-      id: "ESC-901",
-      buyer: "Dawit B.",
-      buyerPhone: "+251922771133",
-      buyerKebele: "Kebele 04",
-      seller: "Henok Tadesse",
-      sellerPhone: "+251911448822",
-      sellerKebele: "Bole",
-      item: "iPhone 13 Pro 128GB (Sierra Blue)",
-      amount: 55000,
-      platformFee: 1100, // 2%
-      deliveryFee: 40,
-      provider: "TELEBIRR",
-      landmark: "Posta Bet Commercial Square",
-      status: "HELD_IN_ESCROW",
-      merchantOtp: "4829",
-      deliveryOtp: "9153",
-      createdAt: "Today, 10:14 AM",
-    },
-    {
-      id: "ESC-902",
-      buyer: "Chaltu Girma",
-      buyerPhone: "+251933880011",
-      buyerKebele: "Kebele 04",
-      seller: "Dawit Bekele (Arada Tech)",
-      sellerPhone: "+251922771133",
-      sellerKebele: "Arada",
-      item: "Dell XPS 13 (Core i7 11th Gen)",
-      amount: 68000,
-      platformFee: 1360,
-      deliveryFee: 40,
-      provider: "CBE_BIRR",
-      landmark: "Arada Electronics Hub",
-      status: "HELD_IN_ESCROW",
-      merchantOtp: "5318",
-      deliveryOtp: "7741",
-      createdAt: "Today, 9:45 AM",
-    },
-    {
-      id: "ESC-903",
-      buyer: "Yonas Studio",
-      buyerPhone: "+251944112233",
-      buyerKebele: "Posta Bet",
-      seller: "Tirhas Kitchen Store",
-      sellerPhone: "+251955667788",
-      sellerKebele: "Amede",
-      item: "Traditional Electric Mitad (Clay)",
-      amount: 14500,
-      platformFee: 290,
-      deliveryFee: 0,
-      provider: "TELEBIRR",
-      landmark: "Bole Commercial Gate",
-      status: "COMPLETED",
-      merchantOtp: "1194",
-      deliveryOtp: "6320",
-      createdAt: "Yesterday, 3:20 PM",
-    },
-    {
-      id: "ESC-904",
-      buyer: "Biniam Haile",
-      buyerPhone: "+251911998877",
-      buyerKebele: "Bole",
-      seller: "Arada Electronics Hub",
-      sellerPhone: "+251922334455",
-      sellerKebele: "Arada",
-      item: "Samsung Galaxy S21 5G",
-      amount: 36000,
-      platformFee: 720,
-      deliveryFee: 0,
-      provider: "TELEBIRR",
-      landmark: "Posta Bet Commercial Square",
-      status: "DISPUTED",
-      merchantOtp: "9041",
-      deliveryOtp: "2815",
-      createdAt: "Yesterday, 11:05 AM",
-    },
-  ]);
+      id: string;
+      buyer: string;
+      buyerPhone: string;
+      buyerKebele: string;
+      seller: string;
+      sellerPhone: string;
+      sellerKebele: string;
+      item: string;
+      amount: number;
+      platformFee: number;
+      deliveryFee: number;
+      provider: string;
+      landmark: string;
+      status: string;
+      merchantOtp: string;
+      deliveryOtp: string;
+      createdAt: string;
+    }[]
+  >([]);
 
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [actionNotice, setActionNotice] = useState<string | null>(null);

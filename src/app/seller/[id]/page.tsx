@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MOCK_LISTINGS } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import {
   ShieldCheck,
@@ -26,17 +25,17 @@ import {
 
 export default function SellerProfilePage() {
   const params = useParams();
-  const sellerId = (params?.id as string) || "sel-1";
+  const sellerId = (params?.id as string) || "";
 
-  const { isFavorite, toggleFavorite } = useMarketplace();
+  const { listings, isFavorite, toggleFavorite } = useMarketplace();
 
-  // Find seller info from mock listings or default to sel-1
-  const sellerListing = MOCK_LISTINGS.find((l) => l.seller.id === sellerId) || MOCK_LISTINGS[0];
-  const seller = sellerListing.seller;
+  // Find seller info from active listings
+  const sellerListing = listings.find((l) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase()) || listings[0];
+  const seller = sellerListing?.seller;
 
-  // Find all listings belonging to this seller (or synthesize if mock only has 1-2 per seller)
-  const sellerListings = MOCK_LISTINGS.filter((l) => l.seller.id === seller.id || l.seller.name === seller.name);
-  const displayListings = sellerListings.length > 0 ? sellerListings : [sellerListing];
+  // Find all listings belonging to this seller
+  const sellerListings = seller ? listings.filter((l) => l.seller.id === seller.id || l.seller.name === seller.name) : [];
+  const displayListings = sellerListings.length > 0 ? sellerListings : sellerListing ? [sellerListing] : [];
 
   const [activeTab, setActiveTab] = useState<"listings" | "reviews" | "badges">("listings");
   const [showPhone, setShowPhone] = useState(false);
@@ -48,53 +47,23 @@ export default function SellerProfilePage() {
   const [reviewKebele, setReviewKebele] = useState("Bole");
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
 
-  // Initial customer reviews
-  const [reviewsList, setReviewsList] = useState([
+  // Initial customer reviews (clean for real users)
+  const [reviewsList, setReviewsList] = useState<
     {
-      id: "rev-s1",
-      author: "Chaltu Girma",
-      kebele: "Bole Kebele",
-      rating: 5,
-      date: "3 days ago",
-      dealType: "Direct Cash Meetup",
-      comment:
-        "Met outside CBE branch, verified device IMEI and battery health in person. 100% genuine seller!",
-    },
-    {
-      id: "rev-s2",
-      author: "Dawit Bekele",
-      kebele: "Bole Commercial",
-      rating: 5,
-      date: "1 week ago",
-      dealType: "Barter Swap (HP for Dell)",
-      comment:
-        "We did a direct barter with a 5,000 ETB cash top-up difference via Telebirr escrow. Smooth, honest, and zero disputes.",
-    },
-    {
-      id: "rev-s3",
-      author: "Yonas Worku",
-      kebele: "Central Piazza",
-      rating: 4,
-      date: "2 weeks ago",
-      dealType: "3-Way Circular Trade",
-      comment:
-        "Participated in a 3-way circular trade loop. The item matched the photos and description accurately.",
-    },
-    {
-      id: "rev-s4",
-      author: "Almaz Kebede",
-      kebele: "Posta Bet",
-      rating: 5,
-      date: "1 month ago",
-      dealType: "In-Person Inspection",
-      comment:
-        "Very patient seller. Allowed full 15 minutes inspection of laptop ports and screen before confirming OTP release.",
-    },
-  ]);
+      id: string;
+      author: string;
+      kebele: string;
+      rating: number;
+      date: string;
+      dealType: string;
+      comment: string;
+    }[]
+  >([]);
 
   // Fetch real reviews from API on mount
   useEffect(() => {
     async function loadReviews() {
+      if (!seller) return;
       try {
         const res = await fetch(`/api/reviews?sellerId=${seller.id}`);
         const data = await res.json();
@@ -106,7 +75,7 @@ export default function SellerProfilePage() {
       }
     }
     loadReviews();
-  }, [seller.id]);
+  }, [seller?.id]);
 
   const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,6 +117,18 @@ export default function SellerProfilePage() {
       setReviewComment("");
     }, 1500);
   };
+
+  if (!seller) {
+    return (
+      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
+        <h2 className="text-xl font-bold text-slate-800">Seller Not Found</h2>
+        <p className="text-xs text-slate-500">There are currently no listings or seller profile associated with this account.</p>
+        <Link href="/listings" className="inline-block px-5 py-2.5 bg-[#0f172a] text-white text-xs font-bold rounded-full">
+          Browse Marketplace
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-16">

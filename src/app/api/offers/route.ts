@@ -14,34 +14,7 @@ export interface StoredOffer {
   createdAt: number;
 }
 
-let STORED_OFFERS: StoredOffer[] = [
-  {
-    id: "off-1",
-    listingId: "lst-2",
-    listingTitle: "Dell XPS 13 (Core i7 11th Gen, 16GB RAM)",
-    listingPrice: 68000,
-    offeredPrice: 63000,
-    sellerName: "Arada Tech Store (Dawit B.)",
-    sellerPhone: "+251922771133",
-    message: "I can pay 63,000 ETB cash today via Telebirr. Can we meet at Arada?",
-    status: "PENDING",
-    date: "Today, 11:20 AM",
-    createdAt: Date.now() - 7200000,
-  },
-  {
-    id: "off-2",
-    listingId: "lst-1",
-    listingTitle: "iPhone 13 Pro 128GB - Sierra Blue",
-    listingPrice: 55000,
-    offeredPrice: 52000,
-    sellerName: "Henok Tadesse",
-    sellerPhone: "+251911448822",
-    message: "I am ready to buy via Telebirr today if you accept 52,000 ETB.",
-    status: "ACCEPTED",
-    date: "Yesterday",
-    createdAt: Date.now() - 86400000,
-  },
-];
+let STORED_OFFERS: StoredOffer[] = [];
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

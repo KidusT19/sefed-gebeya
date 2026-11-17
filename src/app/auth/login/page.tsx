@@ -96,7 +96,7 @@ function LoginContent() {
             "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
           rating: data.user.rating || 5.0,
           completedTrades: data.user.completedTrades || 0,
-          walletBalance: 14250,
+          walletBalance: data.user.walletBalance || 0,
           verificationStatus: data.user.verificationStatus || "VERIFIED",
           sellerTier: data.user.role === "MERCHANT" ? "Verified Seller" : "Individual Trader",
         };

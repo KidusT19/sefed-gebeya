@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_LISTINGS } from "@/data/mockData";
+import { useMarketplace } from "@/context/MarketplaceContext";
 import { Repeat, ArrowLeftRight, ShieldCheck, CheckCircle, ArrowLeft, MapPin, AlertCircle, Phone, MessageSquare } from "lucide-react";
 
 export default function TradeDealRoomPage() {
@@ -11,18 +11,21 @@ export default function TradeDealRoomPage() {
   const params = useParams();
   const tradeId = (params?.id as string) || "deal-701";
 
-  const targetItem = MOCK_LISTINGS[0]; // iPhone 13 Pro (55,000 ETB)
-  const offeredItem = MOCK_LISTINGS[2]; // Samsung S21 (36,000 ETB)
+  const { listings } = useMarketplace();
+  const targetItem = listings[0];
+  const offeredItem = listings[1] || listings[0];
 
   const [status, setStatus] = useState<"PENDING" | "ACCEPTED" | "IN_ESCROW">("PENDING");
-  const [topUpAmount, setTopUpAmount] = useState(19000);
+  const [topUpAmount, setTopUpAmount] = useState(0);
   const [showCounterModal, setShowCounterModal] = useState(false);
-  const [counterInput, setCounterInput] = useState("17000");
+  const [counterInput, setCounterInput] = useState("0");
 
   const handleAccept = () => {
     setStatus("ACCEPTED");
     setTimeout(() => {
-      router.push(`/checkout/escrow?listing=${targetItem.id}&topup=${topUpAmount}`);
+      if (targetItem) {
+        router.push(`/checkout/escrow?listing=${targetItem.id}&topup=${topUpAmount}`);
+      }
     }, 1500);
   };
 
@@ -31,6 +34,20 @@ export default function TradeDealRoomPage() {
     setTopUpAmount(Number(counterInput));
     setShowCounterModal(false);
   };
+
+  if (!targetItem || !offeredItem) {
+    return (
+      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
+        <h2 className="text-xl font-bold text-slate-800">No Active Deal Room Found</h2>
+        <p className="text-xs text-slate-500">
+          There is currently no active bilateral trade proposal matching this ID.
+        </p>
+        <Link href="/dashboard?tab=trades" className="inline-block px-5 py-2.5 bg-[#0f172a] text-white text-xs font-bold rounded-full">
+          Back to Barter Dashboard
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20">
