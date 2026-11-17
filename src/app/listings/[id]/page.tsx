@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_LISTINGS } from "@/data/mockData";
+import { MOCK_LISTINGS, DEFAULT_USER_BARTER_INVENTORY } from "@/data/mockData";
 import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
@@ -28,6 +28,9 @@ import {
   Sparkles,
   Truck,
   UserCheck,
+  Layers,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 
 export default function ListingDetailPage() {
@@ -201,24 +204,17 @@ export default function ListingDetailPage() {
     },
   ]);
 
-  // Smart Barter Matcher state
-  const myDevices = [
-    {
-      id: "my-1",
-      title: "Samsung Galaxy S21 5G (128GB)",
-      value: 36000,
-      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "my-2",
-      title: "HP Pavilion Gaming Laptop (Core i5)",
-      value: 48000,
-      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&auto=format&fit=crop&q=80",
-    },
-  ];
-  const [selectedMyDeviceId, setSelectedMyDeviceId] = useState(myDevices[0].id);
-  const selectedDevice = myDevices.find((d) => d.id === selectedMyDeviceId) || myDevices[0];
-  const tradeCashDiff = listing.price - selectedDevice.value;
+  // Smart Multi-Item Barter Matcher state
+  const [selectedBarterItemIds, setSelectedBarterItemIds] = useState<string[]>(["inv-1", "inv-2"]);
+  const selectedBarterItems = DEFAULT_USER_BARTER_INVENTORY.filter((item) => selectedBarterItemIds.includes(item.id));
+  const totalBarterGoodsValue = selectedBarterItems.reduce((acc, item) => acc + item.estimatedValue, 0);
+  const tradeCashDiff = listing.price - totalBarterGoodsValue;
+
+  const toggleBarterItem = (id: string) => {
+    setSelectedBarterItemIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
   // Similar listings
   const similarListings = MOCK_LISTINGS.filter(
@@ -459,68 +455,81 @@ export default function ListingDetailPage() {
                 </div>
               )}
 
-              {/* SMART BARTER MATCHER */}
+              {/* SMART MULTI-ITEM BARTER MATCHER */}
               {listing.allowBarter && (
                 <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-4 sm:p-5 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-amber-500" />
                       <h3 className="font-black text-sm text-slate-900">
-                        Smart Swap Calculator: See What You Can Trade
+                        Multi-Item Barter Matcher: Select 1, 2, or 3 Items to Trade
                       </h3>
                     </div>
                     <span className="text-[10px] font-black text-amber-950 bg-amber-100 px-2 py-0.5 rounded-full">
-                      Instant Match
+                      {selectedBarterItems.length} Selected
                     </span>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 block">
-                      Select one of your registered devices:
+                      Choose products from your available posts to bundle:
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {myDevices.map((d) => (
-                        <button
-                          key={d.id}
-                          type="button"
-                          onClick={() => setSelectedMyDeviceId(d.id)}
-                          className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-                            selectedMyDeviceId === d.id
-                              ? "bg-white border-[#0f172a] shadow-xs ring-2 ring-slate-900/20"
-                              : "bg-white/80 border-slate-200 hover:bg-white"
-                          }`}
-                        >
-                          <img src={d.image} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
-                          <div className="min-w-0">
-                            <div className="font-bold text-xs text-slate-900 truncate">{d.title}</div>
-                            <div className="text-[11px] font-extrabold text-[#0f172a]">
-                              Value: {d.value.toLocaleString()} ETB
+                      {DEFAULT_USER_BARTER_INVENTORY.map((d) => {
+                        const isSelected = selectedBarterItemIds.includes(d.id);
+                        return (
+                          <button
+                            key={d.id}
+                            type="button"
+                            onClick={() => toggleBarterItem(d.id)}
+                            className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-amber-50/60 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
+                                : "bg-white border-slate-200 hover:bg-slate-100/70"
+                            }`}
+                          >
+                            <div className="shrink-0 text-amber-600">
+                              {isSelected ? (
+                                <CheckSquare className="w-4 h-4 text-amber-600 fill-amber-100" />
+                              ) : (
+                                <Square className="w-4 h-4 text-slate-300" />
+                              )}
                             </div>
-                          </div>
-                        </button>
-                      ))}
+                            <img src={d.image} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
+                            <div className="min-w-0">
+                              <div className="font-bold text-xs text-slate-900 truncate">{d.title}</div>
+                              <div className="text-[11px] font-extrabold text-[#0f172a]">
+                                {d.estimatedValue.toLocaleString()} ETB
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   {/* Calculation Result */}
-                  <div className="bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div className="bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-2xs">
                     <div>
-                      <span className="text-slate-500 font-medium">Calculated Fair Top-Up:</span>
+                      <div className="text-[11px] text-slate-500 font-medium">
+                        {selectedBarterItems.length} Products ({totalBarterGoodsValue.toLocaleString()} ETB) &bull; Fair Top-Up Balance:
+                      </div>
                       <div className="text-base font-black text-[#0f172a] mt-0.5">
                         {tradeCashDiff > 0
                           ? `You add +${tradeCashDiff.toLocaleString()} ETB cash`
                           : tradeCashDiff < 0
                           ? `Seller pays you +${Math.abs(tradeCashDiff).toLocaleString()} ETB cash`
-                          : "Even Direct Swap (0 ETB)"}
+                          : "100% Even Barter (0 ETB Cash)"}
                       </div>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleActionWithAuth("trade", () => router.push(`/trades/new?target=${listing.id}`))}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0f172a] hover:bg-slate-800 text-white font-extrabold text-xs shadow-xs transition-colors whitespace-nowrap self-stretch sm:self-auto justify-center cursor-pointer"
                     >
-                      <span>Propose This Trade</span>
+                      <Repeat className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Open Multi-Item Barter Room</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>

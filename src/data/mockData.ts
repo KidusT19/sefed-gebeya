@@ -358,6 +358,91 @@ export const MOCK_LISTINGS: ProductListing[] = [
     postedDate: "2 days ago",
     views: 190,
   },
+  {
+    id: "lst-9",
+    title: "TVS HLX 150cc Commercial Motorcycle (2023, Red, Mint Condition)",
+    price: 135000,
+    isNegotiable: true,
+    condition: "Like New",
+    categorySlug: "vehicles",
+    subcategory: "Motorcycles & Scooters",
+    description: "2023 TVS HLX 150cc motorcycle in excellent condition. Fuel-efficient, clean engine, genuine plate and papers in hand. Open to multi-item electronics barter (laptop, smartphones, accessories) plus cash top-up via Telebirr Escrow.",
+    images: [
+      "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop&q=80",
+    ],
+    city: "Addis Ababa",
+    kebele: "Megenagna",
+    landmark: "Megenagna Zefmesh Grand Mall",
+    allowBarter: true,
+    wishlist: "Looking for Lenovo ThinkPad, Samsung/iPhone smartphones, or electronics bundle + cash top-up",
+    allowCash: true,
+    seller: {
+      id: "sel-9",
+      name: "Tarekegn Motors",
+      phone: "+251911998877",
+      whatsapp: "+251911998877",
+      city: "Addis Ababa",
+      kebele: "Megenagna",
+      isVerified: true,
+      memberSince: "Nov 2023",
+      rating: 4.9,
+      completedDeals: 34,
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80",
+    },
+    postedDate: "Today",
+    views: 420,
+    isFeatured: true,
+  },
+];
+
+export interface BarterInventoryItem {
+  id: string;
+  title: string;
+  estimatedValue: number;
+  condition: string;
+  category: string;
+  image: string;
+  specs?: string;
+}
+
+export const DEFAULT_USER_BARTER_INVENTORY: BarterInventoryItem[] = [
+  {
+    id: "inv-1",
+    title: "Samsung Galaxy S21 5G 128GB (Phantom Black)",
+    estimatedValue: 36000,
+    condition: "Good",
+    category: "Mobile Phones",
+    image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&auto=format&fit=crop&q=80",
+    specs: "8GB RAM · 128GB Storage · Dual SIM · 120Hz AMOLED",
+  },
+  {
+    id: "inv-2",
+    title: "Lenovo ThinkPad T14 Gen 2 (Core i7, 16GB RAM)",
+    estimatedValue: 45000,
+    condition: "Like New",
+    category: "Laptops & Computers",
+    image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&auto=format&fit=crop&q=80",
+    specs: "Intel Core i7 11th Gen · 16GB DDR4 · 512GB NVMe SSD",
+  },
+  {
+    id: "inv-3",
+    title: "Apple AirPods Pro (2nd Gen, Active Noise Canceling)",
+    estimatedValue: 8500,
+    condition: "Like New",
+    category: "Audio & Accessories",
+    image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&auto=format&fit=crop&q=80",
+    specs: "MagSafe Charging Case · ANC & Transparency · Original Box",
+  },
+  {
+    id: "inv-4",
+    title: "Brand New Nike Air Max 270 Sneakers (Size 42)",
+    estimatedValue: 6500,
+    condition: "Brand New",
+    category: "Fashion & Footwear",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=80",
+    specs: "Authentic Original · Size 42 (EU) / 8.5 (US) · In Box",
+  },
 ];
 
 export const MOCK_POOLED_RUNS: PooledRun[] = [];

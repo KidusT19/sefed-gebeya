@@ -59,6 +59,44 @@ function MessagesContent() {
 
   const [conversations, setConversations] = useState<Conversation[]>([
     {
+      id: "conv-0",
+      participantName: "Tarekegn Motors",
+      participantRole: "merchant",
+      participantKebele: "Megenagna, Addis Ababa",
+      participantPhone: "+251911998877",
+      itemTitle: "TVS HLX 150cc Commercial Motorcycle (2023)",
+      itemPrice: 135000,
+      itemImage:
+        "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&auto=format&fit=crop&q=80",
+      listingId: "lst-9",
+      quickReplies: [
+        "Can you take ThinkPad + S21 + 54,000 ETB cash?",
+        "I can add brand new Nike shoes to lower the cash top-up.",
+        "Can we do physical inspection at CBE Megenagna?",
+        "Are the motorcycle ownership card and plate ready?",
+      ],
+      messages: [
+        {
+          id: "m-0-1",
+          sender: "them",
+          text: "Selam! I checked your available posts list on Sefed. The TVS HLX 150cc is in mint condition with all documents ready in Megenagna.",
+          time: "09:40 AM",
+        },
+        {
+          id: "m-0-2",
+          sender: "me",
+          text: "Selam Tarekegn! From my posts, I want to trade my Lenovo ThinkPad (45,000 ETB) and Samsung S21 (36,000 ETB) plus AirPods Pro (8,500 ETB). Would you accept these 3 products plus cash top-up via Telebirr Escrow?",
+          time: "09:45 AM",
+        },
+        {
+          id: "m-0-3",
+          sender: "them",
+          text: "Yes, absolutely! That is 89,500 ETB in products. With a 45,500 ETB cash top-up via Telebirr Escrow, the total is 100% equivalent to 135,000 ETB. Or if you also include your Nike shoes from your posts, the cash top-up drops to only 39,000 ETB!",
+          time: "09:50 AM",
+        },
+      ],
+    },
+    {
       id: "conv-1",
       participantName: "Henok Tadesse",
       participantRole: "seller",
@@ -173,7 +211,7 @@ function MessagesContent() {
   ]);
 
   const [activeConvId, setActiveConvId] = useState<string>(
-    requestedListingId === "lst-2" ? "conv-2" : "conv-1"
+    requestedListingId === "lst-9" ? "conv-0" : requestedListingId === "lst-2" ? "conv-2" : "conv-0"
   );
 
   const activeConv = conversations.find((c) => c.id === activeConvId) || conversations[0];

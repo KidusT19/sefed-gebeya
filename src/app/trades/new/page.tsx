@@ -3,15 +3,30 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { MOCK_LISTINGS } from "@/data/mockData";
+import { MOCK_LISTINGS, DEFAULT_USER_BARTER_INVENTORY, BarterInventoryItem } from "@/data/mockData";
 import { useMarketplace } from "@/context/MarketplaceContext";
-import SefedWatermarkBackground from "@/components/landing/SefedWatermarkBackground";
-import { Repeat, ArrowLeftRight, ShieldCheck, CheckCircle, ArrowLeft, MapPin, AlertCircle, Lock, ArrowRight } from "lucide-react";
+import {
+  Repeat,
+  ArrowLeftRight,
+  ShieldCheck,
+  CheckCircle,
+  ArrowLeft,
+  MapPin,
+  Lock,
+  ArrowRight,
+  CheckSquare,
+  Square,
+  Sparkles,
+  Layers,
+  ShoppingBag,
+  HelpCircle,
+  TrendingUp,
+} from "lucide-react";
 
 function NewTradeOfferContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const targetId = searchParams.get("target") || "lst-1";
+  const targetId = searchParams.get("target") || "lst-9"; // Default to Motorcycle to match user scenario
 
   const { isLoggedIn, showToast } = useMarketplace();
 
@@ -25,49 +40,70 @@ function NewTradeOfferContent() {
 
   const targetListing = MOCK_LISTINGS.find((l) => l.id === targetId) || MOCK_LISTINGS[0];
 
-  const myItems = [
-    {
-      id: "my-1",
-      title: "Samsung Galaxy S21 5G (128GB)",
-      estimatedValue: 36000,
-      condition: "Good",
-      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "my-2",
-      title: "HP Pavilion Gaming Laptop (Core i5, GTX 1650)",
-      estimatedValue: 48000,
-      condition: "Like New",
-      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&auto=format&fit=crop&q=80",
-    },
-  ];
+  // User's available barter inventory (items posted by this user)
+  const [myInventory, setMyInventory] = useState<BarterInventoryItem[]>(DEFAULT_USER_BARTER_INVENTORY);
 
-  const [selectedMyItemId, setSelectedMyItemId] = useState(myItems[0].id);
-  const selectedMyItem = myItems.find((i) => i.id === selectedMyItemId) || myItems[0];
+  // Multi-item selection: Start with ThinkPad + S21 selected
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>(["inv-1", "inv-2"]);
 
-  const rawDifference = targetListing.price - selectedMyItem.estimatedValue;
+  const selectedItems = myInventory.filter((item) => selectedItemIds.includes(item.id));
+  const totalGoodsValue = selectedItems.reduce((acc, item) => acc + item.estimatedValue, 0);
 
-  const [customTopUp, setCustomTopUp] = useState(rawDifference.toString());
-  const [meetupLandmark, setMeetupLandmark] = useState("Posta Bet Commercial Square");
+  // Raw benchmark mathematical difference
+  const rawDifference = targetListing.price - totalGoodsValue;
+
+  const [customTopUp, setCustomTopUp] = useState<string>(rawDifference.toString());
+  const [meetupLandmark, setMeetupLandmark] = useState("CBE Main Branch (Edna Mall / Bole / Mexico)");
   const [proposalNotes, setProposalNotes] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // When selection changes, update the proposed cash top-up
+  const toggleItemSelection = (itemId: string) => {
+    setSelectedItemIds((prev) => {
+      const next = prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId];
+      const nextItems = myInventory.filter((i) => next.includes(i.id));
+      const nextSum = nextItems.reduce((acc, i) => acc + i.estimatedValue, 0);
+      setCustomTopUp((targetListing.price - nextSum).toString());
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    const allIds = myInventory.map((i) => i.id);
+    setSelectedItemIds(allIds);
+    const sum = myInventory.reduce((acc, i) => acc + i.estimatedValue, 0);
+    setCustomTopUp((targetListing.price - sum).toString());
+  };
+
+  const clearSelection = () => {
+    setSelectedItemIds([]);
+    setCustomTopUp(targetListing.price.toString());
+  };
+
   const numericTopUp = Number(customTopUp) || 0;
+  const totalOfferedValue = totalGoodsValue + numericTopUp;
+
+  // Percentage calculations for dynamic balance meter
+  const goodsPercentage = targetListing.price > 0 ? Math.min(100, Math.round((totalGoodsValue / targetListing.price) * 100)) : 0;
+  const cashPercentage = Math.max(0, 100 - goodsPercentage);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedItemIds.length === 0 && numericTopUp <= 0) {
+      showToast("Please select at least 1 item or specify a cash offer.", "error");
+      return;
+    }
     setIsSuccess(true);
     setTimeout(() => {
       router.push("/swaps");
-    }, 2500);
+    }, 2800);
   };
 
   if (!isLoggedIn) {
     return (
       <div className="relative min-h-[75vh] flex items-center justify-center px-4 py-12">
-        <SefedWatermarkBackground opacity={0.15} blur="md" />
-        <div className="relative z-10 max-w-md w-full bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-8 text-center space-y-5 shadow-xl shadow-emerald-950/5">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-[#0e623a] mx-auto flex items-center justify-center shadow-inner">
+        <div className="relative z-10 max-w-md w-full bg-white rounded-3xl border border-slate-200 p-8 text-center space-y-5 shadow-xl shadow-slate-900/5">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center shadow-inner border border-amber-200/50">
             <Lock className="w-8 h-8" />
           </div>
 
@@ -76,17 +112,17 @@ function NewTradeOfferContent() {
               Sign In to Propose Barter Deals
             </h2>
             <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
-              Sefed device swaps and cash adjustment escrow require verified seller and buyer identities.
+              Sefed multi-item device swaps and cash adjustment escrow require verified seller and buyer accounts.
             </p>
           </div>
 
           <div className="pt-2 flex flex-col gap-2.5">
             <Link
               href={`/auth/login?redirect=/trades/new?target=${targetId}`}
-              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0e623a] hover:bg-[#0b4d2e] active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 transition-all cursor-pointer"
+              className="w-full min-h-[46px] py-3.5 rounded-full bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 transition-all cursor-pointer"
             >
               <span>Sign In to Continue</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              <ArrowRight className="w-4 h-4 stroke-[2.5] text-amber-400" />
             </Link>
 
             <Link
@@ -102,156 +138,332 @@ function NewTradeOfferContent() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-16">
-      <div className="flex items-center justify-between">
-        <Link href={`/listings/${targetListing.id}`} className="inline-flex items-center gap-1 text-xs text-[#785437] hover:text-[#1d4ed8] font-bold">
-          <ArrowLeft className="w-4 h-4" /> Back to Item
+    <div className="max-w-4xl mx-auto space-y-6 pb-20">
+      {/* Top Breadcrumb & Room Tag */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <Link
+          href={`/listings/${targetListing.id}`}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-950 font-bold transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to {targetListing.title.slice(0, 32)}...
         </Link>
-        <span className="text-xs font-bold text-[#1e40af] bg-[#dbeafe] px-2.5 py-1 rounded-full border border-[#bfdbfe]">
-          Bilateral Barter Deal Room
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-black text-slate-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-amber-700" /> Multi-Item Barter Deal Room
+          </span>
+          <span className="text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full">
+            Telebirr &amp; CBE Escrow
+          </span>
+        </div>
       </div>
 
-      <div className="bg-[#faf5ed] rounded-2xl border border-[#dfd2be] p-6 sm:p-8 shadow-2xs space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-[#2b1c11] tracking-tight flex items-center gap-2">
-            <Repeat className="w-6 h-6 text-[#1d4ed8]" />
-            Propose 2-Way Device Swap
+      {/* Main Deal Container */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xl shadow-slate-900/5 space-y-8">
+        {/* Title Header */}
+        <div className="border-b border-slate-100 pb-5">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <Repeat className="w-7 h-7 text-amber-500" />
+            Multi-Product Barter &amp; Cash Top-Up Proposal
           </h1>
-          <p className="text-xs text-[#785437] mt-1 font-medium">
-            Exchange your device with {targetListing.seller.name}. Our dynamic engine calculates the cash top-up difference to ensure fair value.
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium leading-relaxed">
+            Select 1, 2, 3 or more of your previously posted items to exchange for{" "}
+            <strong className="text-slate-900">{targetListing.seller.name}</strong>&apos;s product. Sefed calculates the exact cash top-up so both sides achieve 100% fair value equivalence.
           </p>
         </div>
 
         {isSuccess ? (
-          <div className="py-12 text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-[#dbeafe] text-[#1d4ed8] mx-auto flex items-center justify-center shadow-xs">
+          <div className="py-12 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
               <CheckCircle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-[#1e3a8a]">Barter Proposal Sent to Seller!</h2>
-            <p className="text-xs text-[#2563eb] max-w-sm mx-auto font-medium">
-              {targetListing.seller.name} has been notified via In-App alert and Telegram bot. Once they accept, your exchange room will be activated.
+            <h2 className="text-2xl font-black text-slate-900">Barter Bundle Proposal Submitted!</h2>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto font-medium leading-relaxed">
+              <strong>{targetListing.seller.name}</strong> has received your bundle offer containing{" "}
+              <strong>{selectedItems.length} of your posted items</strong> plus{" "}
+              <strong>{numericTopUp > 0 ? `${numericTopUp.toLocaleString()} ETB cash` : "direct swap"}</strong>.
             </p>
-            <p className="text-xs text-[#1d4ed8] font-bold animate-pulse">
-              Redirecting to your active trade deals...
+            <div className="p-4 bg-slate-50 rounded-2xl max-w-md mx-auto border border-slate-200 text-xs text-slate-700 space-y-1 text-left">
+              <div className="font-bold text-slate-900">What Happens Next:</div>
+              <div>&bull; The seller can accept your offer or counter-select other items from your post inventory.</div>
+              <div>&bull; Cash top-ups are held in Telebirr / CBE Escrow until physical handover and test.</div>
+            </div>
+            <p className="text-xs text-[#0f172a] font-bold animate-pulse pt-2">
+              Redirecting to your barter deal dashboard...
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Visual Swap Comparison: Target vs My Device */}
-            <div className="grid grid-cols-1 md:grid-cols-11 gap-3 items-center">
-              {/* Target Item */}
-              <div className="md:col-span-5 p-4 rounded-xl border border-[#dfd2be] bg-[#ede4d6] space-y-2">
-                <span className="text-[10px] font-bold text-[#785437] uppercase tracking-wider block">
-                  You Receive (Target Item)
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* 1. TARGET ITEM CARD (What You Want to Receive) */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <ShoppingBag className="w-4 h-4 text-slate-600" />
+                  Target Item You Receive
                 </span>
-                <div className="flex items-center gap-3">
+                <span className="text-xs font-black text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-full shadow-2xs">
+                  Target Price: {targetListing.price.toLocaleString()} ETB
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+                <div className="flex items-center gap-3.5">
                   <img
                     src={targetListing.images[0]}
                     alt=""
-                    className="w-14 h-14 rounded-xl object-cover border border-[#dfd2be] flex-shrink-0"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-slate-200 shrink-0 shadow-xs"
                   />
                   <div>
-                    <h3 className="font-bold text-xs text-[#2b1c11] line-clamp-1">
+                    <h3 className="font-black text-sm sm:text-base text-slate-900 line-clamp-1">
                       {targetListing.title}
                     </h3>
-                    <div className="text-xs font-black text-[#1d4ed8] mt-0.5">
-                      {targetListing.price.toLocaleString()} ETB
+                    <div className="text-xs text-slate-500 font-medium mt-0.5">
+                      Seller: <strong className="text-slate-800">{targetListing.seller.name}</strong> &bull; {targetListing.kebele}, {targetListing.city}
                     </div>
-                    <div className="text-[10px] text-[#785437]">
-                      Seller: {targetListing.seller.name} ({targetListing.kebele})
+                    <div className="text-[11px] text-amber-700 font-bold bg-amber-50 inline-block px-2 py-0.5 rounded-md mt-1 border border-amber-200">
+                      Wishlist: {targetListing.wishlist}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Swap Icon */}
-              <div className="md:col-span-1 flex justify-center py-1">
-                <div className="w-8 h-8 rounded-full bg-[#1d4ed8] text-white flex items-center justify-center shadow-xs">
-                  <ArrowLeftRight className="w-4 h-4" />
+                <div className="text-right sm:border-l sm:border-slate-200 sm:pl-5 shrink-0">
+                  <div className="text-[11px] text-slate-400 font-medium">Full Value</div>
+                  <div className="text-xl sm:text-2xl font-black text-[#0f172a]">
+                    {targetListing.price.toLocaleString()} <span className="text-xs font-bold text-slate-500">ETB</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. BUYER'S POSTED INVENTORY MULTI-SELECT BASKET */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
+                    <Layers className="w-5 h-5 text-amber-500" />
+                    Select from Your Previously Posted Products
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Pick 1, 2, 3 or more of your available posts to bundle together for this swap:
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={selectAll}
+                    className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={clearSelection}
+                    className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                  >
+                    Clear
+                  </button>
                 </div>
               </div>
 
-              {/* My Item */}
-              <div className="md:col-span-5 p-4 rounded-xl border border-[#dfd2be] bg-[#ede4d6] space-y-2">
-                <span className="text-[10px] font-bold text-[#785437] uppercase tracking-wider block">
-                  You Give (Your Item)
-                </span>
-                <select
-                  value={selectedMyItemId}
-                  onChange={(e) => {
-                    setSelectedMyItemId(e.target.value);
-                    const item = myItems.find((i) => i.id === e.target.value);
-                    if (item) {
-                      setCustomTopUp((targetListing.price - item.estimatedValue).toString());
-                    }
-                  }}
-                  className="w-full p-2 rounded-lg bg-[#faf5ed] border border-[#d2ba92] text-xs font-semibold text-[#2b1c11] focus:outline-none"
-                >
-                  {myItems.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.title} ({item.estimatedValue.toLocaleString()} ETB)
-                    </option>
-                  ))}
-                </select>
-                <div className="flex items-center justify-between text-xs pt-1">
-                  <span className="text-[#785437]">Your Item Value:</span>
-                  <span className="font-bold text-[#2b1c11]">
-                    {selectedMyItem.estimatedValue.toLocaleString()} ETB
+              {/* Grid of User's Posts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {myInventory.map((item) => {
+                  const isChecked = selectedItemIds.includes(item.id);
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => toggleItemSelection(item.id)}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-3.5 relative ${
+                        isChecked
+                          ? "bg-amber-50/50 border-amber-400 shadow-xs ring-2 ring-amber-400/20"
+                          : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                      }`}
+                    >
+                      <div className="shrink-0 text-amber-600">
+                        {isChecked ? (
+                          <CheckSquare className="w-5 h-5 text-amber-600 fill-amber-100" />
+                        ) : (
+                          <Square className="w-5 h-5 text-slate-300" />
+                        )}
+                      </div>
+
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
+                      />
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            {item.category}
+                          </span>
+                          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                            {item.condition}
+                          </span>
+                        </div>
+                        <h4 className="font-black text-xs text-slate-900 truncate mt-0.5">
+                          {item.title}
+                        </h4>
+                        {item.specs && (
+                          <p className="text-[10px] text-slate-500 truncate">{item.specs}</p>
+                        )}
+                        <div className="text-xs font-black text-[#0f172a] mt-1">
+                          {item.estimatedValue.toLocaleString()} ETB
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Selected Barter Bundle Summary Pill */}
+              <div className="p-3.5 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center">
+                    {selectedItems.length}
+                  </span>
+                  <span className="text-xs font-bold text-slate-200">
+                    Products Selected in Your Barter Basket:
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium">
+                    {selectedItems.map((i) => i.title.split(" ")[0]).join(", ") || "None"}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-slate-400 mr-2">Total Goods Value:</span>
+                  <span className="text-base font-black text-amber-400">
+                    {totalGoodsValue.toLocaleString()} ETB
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Smart Cash Top-Up Balancing Engine (Coffee Brown) */}
-            <div className="bg-[#24160c] text-white p-5 rounded-2xl space-y-4 border border-[#3d2717]">
+            {/* 3. DYNAMIC VALUATION & CASH TOP-UP ENGINE */}
+            <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-5 sm:p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-extrabold text-sm text-blue-300">
-                    Cash Top-Up Difference Calculator
+                  <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-amber-500" />
+                    Automated Fair-Value &amp; Cash Top-Up Balance
                   </h3>
-                  <p className="text-[11px] text-[#d8c3ad] mt-0.5">
-                    Item values are balanced with cash top-up held safely in Telebirr escrow
+                  <p className="text-xs text-slate-500 font-medium">
+                    Sefed balances product value deltas with secure Telebirr / CBE Escrow top-ups.
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-[#a88a6d] block">Benchmark Difference</span>
-                  <span className="text-lg font-black text-white">
+                  <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">
+                    Mathematical Difference
+                  </span>
+                  <span className="text-lg font-black text-[#0f172a]">
                     {rawDifference > 0
                       ? `+${rawDifference.toLocaleString()} ETB`
-                      : `${rawDifference.toLocaleString()} ETB`}
+                      : rawDifference < 0
+                      ? `-${Math.abs(rawDifference).toLocaleString()} ETB`
+                      : "0 ETB (Even)"}
                   </span>
                 </div>
               </div>
 
-              {/* Adjustable Top-Up Input */}
-              <div className="bg-[#3d2717] p-4 rounded-xl space-y-2 border border-[#52361f]">
-                <label className="text-xs font-bold text-[#faf5ed] block">
-                  Proposed Cash Top-Up Amount (ETB)
-                </label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="number"
-                    value={customTopUp}
-                    onChange={(e) => setCustomTopUp(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#24160c] border border-[#52361f] text-white font-mono text-base focus:outline-none focus:ring-2 focus:ring-[#1d4ed8]"
-                  />
-                  <div className="text-xs font-bold text-blue-300 whitespace-nowrap">
-                    {numericTopUp > 0 ? "You Pay to Seller" : numericTopUp < 0 ? "Seller Pays You" : "Even Swap"}
+              {/* Visual Equivalence Progress Bar */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-amber-700 flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                    Your {selectedItems.length} Barter Products ({totalGoodsValue.toLocaleString()} ETB &bull; {goodsPercentage}%)
+                  </span>
+                  <span className="text-slate-700 flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#0f172a] inline-block"></span>
+                    Cash Top-Up ({numericTopUp.toLocaleString()} ETB &bull; {cashPercentage}%)
+                  </span>
+                </div>
+
+                <div className="w-full h-4 rounded-full bg-slate-200 overflow-hidden flex shadow-inner">
+                  <div
+                    style={{ width: `${goodsPercentage}%` }}
+                    className="bg-amber-400 transition-all duration-300 flex items-center justify-center text-[9px] font-black text-slate-950"
+                  >
+                    {goodsPercentage > 15 ? `${goodsPercentage}% Goods` : ""}
+                  </div>
+                  <div
+                    style={{ width: `${cashPercentage}%` }}
+                    className="bg-[#0f172a] transition-all duration-300 flex items-center justify-center text-[9px] font-black text-white"
+                  >
+                    {cashPercentage > 15 ? `${cashPercentage}% Cash` : ""}
                   </div>
                 </div>
-                <p className="text-[11px] text-[#d8c3ad]">
-                  {numericTopUp > 0
-                    ? `You are offering your ${selectedMyItem.title} + ${numericTopUp.toLocaleString()} ETB cash in exchange for ${targetListing.title}.`
-                    : `You are requesting ${Math.abs(numericTopUp).toLocaleString()} ETB cash from the seller because your item has a higher value.`}
-                </p>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
+                  <span>Combined Offer Value: <strong className="text-slate-900">{totalOfferedValue.toLocaleString()} ETB</strong></span>
+                  <span>Target Value: <strong className="text-slate-900">{targetListing.price.toLocaleString()} ETB</strong></span>
+                </div>
+              </div>
+
+              {/* Adjustable Cash Top-Up Field */}
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 shadow-xs">
+                <label className="text-xs font-black text-slate-900 block">
+                  Proposed Cash Top-Up Amount (ETB via Telebirr Escrow)
+                </label>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="relative flex-1">
+                    <input
+                      type="number"
+                      value={customTopUp}
+                      onChange={(e) => setCustomTopUp(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono font-bold text-base focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
+                    />
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
+                      ETB
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 px-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900 shrink-0">
+                    {numericTopUp > 0
+                      ? "You Pay Cash to Seller via Escrow"
+                      : numericTopUp < 0
+                      ? "Seller Pays You Cash"
+                      : "100% Equal Item Barter"}
+                  </div>
+                </div>
+
+                {/* Explanation of the Deal */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700 leading-relaxed font-medium">
+                  {selectedItems.length > 0 ? (
+                    <>
+                      <strong>Deal Summary:</strong> You are giving{" "}
+                      <span className="font-bold text-slate-900">
+                        {selectedItems.map((i) => i.title).join(" + ")}
+                      </span>
+                      {numericTopUp > 0 && (
+                        <>
+                          {" "}plus{" "}
+                          <span className="font-black text-[#0f172a]">
+                            {numericTopUp.toLocaleString()} ETB cash top-up
+                          </span>
+                        </>
+                      )}{" "}
+                      in exchange for the{" "}
+                      <span className="font-bold text-slate-900">{targetListing.title}</span>.
+                    </>
+                  ) : (
+                    "Please select at least one of your posted products above to initiate a barter exchange."
+                  )}
+                </div>
+              </div>
+
+              {/* Seller View Notice (Multi-Item Transparency) */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-xs text-amber-950 flex items-start gap-2.5">
+                <HelpCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  <strong>Seller Review &amp; Counter-Selection:</strong> The seller of the {targetListing.title} will see all your selected items, plus they will have visibility into your full posted inventory. If they prefer your other posts (e.g., your Nike shoes or AirPods), they can propose a counter-selection directly in chat!
+                </div>
               </div>
             </div>
 
-            {/* Proposed Meetup Landmark */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-[#2b1c11] block">
-                Proposed Direct Meetup Landmark (Public Bank Branch / Commercial Hub)
+            {/* 4. SAFE PUBLIC MEETUP LANDMARK */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-900 block">
+                Select Safe In-Person Inspection Landmark (Bank Branch / Commercial Mall)
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {[
@@ -262,46 +474,54 @@ function NewTradeOfferContent() {
                   <div
                     key={spot}
                     onClick={() => setMeetupLandmark(spot)}
-                    className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                    className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
                       meetupLandmark === spot
-                        ? "border-[#1d4ed8] bg-[#eff6ff] shadow-xs ring-1 ring-[#1d4ed8]"
-                        : "border-[#dfd2be] bg-[#faf5ed] hover:bg-[#eee4d5]"
+                        ? "border-[#0f172a] bg-slate-50 shadow-xs ring-2 ring-slate-900/10"
+                        : "border-slate-200 bg-white hover:border-slate-300"
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 font-bold text-xs text-[#2b1c11]">
-                      <MapPin className="w-3.5 h-3.5 text-[#1d4ed8]" />
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                      <MapPin className="w-3.5 h-3.5 text-amber-500" />
                       <span>{spot}</span>
                     </div>
-                    <p className="text-[10px] text-[#785437] mt-1 font-medium">
-                      Public landmark for safe physical device inspection and direct trade.
+                    <p className="text-[10px] text-slate-500 mt-1 font-medium">
+                      Public landmark with security guards for safe physical device inspection and cash escrow release.
                     </p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Note to Seller */}
+            {/* 5. NOTE TO SELLER */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-[#2b1c11] block">
+              <label className="text-xs font-black text-slate-900 block">
                 Message to Seller (Optional)
               </label>
               <textarea
                 rows={2}
-                placeholder="e.g. My Samsung S21 is in great condition with charger and case. Ready to complete the deal today."
+                placeholder="e.g. Both the Lenovo ThinkPad and Samsung S21 are in great condition with original chargers. Ready to meet today at CBE."
                 value={proposalNotes}
                 onChange={(e) => setProposalNotes(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#f4ece1] border border-[#d2ba92] text-xs focus:bg-[#faf5ed] focus:outline-none focus:ring-2 focus:ring-[#1d4ed8]"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a]"
               />
             </div>
 
-            {/* Submit Proposal in Blue */}
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-xl bg-[#1d4ed8] hover:bg-[#1e40af] text-white font-extrabold text-sm transition-all shadow-xs flex items-center justify-center gap-2"
-            >
-              <Repeat className="w-4 h-4" />
-              Send Barter Proposal
-            </button>
+            {/* 6. SUBMIT BUTTON */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full py-4 rounded-full bg-[#0f172a] hover:bg-slate-800 text-white font-black text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              >
+                <Repeat className="w-4 h-4 text-amber-400" />
+                <span>
+                  Send Multi-Item Barter Proposal ({selectedItems.length} Products + {numericTopUp.toLocaleString()} ETB)
+                </span>
+                <ArrowRight className="w-4 h-4 text-amber-400 ml-1" />
+              </button>
+              <p className="text-center text-[11px] text-slate-500 mt-2 font-medium">
+                Protected by Telebirr &amp; CBE Escrow. No money is released until you verify all items in person.
+              </p>
+            </div>
           </form>
         )}
       </div>
@@ -311,7 +531,7 @@ function NewTradeOfferContent() {
 
 export default function NewTradeOfferPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-[#785437]">Loading deal room...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-500">Loading multi-item barter deal room...</div>}>
       <NewTradeOfferContent />
     </Suspense>
   );
