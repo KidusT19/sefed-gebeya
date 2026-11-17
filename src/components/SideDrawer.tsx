@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import SefedLogo from "@/components/SefedLogo";
 import {
@@ -32,6 +32,7 @@ interface SideDrawerProps {
 }
 
 export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const { currentUser, language, setLanguage, favorites, isLoggedIn, logout, t } = useMarketplace();
 
@@ -107,8 +108,12 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 onClick={() => {
                   logout();
                   onClose();
+                  router.push("/");
+                  if (typeof window !== "undefined") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
                 }}
-                className="text-[11px] font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1"
+                className="text-[11px] font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1 cursor-pointer"
               >
                 <LogOut className="w-3 h-3" />
                 <span>{t("nav_logout")}</span>

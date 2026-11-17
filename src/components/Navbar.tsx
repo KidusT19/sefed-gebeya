@@ -504,7 +504,12 @@ export default function Navbar() {
                           type="button"
                           onClick={() => {
                             setIsUserMenuOpen(false);
+                            setSearchQuery("");
                             logout();
+                            router.push("/");
+                            if (typeof window !== "undefined") {
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }
                           }}
                           className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer group"
                         >
