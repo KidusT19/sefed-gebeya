@@ -27,13 +27,13 @@ function EscrowCheckoutContent() {
 
   const { currentUser, isLoggedIn, showToast, listings } = useMarketplace();
 
-  // Authentication Guard: Redirect if not logged in
   useEffect(() => {
-    if (!isLoggedIn) {
-      showToast("Please sign in or register to complete secure escrow payment.", "info");
-      router.replace(`/auth/login?redirect=/checkout/escrow?listing=${listingId}`);
+    if (listingId) {
+      router.replace(`/messages?listing=${listingId}`);
+    } else {
+      router.replace("/listings");
     }
-  }, [isLoggedIn, router, showToast, listingId]);
+  }, [listingId, router]);
 
   const listing = listings.find((l) => l.id === listingId) || listings[0];
 

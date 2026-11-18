@@ -130,10 +130,10 @@ export default function ListingDetailPage() {
       redirectUrl = `/messages?seller=${listing.seller.id}&listing=${listing.id}`;
       icon = "chat";
     } else if (action === "buy") {
-      title = "Sign In to Buy with Escrow";
-      description = `Your payment is 100% protected in Telebirr or CBE escrow until you inspect "${listing.title}". Please sign in to proceed.`;
-      redirectUrl = `/checkout/escrow?listing=${listing.id}&mode=cash`;
-      icon = "buy";
+      title = "Sign In to Contact Seller";
+      description = `Sign in to chat directly with ${listing.seller.name} to agree on price, payment, and landmark meetup for "${listing.title}".`;
+      redirectUrl = `/messages?seller=${listing.seller.id}&listing=${listing.id}`;
+      icon = "chat";
     } else if (action === "offer") {
       title = "Sign In to Make Cash Offer";
       description = `Sign in to submit your custom cash offer directly to ${listing.seller.name}.`;
@@ -205,7 +205,7 @@ export default function ListingDetailPage() {
   // Make Offer Modal state
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [offerPrice, setOfferPrice] = useState(listing.price > 5000 ? listing.price - 3000 : listing.price - 500);
-  const [offerMessage, setOfferMessage] = useState("I am ready to buy via Telebirr today if you accept this price.");
+  const [offerMessage, setOfferMessage] = useState("I am interested in buying this item today if you accept this price.");
   const [offerSent, setOfferSent] = useState(false);
 
   // Review Modal state
@@ -832,26 +832,26 @@ export default function ListingDetailPage() {
             <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-xs space-y-3">
               <h3 className="font-black text-slate-900 text-sm">Choose How to Transact</h3>
 
-              {/* 1. Buy with Telebirr / CBE Escrow */}
+              {/* 1. Message Seller Directly */}
               <button
                 type="button"
                 onClick={() =>
-                  handleActionWithAuth("buy", () => {
-                    router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
+                  handleActionWithAuth("chat", () => {
+                    router.push(`/messages?seller=${listing.seller.id}&listing=${listing.id}`);
                   })
                 }
                 className="w-full text-left block p-3.5 rounded-2xl border-2 border-[#0f172a] bg-slate-50 hover:bg-slate-100 transition-all group cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-black text-xs text-slate-950 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-amber-500" /> 1. Buy with Telebirr / CBE Escrow
+                    <MessageCircle className="w-4 h-4 text-amber-500" /> 1. Message Seller Directly
                   </span>
                   <span className="text-[11px] font-black text-slate-950 group-hover:translate-x-0.5 transition-transform">
                     &rarr;
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-600 mt-1 font-medium leading-relaxed">
-                  Funds are safely held in escrow until you inspect the item and provide your release OTP.
+                  Chat directly to negotiate price, ask questions, agree on payment, and arrange a safe landmark meetup.
                 </p>
               </button>
 
@@ -904,7 +904,7 @@ export default function ListingDetailPage() {
               <ul className="text-amber-900 space-y-1 text-[11px] list-disc list-inside font-medium leading-relaxed">
                 <li>Meet in daylight at safe public spots (e.g. CBE bank branch, main town post office).</li>
                 <li>Test device IMEI, iCloud/Google accounts, and camera before handover.</li>
-                <li>Only release your Telebirr escrow OTP after 100% satisfaction.</li>
+                <li>Test device thoroughly in person at the meetup before completing your direct payment.</li>
               </ul>
             </div>
           </div>
@@ -976,14 +976,14 @@ export default function ListingDetailPage() {
         <button
           type="button"
           onClick={() =>
-            handleActionWithAuth("buy", () => {
-              router.push(`/checkout/escrow?listing=${listing.id}&mode=cash`);
+            handleActionWithAuth("chat", () => {
+              router.push(`/messages?seller=${listing.seller.id}&listing=${listing.id}`);
             })
           }
           className="flex-2 py-2.5 px-4 rounded-xl bg-[#0f172a] hover:bg-[#1e293b] text-white font-extrabold text-xs text-center flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
         >
-          <ShieldCheck className="w-4 h-4 text-amber-400" />
-          <span>Buy with Escrow ({listing.price.toLocaleString()} ETB)</span>
+          <MessageCircle className="w-4 h-4 text-amber-400" />
+          <span>Message Seller ({listing.price.toLocaleString()} ETB)</span>
         </button>
       </div>
 
@@ -1224,7 +1224,7 @@ export default function ListingDetailPage() {
               </div>
               <ul className="text-[11px] space-y-1 text-slate-600 pl-4 list-disc font-medium">
                 <li>Protects personal contact info &amp; stops anonymous spam</li>
-                <li>Enables 100% Telebirr and CBE Escrow money protection</li>
+                <li>Enables direct messaging and safe landmark meetup coordination</li>
                 <li>Connects you with verified sellers across Addis Ababa &amp; Ethiopia</li>
               </ul>
             </div>
