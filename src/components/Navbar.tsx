@@ -51,6 +51,7 @@ export default function Navbar() {
     logout,
     listings,
     favorites,
+    unreadSendersCount,
     t,
   } = useMarketplace();
 
@@ -353,7 +354,11 @@ export default function Navbar() {
                   aria-label={t("nav_messages")}
                 >
                   <MessageSquare className="w-5 h-5 stroke-[2] transition-transform group-hover:scale-110" />
-                  <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white" />
+                  {unreadSendersCount > 0 ? (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] flex items-center justify-center shadow-xs ring-2 ring-white">
+                      {unreadSendersCount > 9 ? "9+" : unreadSendersCount}
+                    </span>
+                  ) : null}
                 </Link>
               </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { ProductListing, PooledRun, VerificationStatus, SellerTier, SellerVerificationDoc } from "@/types/marketplace";
 import { MOCK_LISTINGS, MOCK_POOLED_RUNS } from "@/data/mockData";
 import { TRANSLATIONS, Language } from "@/data/translations";
@@ -223,6 +223,8 @@ interface MarketplaceContextType {
   setSelectedKebele: (kebele: string) => void;
   updateUserProfile: (updates: Partial<ActiveUser>) => void;
   submitSellerVerification: (doc: Omit<SellerVerificationDoc, "submittedAt" | "status">) => void;
+  unreadSendersCount: number;
+  refreshUnreadCount: () => Promise<void>;
   toast: ToastNotification | null;
   showToast: (message: string, type?: "success" | "info" | "error") => void;
 }
@@ -238,6 +240,32 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const [listings, setListings] = useState<ProductListing[]>([]);
   const [toast, setToast] = useState<ToastNotification | null>(null);
+  const [unreadSendersCount, setUnreadSendersCount] = useState<number>(0);
+
+  // Poll and refresh distinct unread senders count
+  const refreshUnreadCount = useCallback(async () => {
+    if (!currentUser?.id) {
+      setUnreadSendersCount(0);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/messages?userId=${currentUser.id}`);
+      const data = await res.json();
+      if (data.success && typeof data.unreadSendersCount === "number") {
+        setUnreadSendersCount(data.unreadSendersCount);
+      }
+    } catch {}
+  }, [currentUser?.id]);
+
+  useEffect(() => {
+    if (!isLoggedIn || !currentUser?.id) {
+      setUnreadSendersCount(0);
+      return;
+    }
+    refreshUnreadCount();
+    const interval = setInterval(refreshUnreadCount, 4000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn, currentUser?.id, refreshUnreadCount]);
 
   // Persistent language setter
   const setLanguage = (lang: Language) => {
@@ -618,6 +646,8 @@ export function MarketplaceProvider({ children }: { children: React.ReactNode })
         setSelectedKebele,
         updateUserProfile,
         submitSellerVerification,
+        unreadSendersCount,
+        refreshUnreadCount,
         toast,
         showToast,
       }}
