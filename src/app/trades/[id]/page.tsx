@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { Repeat, ArrowLeftRight, ShieldCheck, CheckCircle, ArrowLeft, MapPin, AlertCircle, Phone, MessageSquare } from "lucide-react";
 
@@ -12,8 +13,37 @@ export default function TradeDealRoomPage() {
   const tradeId = (params?.id as string) || "deal-701";
 
   const { listings, currentUser } = useMarketplace();
-  const targetItem = listings[0];
-  const offeredItem = listings[1] || listings[0];
+  const [items, setItems] = useState<{ target: ProductListing | null; offered: ProductListing | null }>({
+    target: listings[0] || null,
+    offered: listings[1] || listings[0] || null,
+  });
+  const [isLoading, setIsLoading] = useState(listings.length === 0);
+
+  useEffect(() => {
+    if (listings.length > 0) {
+      setItems({
+        target: listings[0],
+        offered: listings[1] || listings[0],
+      });
+      setIsLoading(false);
+    } else {
+      fetch("/api/listings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.listings && data.listings.length > 0) {
+            setItems({
+              target: data.listings[0],
+              offered: data.listings[1] || data.listings[0],
+            });
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsLoading(false));
+    }
+  }, [listings]);
+
+  const targetItem = items.target;
+  const offeredItem = items.offered;
 
   const [status, setStatus] = useState<"PENDING" | "ACCEPTED" | "IN_ESCROW">("PENDING");
   const [topUpAmount, setTopUpAmount] = useState(0);
@@ -34,6 +64,18 @@ export default function TradeDealRoomPage() {
     setTopUpAmount(Number(counterInput));
     setShowCounterModal(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-inner">
+          <Repeat className="w-8 h-8 animate-spin" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900">Loading Trade Deal Room...</h2>
+        <p className="text-xs text-slate-500 font-medium">Retrieving bilateral swap details...</p>
+      </div>
+    );
+  }
 
   if (!targetItem || !offeredItem) {
     return (

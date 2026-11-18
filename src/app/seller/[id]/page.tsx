@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import {
   ShieldCheck,
@@ -29,8 +30,35 @@ export default function SellerProfilePage() {
 
   const { listings, isFavorite, toggleFavorite } = useMarketplace();
 
-  // Find seller info from active listings
-  const sellerListing = listings.find((l) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase()) || listings[0];
+  // Find seller info from active listings with async fallback
+  const [sellerListing, setSellerListing] = useState<ProductListing | null>(() => {
+    return listings.find((l) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase()) || null;
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    return !listings.some((l) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase());
+  });
+
+  useEffect(() => {
+    const match = listings.find((l) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase());
+    if (match) {
+      setSellerListing(match);
+      setIsLoading(false);
+    } else {
+      fetch("/api/listings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.listings && data.listings.length > 0) {
+            const m = data.listings.find((l: ProductListing) => l.seller.id === sellerId || l.seller.name.toLowerCase() === sellerId.toLowerCase()) || data.listings[0];
+            if (m) {
+              setSellerListing(m);
+            }
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsLoading(false));
+    }
+  }, [sellerId, listings]);
+
   const seller = sellerListing?.seller;
 
   // Find all listings belonging to this seller
@@ -79,7 +107,7 @@ export default function SellerProfilePage() {
 
   const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reviewComment.trim()) return;
+    if (!reviewComment.trim() || !seller) return;
 
     const newRev = {
       id: `rev-${Date.now()}`,
@@ -117,6 +145,18 @@ export default function SellerProfilePage() {
       setReviewComment("");
     }, 1500);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-inner">
+          <Repeat className="w-8 h-8 animate-spin" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900">Loading Seller Profile...</h2>
+        <p className="text-xs text-slate-500 font-medium">Retrieving verified seller information and listings...</p>
+      </div>
+    );
+  }
 
   if (!seller) {
     return (

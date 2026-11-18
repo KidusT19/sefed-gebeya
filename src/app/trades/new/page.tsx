@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { BarterInventoryItem } from "@/data/mockData";
+import { ProductListing } from "@/types/marketplace";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import {
   Repeat,
@@ -28,17 +29,42 @@ function NewTradeOfferContent() {
   const searchParams = useSearchParams();
   const targetId = searchParams.get("target") || "";
 
-  const { isLoggedIn, showToast, listings, currentUser } = useMarketplace();
+  const { isLoggedIn, isAuthReady, showToast, listings, currentUser } = useMarketplace();
 
-  // Authentication Guard: Redirect if not logged in
+  // Authentication Guard: Redirect only after auth state has hydrated from localStorage
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (isAuthReady && !isLoggedIn) {
       showToast("Please sign in or register to make a device barter proposal.", "info");
       router.replace(`/auth/login?redirect=/trades/new?target=${targetId}`);
     }
-  }, [isLoggedIn, router, showToast, targetId]);
+  }, [isAuthReady, isLoggedIn, router, showToast, targetId]);
 
-  const targetListing = listings.find((l) => l.id === targetId) || listings[0];
+  // Target listing state with graceful async resolution on page reload
+  const [targetListing, setTargetListing] = useState<ProductListing | null>(() => {
+    return listings.find((l) => l.id === targetId) || null;
+  });
+  const [isLoadingListing, setIsLoadingListing] = useState<boolean>(() => !listings.some((l) => l.id === targetId));
+
+  useEffect(() => {
+    const match = listings.find((l: ProductListing) => l.id === targetId);
+    if (match) {
+      setTargetListing(match);
+      setIsLoadingListing(false);
+    } else {
+      fetch("/api/listings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.listings && data.listings.length > 0) {
+            const m = data.listings.find((l: ProductListing) => l.id === targetId) || data.listings[0];
+            if (m) {
+              setTargetListing(m);
+            }
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsLoadingListing(false));
+    }
+  }, [targetId, listings]);
 
   // User's available barter inventory derived from real posted products
   const myInventory: BarterInventoryItem[] = useMemo(() => {
@@ -87,13 +113,23 @@ function NewTradeOfferContent() {
   const selectedItems = myInventory.filter((item) => selectedItemIds.includes(item.id));
   const totalGoodsValue = selectedItems.reduce((acc, item) => acc + item.estimatedValue, 0);
 
+  // Safe target price calculation
+  const targetPrice = targetListing?.price || 0;
+
   // Raw benchmark mathematical difference
-  const rawDifference = (targetListing?.price || 0) - totalGoodsValue;
+  const rawDifference = targetPrice - totalGoodsValue;
 
   const [customTopUp, setCustomTopUp] = useState<string>(rawDifference.toString());
   const [meetupLandmark, setMeetupLandmark] = useState("CBE Main Branch (Edna Mall / Bole / Mexico)");
   const [proposalNotes, setProposalNotes] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Keep customTopUp synchronized when targetListing resolves
+  useEffect(() => {
+    if (targetListing) {
+      setCustomTopUp((targetListing.price - totalGoodsValue).toString());
+    }
+  }, [targetListing?.id, targetListing?.price]);
 
   // When selection changes, update the proposed cash top-up
   const toggleItemSelection = (itemId: string) => {
@@ -121,8 +157,9 @@ function NewTradeOfferContent() {
   const numericTopUp = Number(customTopUp) || 0;
   const totalOfferedValue = totalGoodsValue + numericTopUp;
 
-  // Percentage calculations for dynamic balance meter
-  const goodsPercentage = targetListing.price > 0 ? Math.min(100, Math.round((totalGoodsValue / targetListing.price) * 100)) : 0;
+  // Percentage calculations for dynamic balance meter - safe from undefined targetListing
+  const goodsPercentage =
+    targetPrice > 0 ? Math.min(100, Math.round((totalGoodsValue / targetPrice) * 100)) : 0;
   const cashPercentage = Math.max(0, 100 - goodsPercentage);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -136,6 +173,21 @@ function NewTradeOfferContent() {
       router.push("/swaps");
     }, 2800);
   };
+
+  // Loading state during auth hydration or listing fetch
+  if (!isAuthReady || isLoadingListing) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-inner">
+          <Repeat className="w-8 h-8 animate-spin" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900">Loading Barter Deal Room...</h2>
+        <p className="text-xs text-slate-500 font-medium">
+          Retrieving target item and calculating fair trade values...
+        </p>
+      </div>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
@@ -178,9 +230,12 @@ function NewTradeOfferContent() {
   if (!targetListing) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-4">
-        <h2 className="text-xl font-black text-slate-900">No Target Product Selected</h2>
-        <p className="text-xs text-slate-500">Please choose a product from the marketplace feed to initiate a barter swap.</p>
-        <Link href="/" className="px-5 py-2.5 rounded-full bg-[#0f172a] text-white font-bold text-xs">
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center border border-slate-200">
+          <ShoppingBag className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900">Product Not Found</h2>
+        <p className="text-xs text-slate-500">The product you requested for trade is no longer available.</p>
+        <Link href="/" className="px-5 py-2.5 rounded-full bg-[#0f172a] text-white font-bold text-xs hover:bg-slate-800 transition-colors">
           Browse Marketplace Feed
         </Link>
       </div>
@@ -226,7 +281,7 @@ function NewTradeOfferContent() {
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium leading-relaxed">
             Select 1, 2, 3 or more of your previously posted items to exchange for{" "}
-            <strong className="text-slate-900">{targetListing.seller.name}</strong>&apos;s product. Sefed calculates the exact cash top-up so both sides achieve 100% fair value equivalence.
+            <strong className="text-slate-900">{targetListing.seller?.name || "Seller"}</strong>&apos;s product. Sefed calculates the exact cash top-up so both sides achieve 100% fair value equivalence.
           </p>
         </div>
 
@@ -237,7 +292,7 @@ function NewTradeOfferContent() {
             </div>
             <h2 className="text-2xl font-black text-slate-900">Barter Bundle Proposal Submitted!</h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto font-medium leading-relaxed">
-              <strong>{targetListing.seller.name}</strong> has received your bundle offer containing{" "}
+              <strong>{targetListing.seller?.name || "Seller"}</strong> has received your bundle offer containing{" "}
               <strong>{selectedItems.length} of your posted items</strong> plus{" "}
               <strong>{numericTopUp > 0 ? `${numericTopUp.toLocaleString()} ETB cash` : "direct swap"}</strong>.
             </p>
@@ -267,7 +322,7 @@ function NewTradeOfferContent() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
                 <div className="flex items-center gap-3.5">
                   <img
-                    src={targetListing.images[0]}
+                    src={targetListing.images?.[0] || "/placeholder.png"}
                     alt=""
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-slate-200 shrink-0 shadow-xs"
                   />
@@ -276,10 +331,10 @@ function NewTradeOfferContent() {
                       {targetListing.title}
                     </h3>
                     <div className="text-xs text-slate-500 font-medium mt-0.5">
-                      Seller: <strong className="text-slate-800">{targetListing.seller.name}</strong> &bull; {targetListing.kebele}, {targetListing.city}
+                      Seller: <strong className="text-slate-800">{targetListing.seller?.name || "Seller"}</strong> &bull; {targetListing.kebele || ""}{targetListing.city ? `, ${targetListing.city}` : ""}
                     </div>
                     <div className="text-[11px] text-amber-700 font-bold bg-amber-50 inline-block px-2 py-0.5 rounded-md mt-1 border border-amber-200">
-                      Wishlist: {targetListing.wishlist}
+                      Wishlist: {targetListing.wishlist || "Open to fair offers"}
                     </div>
                   </div>
                 </div>
