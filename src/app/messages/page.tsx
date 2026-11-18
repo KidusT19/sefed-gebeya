@@ -86,6 +86,23 @@ function MessagesContent() {
   const sellingConvs = conversations.filter((c) => c.sellerId === currentUser.id);
   const displayedConvs = activeTab === "selling" ? sellingConvs : buyingConvs;
 
+  const sellerUnreadCount = sellingConvs.reduce(
+    (acc, c) => acc + (c.messages.some((m) => m.receiverId === currentUser.id && !m.isRead) ? 1 : 0),
+    0
+  );
+  const buyerUnreadCount = buyingConvs.reduce(
+    (acc, c) => acc + (c.messages.some((m) => m.receiverId === currentUser.id && !m.isRead) ? 1 : 0),
+    0
+  );
+
+  const handleTabChange = (tab: "buying" | "selling") => {
+    setActiveTab(tab);
+    const targetList = tab === "selling" ? sellingConvs : buyingConvs;
+    if (targetList.length > 0) {
+      setActiveConvId(targetList[0].id);
+    }
+  };
+
   const activeConv =
     conversations.find((c) => c.id === activeConvId) ||
     displayedConvs[0] ||
@@ -158,13 +175,19 @@ function MessagesContent() {
           }
         }
       } else if (loadedConvs.length > 0 && !activeConvId) {
-        // If current user is primarily a seller with buyer requests, switch tab
-        const hasSellerReqs = loadedConvs.some((c) => c.sellerId === currentUser.id);
-        const hasBuyerReqs = loadedConvs.some((c) => c.buyerId === currentUser.id);
-        if (hasSellerReqs && !hasBuyerReqs) {
+        // If current user has seller requests (especially unread), default to selling tab
+        const sellerConvs = loadedConvs.filter((c) => c.sellerId === currentUser.id);
+        const buyerConvs = loadedConvs.filter((c) => !c.sellerId || c.sellerId !== currentUser.id);
+        const hasSellerUnread = sellerConvs.some((c) =>
+          c.messages.some((m) => m.receiverId === currentUser.id && !m.isRead)
+        );
+
+        if (hasSellerUnread || (sellerConvs.length > 0 && buyerConvs.length === 0)) {
           setActiveTab("selling");
+          setActiveConvId(sellerConvs[0]?.id || loadedConvs[0].id);
+        } else {
+          setActiveConvId(loadedConvs[0].id);
         }
-        setActiveConvId(loadedConvs[0].id);
       }
 
       setConversations(loadedConvs);
@@ -426,24 +449,32 @@ function MessagesContent() {
 
         <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600 border border-slate-200">
           <button
-            onClick={() => setActiveTab("buying")}
-            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            onClick={() => handleTabChange("buying")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === "buying"
                 ? "bg-[#0f172a] text-white shadow-xs font-bold"
                 : "hover:text-slate-900"
             }`}
           >
-            My Inquiries ({buyingConvs.length})
+            <span>My Inquiries ({buyingConvs.length})</span>
+            {buyerUnreadCount > 0 && (
+              <span className="w-2 h-2 rounded-full bg-amber-400 ring-2 ring-amber-200" />
+            )}
           </button>
           <button
-            onClick={() => setActiveTab("selling")}
-            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            onClick={() => handleTabChange("selling")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
               activeTab === "selling"
                 ? "bg-[#0f172a] text-white shadow-xs font-bold"
                 : "hover:text-slate-900"
             }`}
           >
-            Buyer Requests ({sellingConvs.length})
+            <span>Buyer Requests ({sellingConvs.length})</span>
+            {sellerUnreadCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] animate-pulse">
+                {sellerUnreadCount} new
+              </span>
+            )}
           </button>
         </div>
       </div>
