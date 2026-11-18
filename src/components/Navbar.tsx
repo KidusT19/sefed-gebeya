@@ -24,7 +24,6 @@ import {
   Repeat,
   ShieldCheck,
   MessageSquare,
-  Wallet,
   CheckCircle2,
   Heart,
   ChevronRight,
@@ -387,8 +386,9 @@ export default function Navbar() {
                     </div>
                     <div className="hidden xl:block text-left text-xs leading-tight">
                       <div className="font-bold text-slate-900 line-clamp-1">{currentUser.name.split(" ")[0]}</div>
-                      <div className="text-[10px] font-bold text-[#0f172a]">
-                        {(currentUser.walletBalance || 0).toLocaleString()} ETB
+                      <div className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                        <span>{currentUser.city || "Ethiopia"}</span>
                       </div>
                     </div>
                     <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180 text-[#0f172a]" : ""}`} />
@@ -426,28 +426,6 @@ export default function Navbar() {
                             </span>
                           </div>
                         </div>
-
-                        {/* Telebirr / CBE Escrow Balance Strip */}
-                        <Link
-                          href="/dashboard?tab=wallet"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="mt-3 p-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 flex items-center justify-between transition-colors shadow-2xs group"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
-                              <Wallet className="w-3.5 h-3.5" />
-                            </div>
-                            <div>
-                              <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t("nav_escrow_wallet")}</div>
-                              <div className="text-xs font-black text-amber-400">
-                                {(currentUser.walletBalance || 0).toLocaleString()} ETB
-                              </div>
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-bold text-amber-400 group-hover:translate-x-0.5 transition-transform">
-                            {t("nav_manage")} →
-                          </span>
-                        </Link>
                       </div>
 
                       {/* Vertical Menu Options */}

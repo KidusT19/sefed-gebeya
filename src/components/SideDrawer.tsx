@@ -20,7 +20,6 @@ import {
   Car,
   Home,
   ChevronRight,
-  Wallet,
   Info,
   LogOut,
   LogIn,
@@ -87,9 +86,9 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
               )}
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-xs text-slate-900 truncate">{currentUser.name}</div>
-                <div className="text-[11px] font-semibold text-[#0f172a] flex items-center gap-1">
-                  <Wallet className="w-3 h-3 text-amber-500" />
-                  <span>{(currentUser.walletBalance || 0).toLocaleString()} ETB</span>
+                <div className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                  <span>{currentUser.city || "Ethiopia"}</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -281,15 +280,6 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
           >
             <span className="flex items-center gap-2">
               <User className="w-4 h-4 text-slate-700" /> {t("nav_my_posts")}
-            </span>
-          </Link>
-          <Link
-            href="/dashboard?tab=wallet"
-            onClick={onClose}
-            className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-xs font-semibold text-slate-800"
-          >
-            <span className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-[#0f172a]" /> {t("nav_escrow_wallet")}
             </span>
           </Link>
           <Link
