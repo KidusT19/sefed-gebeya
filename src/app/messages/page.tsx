@@ -156,7 +156,7 @@ function MessagesContent() {
                   `Is this ${targetListing.title} available?`,
                   `Can we meet at a safe landmark in ${targetListing.city}?`,
                   `Are you open to a device swap with cash difference?`,
-                  `I want to buy via Telebirr or CBE escrow.`,
+                  `I want to buy this item. When can we meet?`,
                 ],
                 messages: [],
               };
@@ -629,11 +629,11 @@ function MessagesContent() {
                       <span>Swap</span>
                     </Link>
                     <Link
-                      href={`/checkout/escrow?listing=${activeConv.listingId}`}
+                      href={`/listings/${activeConv.listingId}`}
                       className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-xl bg-[#0f172a] hover:bg-slate-800 text-white transition-colors shadow-xs cursor-pointer"
                     >
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Escrow</span>
+                      <ShoppingBag className="w-3.5 h-3.5 text-amber-400" />
+                      <span>View Ad</span>
                     </Link>
                   </>
                 ) : null}
@@ -769,7 +769,7 @@ function MessagesContent() {
                 type="text"
                 placeholder={
                   selectedImage
-                    ? "Add a note with your payment screenshot (e.g., Telebirr transaction ID)..."
+                    ? "Add a note with your payment screenshot (e.g., transaction reference)..."
                     : `Type a message to ${activeConv.participantName}...`
                 }
                 value={inputText}
@@ -846,7 +846,7 @@ function MessagesContent() {
               />
             </div>
             <div className="p-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Inspect Telebirr / CBE transaction reference, amount &amp; timestamp</span>
+              <span>Inspect payment receipt reference, amount &amp; timestamp</span>
               <a
                 href={viewingImage}
                 download="payment-screenshot.jpg"

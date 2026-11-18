@@ -36,9 +36,9 @@ export default function Footer() {
               <ShieldCheck className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <h4 className="font-bold text-white">Telebirr &amp; CBE Escrow</h4>
+              <h4 className="font-bold text-white">Direct &amp; Transparent Deals</h4>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Optional payment protection with Dual-OTP codes. Release funds only after you inspect the item.
+                Connect directly with sellers. Negotiate, inspect goods in person, and pay directly with zero platform middleman fees.
               </p>
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/dashboard" className="hover:text-white transition-colors">
-                  My Dashboard &amp; Wallet
+                  My Dashboard
                 </Link>
               </li>
             </ul>

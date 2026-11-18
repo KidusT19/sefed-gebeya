@@ -146,7 +146,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   </Link>
                 )}
 
-                {/* Secondary Button: How Escrow Works Walkthrough */}
+                {/* Secondary Button: How It Works Walkthrough */}
                 <button
                   type="button"
                   onClick={() => setIsVideoModalOpen(true)}
@@ -155,7 +155,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                   <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0f172a] text-white flex items-center justify-center">
                     <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white ml-0.5" />
                   </div>
-                  <span>How Escrow Works</span>
+                  <span>How It Works</span>
                 </button>
               </div>
 
@@ -163,7 +163,7 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
               <div className="hidden sm:flex pt-1.5 sm:pt-3 flex-wrap items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-500">
                 <div className="flex items-center gap-1.5 text-slate-800 font-bold">
                   <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
-                  <span>Escrow Protected (Telebirr / CBE)</span>
+                  <span>Direct P2P Deals &amp; Device Barter</span>
                 </div>
                 <span className="text-slate-300">•</span>
                 <div className="flex items-center gap-1.5 text-slate-700">
@@ -256,9 +256,9 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                     2
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">Lock Payment in Escrow</h4>
+                    <h4 className="text-xs font-bold text-slate-900">Direct Communication &amp; Payment</h4>
                     <p className="text-[11px] text-slate-600 mt-0.5">
-                      Pay securely with Telebirr or CBE Birr. Funds are held safely in escrow and only released when you inspect and confirm.
+                      Chat directly with the seller to negotiate price, ask questions, agree on payment, and arrange a safe landmark meetup.
                     </p>
                   </div>
                 </div>
@@ -268,9 +268,9 @@ export default function SefedHero({ onShopNowClick }: SefedHeroProps) {
                     3
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">Speedy Kebele Delivery</h4>
+                    <h4 className="text-xs font-bold text-slate-900">Safe Landmark Inspection &amp; Handover</h4>
                     <p className="text-[11px] text-slate-600 mt-0.5">
-                      Pooled deliveries and Bajaj dispatches deliver direct to your kebele landmark with dual-OTP verification.
+                      Meet at busy public landmarks across Ethiopia to inspect the item in person before completing the deal.
                     </p>
                   </div>
                 </div>

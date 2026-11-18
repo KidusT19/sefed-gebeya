@@ -148,7 +148,7 @@ function ListingsContent() {
                 Ethiopian Marketplace Catalog
               </h1>
               <p className="text-xs text-slate-500 mt-0.5">
-                Browse authentic items across Ethiopia with Telebirr escrow protection and fair device swaps.
+                Browse authentic items across Ethiopia with direct peer-to-peer communication and fair device swaps.
               </p>
             </div>
 
@@ -395,13 +395,13 @@ function ListingsContent() {
               </div>
             </div>
 
-            {/* Sefed Escrow Guarantee Card */}
+            {/* Direct P2P Trading Card */}
             <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 text-xs space-y-2">
               <span className="font-extrabold text-slate-900 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-amber-500" /> Sefed Escrow Protection
+                <ShieldCheck className="w-4 h-4 text-amber-500" /> Direct P2P Trading
               </span>
               <p className="text-slate-600 text-[11px] leading-relaxed">
-                Pay securely via Telebirr or CBE Birr. Funds are held in escrow until you inspect your item.
+                Contact sellers directly via in-app chat or phone. Inspect the item in person at a public landmark before making direct payment.
               </p>
             </div>
           </aside>

@@ -16,7 +16,7 @@ import {
 
 interface FAQItem {
   id: string;
-  category: "buying" | "selling" | "barter" | "escrow";
+  category: "buying" | "selling" | "barter" | "safety";
   question: string;
   answer: string;
 }
@@ -27,7 +27,7 @@ const FAQS: FAQItem[] = [
     category: "buying",
     question: "How do I directly buy an item from a seller in Adama?",
     answer:
-      "Browse our classifieds by searching for your desired product or filtering by Adama kebele (Bole, Arada, Kebele 04, Posta Bet). When you find an item you like, you can call the seller directly, start an in-app chat to bargain, or click 'Buy Now with Escrow' to freeze your payment safely before meeting in person.",
+      "Browse our classifieds by searching for your desired product or filtering by Adama kebele (Bole, Arada, Kebele 04, Posta Bet). When you find an item you like, you can call the seller directly or start an in-app chat to bargain and arrange a safe public meetup to inspect and buy.",
   },
   {
     id: "f-2",
@@ -41,7 +41,7 @@ const FAQS: FAQItem[] = [
     category: "barter",
     question: "How does the 1-to-1 direct barter swap with cash top-up work?",
     answer:
-      "If you want to trade your phone or laptop for another device but their market values differ, you don't need to sell first. Our automated calculator subtracts your item's value from the other item's price. The resulting cash difference can be paid in cash at your meetup or deposited into escrow. Once both parties inspect and approve the devices, the exchange is complete.",
+      "If you want to trade your phone or laptop for another device but their market values differ, you don't need to sell first. Our automated calculator subtracts your item's value from the other item's price. The resulting cash difference is settled directly between traders at your in-person inspection meetup. Once both parties inspect and approve the devices, the exchange is complete.",
   },
   {
     id: "f-4",
@@ -52,10 +52,10 @@ const FAQS: FAQItem[] = [
   },
   {
     id: "f-5",
-    category: "escrow",
-    question: "How does Telebirr and CBE Birr escrow protect my money?",
+    category: "safety",
+    question: "How do payments work between buyers and sellers?",
     answer:
-      "When you buy an item or add a cash top-up, your funds are not sent directly to the seller's personal account. Instead, the money is safely frozen in platform escrow. The seller cannot touch the funds until you physically meet in person, inspect the item, and authorize the 4-digit release OTP.",
+      "Buyers and sellers communicate directly via in-app chat or phone calls to agree on price and meetup location. You inspect and test the item in person at a public landmark before making direct payment to the seller (in cash or direct transfer). The platform never charges transaction fees or holds money.",
   },
   {
     id: "f-6",
@@ -66,10 +66,10 @@ const FAQS: FAQItem[] = [
   },
   {
     id: "f-7",
-    category: "escrow",
+    category: "safety",
     question: "What happens if an item is defective or counterfeit during the meetup?",
     answer:
-      "Do NOT share your Escrow Release OTP and do not hand over cash. Simply decline the deal. If you deposited funds into escrow, your payment will be refunded 100% back to your Telebirr or CBE Birr account without any penalty.",
+      "Do NOT hand over any payment. Simply decline the deal and walk away. Always test phones, laptops, and devices thoroughly before paying directly.",
   },
   {
     id: "f-8",
@@ -174,15 +174,15 @@ export default function FAQPage() {
           <span>Device Swaps</span>
         </button>
         <button
-          onClick={() => setActiveCategory("escrow")}
+          onClick={() => setActiveCategory("safety")}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1 transition-all ${
-            activeCategory === "escrow"
+            activeCategory === "safety"
               ? "bg-[#1d4ed8] text-white shadow-xs"
               : "bg-[#faf5ed] border border-[#bfdbfe] text-[#1e40af] hover:bg-[#dbeafe]"
           }`}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Escrow &amp; OTP</span>
+          <span>Safety &amp; Meetups</span>
         </button>
       </div>
 

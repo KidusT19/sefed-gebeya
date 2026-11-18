@@ -24,7 +24,7 @@ export default function TradeDealRoomPage() {
     setStatus("ACCEPTED");
     setTimeout(() => {
       if (targetItem) {
-        router.push(`/checkout/escrow?listing=${targetItem.id}&topup=${topUpAmount}`);
+        router.push(`/messages?seller=${targetItem.seller.id}&listing=${targetItem.id}`);
       }
     }, 1500);
   };
@@ -147,7 +147,7 @@ export default function TradeDealRoomPage() {
             </span>
           </div>
           <p className="text-[11px] text-[#785437] leading-relaxed">
-            {currentUser?.name || "Buyer"} pays <strong>{topUpAmount.toLocaleString()} ETB</strong> in cash top-up to {targetItem.seller.name} to balance the difference between both devices. Funds are held in Telebirr escrow until in-person inspection and OTP release.
+            {currentUser?.name || "Buyer"} pays <strong>{topUpAmount.toLocaleString()} ETB</strong> in direct cash top-up to {targetItem.seller.name} to balance the difference between both devices at the landmark meetup.
           </p>
 
           <div className="border-t border-[#dfd2be] pt-3 flex items-center gap-2 text-xs text-[#52361f]">
@@ -195,7 +195,7 @@ export default function TradeDealRoomPage() {
             className="w-full py-3 rounded-xl bg-[#1d4ed8] hover:bg-[#1e40af] text-white font-black text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5"
           >
             <CheckCircle className="w-4 h-4" />
-            Accept Deal & Lock Escrow
+            Accept Deal &amp; Open Chat
           </button>
 
           <button

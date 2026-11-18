@@ -286,7 +286,7 @@ function SignUpContent() {
                     Ethiopian Mobile Number
                   </label>
                   <span className="text-[10px] font-semibold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                    Telebirr &amp; SMS
+                    Direct Calls &amp; SMS
                   </span>
                 </div>
                 <div className="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-[#0f172a] focus-within:ring-2 focus-within:ring-[#0f172a]/20 overflow-hidden transition-all">
@@ -312,7 +312,7 @@ function SignUpContent() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-800">Email Address (Optional)</label>
-                  <span className="text-[10px] text-slate-400 font-medium">For PDF invoices &amp; escrow alerts</span>
+                  <span className="text-[10px] text-slate-400 font-medium">For account updates &amp; message notifications</span>
                 </div>
                 <div className="relative">
                   <input
@@ -498,7 +498,7 @@ function SignUpContent() {
         {/* Security Assurance */}
         <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-medium">
           <ShieldCheck className="w-4 h-4 text-amber-500" />
-          <span>Telebirr &amp; National Digital Escrow Protocol</span>
+          <span>100% Free Peer-to-Peer Marketplace</span>
         </div>
       </div>
     </div>

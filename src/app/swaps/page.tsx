@@ -38,7 +38,7 @@ export default function CircularSwapsPage() {
       kebele: "Posta Bet",
       title: "Handover 1: Posta Bet Commercial Square",
       action: "Henok presents iPhone 13 Pro (55,000 ETB) for Dawit to inspect.",
-      cashSettlement: "Henok deposits +13,000 ETB into escrow for upcoming Dell XPS upgrade.",
+      cashSettlement: "Henok agrees to pay +13,000 ETB direct cash top-up for Dell XPS upgrade.",
       status: "INSPECTION VERIFIED",
     },
     {
@@ -46,7 +46,7 @@ export default function CircularSwapsPage() {
       kebele: "Arada Market",
       title: "Handover 2: Arada Electronics Hub",
       action: "Dawit accepts iPhone 13 Pro and hands over Dell XPS 13 (68,000 ETB) to Yonas.",
-      cashSettlement: "Dawit receives +13,000 ETB cash top-up credited to Telebirr wallet.",
+      cashSettlement: "Dawit receives +13,000 ETB direct cash top-up difference at the meetup.",
       status: "SWAP COMPLETED",
     },
     {
@@ -241,7 +241,7 @@ export default function CircularSwapsPage() {
               You are Trader 3 ({cycle?.nodes[2]?.userName || currentUser?.name || "Participant"})
             </h4>
             <p className="text-xs text-[#6a4727] font-medium">
-              You trade your <strong>{cycle?.nodes[2]?.offeringItem?.title || "Offered Item"}</strong>, receive an <strong>{cycle?.nodes[2]?.receivingItem?.title || "Target Item"}</strong>, and settle cash top-up held safely in escrow!
+              You trade your <strong>{cycle?.nodes[2]?.offeringItem?.title || "Offered Item"}</strong>, receive an <strong>{cycle?.nodes[2]?.receivingItem?.title || "Target Item"}</strong>, and settle cash top-up directly at the meetup!
             </p>
           </div>
 

@@ -136,7 +136,7 @@ export default function HomePage() {
                 Recent Product Posts
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
-                Watch, browse and explore all authentic items posted across Ethiopia with Telebirr escrow protection
+                Watch, browse and explore all authentic items posted across Ethiopia with direct peer-to-peer communication
               </p>
             </div>
 
@@ -450,7 +450,7 @@ export default function HomePage() {
                       : "Even Direct Swap (0 ETB)"}
                   </div>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    Exchange your goods with automated cash balancing &amp; CBE / Telebirr Escrow protection
+                    Exchange your goods with automated fair value balancing and direct landmark meetups
                   </p>
                 </div>
               </div>
@@ -479,7 +479,7 @@ export default function HomePage() {
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
                 Join thousands of shoppers and sellers across Addis Ababa, Adama, Hawassa, and nationwide. 
-                List your products for free or enjoy safe shopping with Telebirr escrow protection.
+                List your products for free or enjoy direct shopping and device swaps with zero platform fees.
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link

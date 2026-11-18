@@ -33,7 +33,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     how_it_works: "How Sebez Market Works Nationwide",
     safety_title: "In-Person Inspection Before Payment",
     safety_desc: "Meet at public daylight landmarks (CBE branches, commercial centers). Hold and test your device before releasing payment.",
-    escrow_badge: "100% Escrow Protection via Telebirr & CBE",
+    escrow_badge: "100% Direct P2P Deals & Safe Meetups",
 
     // Navigation & Header
     nav_home: "Home",
@@ -49,7 +49,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     nav_support: "Support: 8082 (Toll-Free)",
     nav_login: "Sign In",
     nav_register: "Register Free",
-    nav_escrow_wallet: "Escrow Wallet",
+    nav_escrow_wallet: "My Dashboard",
     nav_manage: "Manage",
     nav_my_profile: "My Profile",
     nav_my_profile_sub: "View & edit personal bio and ratings",
@@ -110,7 +110,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     how_it_works: "ሰበዝ ማርኬት እንዴት ይሰራል?",
     safety_title: "በአካል ፈትሸው ይረከቡ",
     safety_desc: "ገንዘብ ከመክፈልዎ በፊት በንግድ ባንክ ቅርንጫፎች ተገናኝተው እቃውን በእጅዎ ይዘው ይሞክሩ።",
-    escrow_badge: "100% የታመነ የቴሌብር ጥበቃ",
+    escrow_badge: "100% ቀጥተኛና የታመነ የገበያ ግንኙነት",
 
     // Navigation & Header
     nav_home: "መነሻ",
@@ -126,7 +126,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     nav_support: "የደንበኞች አገልግሎት፡ 8082",
     nav_login: "ግባ",
     nav_register: "በነጻ ይመዝገቡ",
-    nav_escrow_wallet: "የኤስክሮው ቦርሳ",
+    nav_escrow_wallet: "የእኔ ዳሽቦርድ",
     nav_manage: "አስተዳድር",
     nav_my_profile: "የእኔ መገለጫ",
     nav_my_profile_sub: "መገለጫዎን እና የግል መረጃዎችን ይመልከቱ",
@@ -187,7 +187,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     how_it_works: "Sebez Market Akkamitti Hojjeta?",
     safety_title: "Qaamaan Qoradhaa Fudhadhaa",
     safety_desc: "Kaffaluun dura damee Baankii Daldala Itoophiyaatti walargaa meeshaa qabadhaa ilaalaa.",
-    escrow_badge: "Eegumsa Guutuu Telebirr",
+    escrow_badge: "Wal-qunnamtii Qajeelaa fi Nageenya Qabu",
 
     // Navigation & Header
     nav_home: "Fuula Dura",
@@ -203,7 +203,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     nav_support: "Tajaajila Maamiltootaa: 8082",
     nav_login: "Seeni",
     nav_register: "Bilisaan Galmaa'i",
-    nav_escrow_wallet: "Waleettii Escrow",
+    nav_escrow_wallet: "Daashboordii Koo",
     nav_manage: "Bulchi",
     nav_my_profile: "Piroofaayilii Koo",
     nav_my_profile_sub: "Piroofaayilii fi odeeffannoo keessan ilaalaa",

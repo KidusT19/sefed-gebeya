@@ -150,7 +150,7 @@ function NewTradeOfferContent() {
               Sign In to Propose Barter Deals
             </h2>
             <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
-              Sefed multi-item device swaps and cash adjustment escrow require verified seller and buyer accounts.
+              Sefed multi-item device swaps and direct barter require verified seller and buyer accounts.
             </p>
           </div>
 
@@ -211,7 +211,7 @@ function NewTradeOfferContent() {
             <Layers className="w-3.5 h-3.5 text-amber-700" /> Multi-Item Barter Deal Room
           </span>
           <span className="text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full">
-            Telebirr &amp; CBE Escrow
+            Direct Handover
           </span>
         </div>
       </div>
@@ -244,7 +244,7 @@ function NewTradeOfferContent() {
             <div className="p-4 bg-slate-50 rounded-2xl max-w-md mx-auto border border-slate-200 text-xs text-slate-700 space-y-1 text-left">
               <div className="font-bold text-slate-900">What Happens Next:</div>
               <div>&bull; The seller can accept your offer or counter-select other items from your post inventory.</div>
-              <div>&bull; Cash top-ups are held in Telebirr / CBE Escrow until physical handover and test.</div>
+              <div>&bull; Cash top-ups and devices are exchanged directly during the physical landmark inspection.</div>
             </div>
             <p className="text-xs text-[#0f172a] font-bold animate-pulse pt-2">
               Redirecting to your barter deal dashboard...
@@ -331,7 +331,7 @@ function NewTradeOfferContent() {
                   <div className="space-y-1">
                     <h4 className="font-bold text-sm text-slate-900">No products available in your barter inventory</h4>
                     <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                      Post your device or item for free on Sefed to bundle it into this trade proposal, or offer pure cash via Escrow.
+                      Post your device or item for free on Sefed to bundle it into this trade proposal, or negotiate pure cash directly.
                     </p>
                   </div>
                   <Link
@@ -425,7 +425,7 @@ function NewTradeOfferContent() {
                     Automated Fair-Value &amp; Cash Top-Up Balance
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
-                    Sefed balances product value deltas with secure Telebirr / CBE Escrow top-ups.
+                    Sefed balances product value deltas with transparent fair-trade top-ups.
                   </p>
                 </div>
                 <div className="text-right">
@@ -479,7 +479,7 @@ function NewTradeOfferContent() {
               {/* Adjustable Cash Top-Up Field */}
               <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 shadow-xs">
                 <label className="text-xs font-black text-slate-900 block">
-                  Proposed Cash Top-Up Amount (ETB via Telebirr Escrow)
+                  Proposed Cash Top-Up Amount (ETB directly paid to seller)
                 </label>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="relative flex-1">
@@ -496,7 +496,7 @@ function NewTradeOfferContent() {
 
                   <div className="p-2.5 px-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900 shrink-0">
                     {numericTopUp > 0
-                      ? "You Pay Cash to Seller via Escrow"
+                      ? "You Pay Cash to Seller"
                       : numericTopUp < 0
                       ? "Seller Pays You Cash"
                       : "100% Equal Item Barter"}
@@ -562,7 +562,7 @@ function NewTradeOfferContent() {
                       <span>{spot}</span>
                     </div>
                     <p className="text-[10px] text-slate-500 mt-1 font-medium">
-                      Public landmark with security guards for safe physical device inspection and cash escrow release.
+                      Public landmark with security guards for safe physical device inspection and direct deal completion.
                     </p>
                   </div>
                 ))}
@@ -596,7 +596,7 @@ function NewTradeOfferContent() {
                 <ArrowRight className="w-4 h-4 text-amber-400 ml-1" />
               </button>
               <p className="text-center text-[11px] text-slate-500 mt-2 font-medium">
-                Protected by Telebirr &amp; CBE Escrow. No money is released until you verify all items in person.
+                Inspect and test all devices thoroughly in person before completing the exchange.
               </p>
             </div>
           </form>

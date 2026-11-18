@@ -413,7 +413,7 @@ export default function SellerProfilePage() {
                   Reputation & Verified Transactions ({reviewsList.length})
                 </h2>
                 <p className="text-xs text-[#785437] mt-0.5">
-                  Every review is tied to a completed Telebirr escrow or direct verified transaction in Adama.
+                  Every review is tied to a verified deal or direct transaction in Adama.
                 </p>
               </div>
 
@@ -491,16 +491,16 @@ export default function SellerProfilePage() {
               <li className="flex items-start gap-2.5">
                 <Check className="w-4 h-4 text-emerald-700 mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="text-[#2b1c11]">Telebirr Registered Account:</strong>
-                  <p className="text-[#785437] text-[11px]">Phone number linked to verified mobile money wallet.</p>
+                  <strong className="text-[#2b1c11]">Phone Number Verified:</strong>
+                  <p className="text-[#785437] text-[11px]">Directly reachable for calls, SMS, and in-person meetups.</p>
                 </div>
               </li>
               <li className="flex items-start gap-2.5">
                 <Check className="w-4 h-4 text-emerald-700 mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="text-[#2b1c11]">Dual-OTP Escrow Compliance:</strong>
+                  <strong className="text-[#2b1c11]">Transparent In-Person Deals:</strong>
                   <p className="text-[#785437] text-[11px]">
-                    Never requests direct payment outside the Sebez Dual-OTP escrow protocol.
+                    Meets in safe public locations and allows full physical device inspection.
                   </p>
                 </div>
               </li>
@@ -520,7 +520,7 @@ export default function SellerProfilePage() {
               <div className="p-3 rounded-xl bg-white/70 border border-[#bfdbfe]">
                 <div className="font-bold text-[#1e3a8a]">1. Public Landmark Direct Inspection</div>
                 <div className="text-[11px] text-[#3b82f6] mt-0.5">
-                  Meet at designated Adama landmarks (Posta Bet, Arada Market, Bole Gate). Test the item for 10 minutes before releasing cash or Telebirr escrow.
+                  Meet at designated Adama landmarks (Posta Bet, Arada Market, Bole Gate). Test the item thoroughly before making direct payment to the seller.
                 </div>
               </div>
 
@@ -532,9 +532,9 @@ export default function SellerProfilePage() {
               </div>
 
               <div className="p-3 rounded-xl bg-white/70 border border-[#bfdbfe]">
-                <div className="font-bold text-[#1e3a8a]">3. 100% Refund Guarantee</div>
+                <div className="font-bold text-[#1e3a8a]">3. Zero Risk &amp; In-Person Test</div>
                 <div className="text-[11px] text-[#3b82f6] mt-0.5">
-                  If item doesn&apos;t match description, cancel at doorstep. Telebirr/CBE Birr automatically refunds.
+                  If the item doesn&apos;t match the description or photos, decline the purchase on the spot with zero obligation.
                 </div>
               </div>
             </div>

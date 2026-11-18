@@ -808,7 +808,7 @@ function DashboardContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-800 block">Mobile Phone (Telebirr)</label>
+                  <label className="text-xs font-bold text-slate-800 block">Mobile Phone</label>
                   <input
                     type="tel"
                     required

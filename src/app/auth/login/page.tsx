@@ -180,7 +180,7 @@ function LoginContent() {
             Sign In to Your Account
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-xs mx-auto font-medium">
-            Manage your orders, active listings, device swaps, and Telebirr escrow wallet
+            Manage your listings, barter deals, direct messages, and saved ads
           </p>
         </div>
 
@@ -372,7 +372,7 @@ function LoginContent() {
             <span>Protected by 256-Bit SSL</span>
           </div>
           <span className="hidden sm:inline text-slate-300">&bull;</span>
-          <span>Telebirr &amp; CBE Escrow Dual Verification</span>
+          <span>Direct In-Person Landmark Deals &amp; Barter</span>
         </div>
       </div>
     </div>

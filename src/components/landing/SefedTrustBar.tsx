@@ -15,9 +15,9 @@ export default function SefedTrustBar() {
       icon: ShieldCheck,
       iconColor: "text-[#0f172a]",
       bgColor: "bg-slate-100",
-      title: "Secure Payment",
-      description: "Shop with confidence",
-      badge: "Telebirr & CBE",
+      title: "Direct Deals",
+      description: "Zero platform fees",
+      badge: "100% Free P2P",
     },
     {
       icon: Truck,

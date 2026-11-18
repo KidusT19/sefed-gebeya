@@ -173,7 +173,7 @@ export default function SafetyPage() {
           </h3>
         </div>
         <p className="text-xs text-[#52361f] leading-relaxed">
-          Do <strong>NOT</strong> share your Escrow Release OTP and do not hand over cash. Simply decline the purchase. If you deposited funds in escrow, your full balance will be returned to your Telebirr or CBE Birr account.
+          Do <strong>NOT</strong> pay for the item. Simply decline the purchase and walk away. Never send money upfront before seeing and testing the device in person.
         </p>
         <div className="pt-2">
           <Link

@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Sefed Market (ሰፌድ ገበያ) | Shop Smart · Live Better",
-  description: "Ethiopia's premier e-commerce marketplace and device barter exchange with secure Telebirr and CBE escrow across Addis Ababa, Adama, Hawassa, and nationwide.",
+  description: "Ethiopia's premier e-commerce marketplace and device barter exchange with direct peer-to-peer trading and verified landmark meetups across Addis Ababa, Adama, Hawassa, and nationwide.",
 };
 
 export default function RootLayout({
