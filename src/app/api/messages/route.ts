@@ -123,48 +123,115 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, conversation: shellConv, unreadSendersCount });
     }
 
-    // 2. All Conversations for User or All Platform Conversations
-    let allConvs = [...STORED_CONVERSATIONS];
+    // 2. All Conversations for User or All Platform Conversations Reconstructed from Prisma SQLite
+    const convMap = new Map<string, any[]>();
+    try {
+      const allDbMsgs = await prisma.chatMessage.findMany({
+        where: userId
+          ? {
+              OR: [{ senderId: userId }, { receiverId: userId }],
+            }
+          : {},
+        orderBy: { createdAt: "asc" },
+      });
 
-    // Filter by userId if requested (user is either buyer, seller, sender, or receiver)
-    if (userId) {
-      allConvs = allConvs.filter(
-        (c) =>
-          !c.buyerId ||
-          !c.sellerId ||
-          c.buyerId === userId ||
-          c.sellerId === userId ||
-          c.messages.some((m) => m.senderId === userId || m.receiverId === userId)
-      );
+      for (const m of allDbMsgs) {
+        if (!convMap.has(m.conversationId)) {
+          convMap.set(m.conversationId, []);
+        }
+        convMap.get(m.conversationId)!.push(m);
+      }
+    } catch (dbErr) {
+      console.warn("Prisma conversation query error:", dbErr);
     }
 
-    // Sync latest messages for each conversation from DB
+    // Load users and listings to enrich conversations with titles, prices, and avatars
+    let allUsers: any[] = [];
+    let allListings: any[] = [];
     try {
-      for (const conv of allConvs) {
-        const msgs = await prisma.chatMessage.findMany({
-          where: { conversationId: conv.id },
-          orderBy: { createdAt: "asc" },
-        });
-        if (msgs.length > 0) {
-          conv.messages = msgs.map((m) => ({
-            id: m.id,
-            conversationId: m.conversationId,
-            senderId: m.senderId,
-            senderName: m.senderName,
-            receiverId: m.receiverId || undefined,
-            text: m.text,
-            imageUrl: m.imageUrl || undefined,
-            isRead: m.isRead,
-            time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            createdAt: new Date(m.createdAt).getTime(),
-          }));
+      [allUsers, allListings] = await Promise.all([
+        prisma.user.findMany(),
+        prisma.listing.findMany(),
+      ]);
+    } catch {}
+
+    const reconstructedConvs: ApiConversation[] = [];
+
+    for (const [convId, msgs] of convMap.entries()) {
+      const parts = convId.split("_");
+      const listingId = parts[1];
+      const buyerIdFromId = parts[2];
+
+      const otherMsg = msgs.find((m) => m.senderId !== userId);
+      const otherId = otherMsg ? otherMsg.senderId : (msgs[0].receiverId || buyerIdFromId);
+      const otherUser = allUsers.find((u) => u.id === otherId);
+      const listing = allListings.find((l) => l.id === listingId);
+
+      const isSeller = listing ? listing.userId === userId : false;
+
+      let parsedImages: string[] = [];
+      if (listing?.imageUrls) {
+        try {
+          parsedImages = JSON.parse(listing.imageUrls);
+        } catch {
+          parsedImages = [listing.imageUrls];
         }
       }
-    } catch {}
+
+      const formattedMsgs: ApiMessage[] = msgs.map((m) => ({
+        id: m.id,
+        conversationId: m.conversationId,
+        senderId: m.senderId,
+        senderName: m.senderName,
+        receiverId: m.receiverId || undefined,
+        text: m.text,
+        imageUrl: m.imageUrl || undefined,
+        isRead: m.isRead,
+        time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        createdAt: new Date(m.createdAt).getTime(),
+      }));
+
+      const cached = STORED_CONVERSATIONS.find((c) => c.id === convId);
+
+      const conv: ApiConversation = {
+        id: convId,
+        buyerId: isSeller ? otherId : (userId || buyerIdFromId),
+        sellerId: isSeller ? (userId || listing?.userId) : (listing?.userId || otherId),
+        participantName: otherUser ? otherUser.name : (otherMsg ? otherMsg.senderName : (cached?.participantName || "Trader")),
+        participantRole: isSeller ? "buyer" : "seller",
+        participantKebele: otherUser?.kebele || otherUser?.city || listing?.kebele || listing?.city || "Adama, Ethiopia",
+        participantPhone: otherUser?.phone || cached?.participantPhone || "",
+        itemTitle: listing ? listing.title : (cached?.itemTitle || "Product Exchange"),
+        itemPrice: listing ? listing.price : cached?.itemPrice,
+        itemImage: parsedImages[0] || cached?.itemImage || "",
+        listingId: listing?.id || listingId,
+        quickReplies: cached?.quickReplies || [
+          "Is this item still available?",
+          "Can we meet at a safe landmark in town?",
+          "Are you open to a device swap with cash difference?",
+        ],
+        messages: formattedMsgs,
+        updatedAt: formattedMsgs[formattedMsgs.length - 1]?.createdAt || Date.now(),
+      };
+
+      reconstructedConvs.push(conv);
+    }
+
+    // Also include any cached conversations that might not have DB messages yet
+    for (const cached of STORED_CONVERSATIONS) {
+      if (!reconstructedConvs.some((c) => c.id === cached.id)) {
+        if (!userId || cached.buyerId === userId || cached.sellerId === userId) {
+          reconstructedConvs.push(cached);
+        }
+      }
+    }
+
+    // Sort conversations by latest message timestamp descending
+    reconstructedConvs.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
     return NextResponse.json({
       success: true,
-      conversations: allConvs,
+      conversations: reconstructedConvs,
       unreadSendersCount,
     });
   } catch (error) {
