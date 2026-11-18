@@ -18,6 +18,10 @@ import {
   ArrowLeft,
   Sparkles,
   Lock,
+  Image as ImageIcon,
+  Paperclip,
+  X,
+  ZoomIn,
 } from "lucide-react";
 
 interface Message {
@@ -28,6 +32,7 @@ interface Message {
   receiverId?: string;
   sender?: "me" | "them";
   text: string;
+  imageUrl?: string;
   time: string;
   createdAt?: number;
 }
@@ -57,6 +62,10 @@ function MessagesContent() {
   const { currentUser, isLoggedIn, isAuthReady, showToast, listings } = useMarketplace();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageName, setSelectedImageName] = useState<string>("");
+  const [viewingImage, setViewingImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthReady) return;
@@ -184,12 +193,80 @@ function MessagesContent() {
     return () => clearInterval(interval);
   }, [activeConvId]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Please select an image screenshot (PNG, JPG, WEBP).", "error");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showToast("Screenshot is too large. Please select an image under 10MB.", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const rawData = event.target?.result as string;
+      if (rawData) {
+        // Optimize on canvas to max 1200px width/height for fast transmission
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL("image/jpeg", 0.85);
+            setSelectedImage(compressed);
+            setSelectedImageName(file.name);
+            showToast("Payment screenshot attached! Ready to send.", "info");
+          } else {
+            setSelectedImage(rawData);
+            setSelectedImageName(file.name);
+          }
+        };
+        img.src = rawData;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveSelectedImage = () => {
+    setSelectedImage(null);
+    setSelectedImageName("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !activeConv) return;
+    if ((!inputText.trim() && !selectedImage) || !activeConv) return;
 
     const messageText = inputText.trim();
+    const imageToSend = selectedImage;
     setInputText("");
+    setSelectedImage(null);
+    setSelectedImageName("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
 
     const isMeSeller = activeConv.sellerId === currentUser.id;
     const receiverId = isMeSeller ? activeConv.buyerId : activeConv.sellerId;
@@ -200,7 +277,8 @@ function MessagesContent() {
       senderId: currentUser.id,
       senderName: currentUser.name,
       receiverId,
-      text: messageText,
+      text: messageText || (imageToSend ? "Attached payment screenshot" : ""),
+      imageUrl: imageToSend || undefined,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
@@ -215,6 +293,7 @@ function MessagesContent() {
         body: JSON.stringify({
           conversationId: activeConv.id,
           text: messageText,
+          imageUrl: imageToSend,
           senderId: currentUser.id,
           senderName: currentUser.name,
           receiverId,
@@ -536,7 +615,35 @@ function MessagesContent() {
                             : "bg-white text-slate-900 border border-slate-200/90 rounded-bl-xs font-normal"
                         }`}
                       >
-                        {m.text}
+                        {m.imageUrl && (
+                          <div className="mb-2 space-y-1.5">
+                            <div
+                              onClick={() => setViewingImage(m.imageUrl || null)}
+                              className="group relative cursor-pointer overflow-hidden rounded-xl border border-white/20 bg-black/10 hover:opacity-95 transition-all shadow-xs"
+                            >
+                              <img
+                                src={m.imageUrl}
+                                alt="Payment screenshot"
+                                className="max-h-64 max-w-full rounded-xl object-contain mx-auto transition-transform group-hover:scale-[1.01]"
+                              />
+                              <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold">
+                                <ZoomIn className="w-4 h-4" />
+                                <span>Click to View Full Size</span>
+                              </div>
+                            </div>
+                            <div
+                              className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                                isMe
+                                  ? "text-amber-300 bg-white/10"
+                                  : "text-emerald-700 bg-emerald-50 border border-emerald-200"
+                              }`}
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>Payment Receipt / Screenshot</span>
+                            </div>
+                          </div>
+                        )}
+                        {m.text && <div>{m.text}</div>}
                       </div>
                       <span className="text-[10px] text-slate-400 mt-1 px-1 flex items-center gap-1 font-medium">
                         {m.time} {isMe && <CheckCheck className="w-3.5 h-3.5 text-amber-400" />}
@@ -565,27 +672,135 @@ function MessagesContent() {
               </div>
             )}
 
-            {/* Message Input Bar */}
+            {/* Attached Payment Screenshot Preview */}
+            {selectedImage && (
+              <div className="px-4 py-2.5 bg-amber-50/90 border-t border-amber-200 flex items-center justify-between gap-3 animate-in fade-in">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-amber-300 bg-white shrink-0 shadow-xs">
+                    <img
+                      src={selectedImage}
+                      alt="Payment Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 text-xs font-black text-amber-950">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Payment Screenshot Attached</span>
+                    </div>
+                    <p className="text-[11px] text-amber-800/80 truncate font-medium">
+                      {selectedImageName || "payment-receipt.jpg"} &bull; Ready to send to seller
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleRemoveSelectedImage}
+                  className="p-1.5 rounded-lg text-amber-800 hover:text-rose-600 hover:bg-amber-100 transition-colors cursor-pointer"
+                  title="Remove screenshot"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* Message Input Bar with Attach Image beside Send */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3 sm:p-3.5 border-t border-slate-200 flex items-center gap-2.5 bg-white"
+              className="p-3 sm:p-3.5 border-t border-slate-200 flex items-center gap-2 bg-white"
             >
               <input
                 type="text"
-                placeholder={`Type a message to ${activeConv.participantName}...`}
+                placeholder={
+                  selectedImage
+                    ? "Add a note with your payment screenshot (e.g., Telebirr transaction ID)..."
+                    : `Type a message to ${activeConv.participantName}...`
+                }
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 className="flex-1 px-4 py-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f172a] focus:border-transparent transition-all"
               />
+
+              {/* Hidden File Input for Payment Screenshot Attachment */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+                id="chat-attach-image-input"
+              />
+
+              {/* Image Attach Button placed right beside Send Icon */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-center shrink-0 ${
+                  selectedImage
+                    ? "bg-amber-100 border-amber-300 text-amber-950 shadow-xs"
+                    : "bg-slate-100 hover:bg-slate-200/80 border-slate-200 text-slate-700 hover:text-slate-900"
+                }`}
+                title="Attach payment receipt or screenshot"
+              >
+                <ImageIcon className="w-4 h-4 text-amber-600" />
+              </button>
+
+              {/* Send Button */}
               <button
                 type="submit"
-                disabled={!inputText.trim()}
-                className="p-2.5 rounded-xl bg-[#0f172a] hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-amber-400 hover:text-amber-300 transition-colors shadow-xs flex items-center justify-center cursor-pointer"
+                disabled={!inputText.trim() && !selectedImage}
+                className="p-2.5 rounded-xl bg-[#0f172a] hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-amber-400 hover:text-amber-300 transition-colors shadow-xs flex items-center justify-center cursor-pointer shrink-0"
+                title="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
           </main>
+        </div>
+      )}
+
+      {/* Full-Screen Payment Screenshot Modal */}
+      {viewingImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+          onClick={() => setViewingImage(null)}
+        >
+          <div
+            className="relative max-w-3xl w-full bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 p-2 shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-3 border-b border-slate-800 text-white">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold">Verified Payment Screenshot / Receipt</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewingImage(null)}
+                className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-3 flex items-center justify-center max-h-[80vh] overflow-auto">
+              <img
+                src={viewingImage}
+                alt="Enlarged Payment Screenshot"
+                className="max-h-[75vh] w-auto max-w-full rounded-xl object-contain shadow-lg"
+              />
+            </div>
+            <div className="p-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Inspect Telebirr / CBE transaction reference, amount &amp; timestamp</span>
+              <a
+                href={viewingImage}
+                download="payment-screenshot.jpg"
+                className="text-amber-400 hover:text-amber-300 font-bold underline"
+              >
+                Download Receipt
+              </a>
+            </div>
+          </div>
         </div>
       )}
     </div>
