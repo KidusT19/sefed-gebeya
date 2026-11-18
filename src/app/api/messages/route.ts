@@ -10,6 +10,7 @@ export interface ApiMessage {
   sender?: "me" | "them";
   text: string;
   imageUrl?: string;
+  isRead?: boolean;
   time: string;
   createdAt: number;
 }
@@ -38,8 +39,38 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const conversationId = searchParams.get("conversationId");
   const userId = searchParams.get("userId");
+  const markRead = searchParams.get("markRead") === "true";
 
   try {
+    // Automatically mark conversation messages as read when viewing with userId
+    if (conversationId && userId && markRead !== false) {
+      try {
+        await prisma.chatMessage.updateMany({
+          where: {
+            conversationId,
+            receiverId: userId,
+            isRead: false,
+          },
+          data: { isRead: true },
+        });
+      } catch {}
+    }
+
+    // Calculate unread senders count for the current user
+    let unreadSendersCount = 0;
+    if (userId) {
+      try {
+        const unreadMsgs = await prisma.chatMessage.findMany({
+          where: {
+            receiverId: userId,
+            isRead: false,
+          },
+          select: { senderId: true },
+        });
+        unreadSendersCount = new Set(unreadMsgs.map((m) => m.senderId)).size;
+      } catch {}
+    }
+
     // 1. Specific Conversation Messages
     if (conversationId) {
       let dbMessages: any[] = [];
@@ -63,6 +94,7 @@ export async function GET(req: Request) {
         receiverId: m.receiverId || undefined,
         text: m.text,
         imageUrl: m.imageUrl || undefined,
+        isRead: m.isRead,
         time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         createdAt: new Date(m.createdAt).getTime(),
       }));
@@ -73,7 +105,7 @@ export async function GET(req: Request) {
 
       if (cachedConv) {
         cachedConv.messages = messagesToReturn;
-        return NextResponse.json({ success: true, conversation: cachedConv });
+        return NextResponse.json({ success: true, conversation: cachedConv, unreadSendersCount });
       }
 
       // If conversation wasn't in memory yet, return a basic conversation shell
@@ -88,7 +120,7 @@ export async function GET(req: Request) {
         messages: messagesToReturn,
       };
 
-      return NextResponse.json({ success: true, conversation: shellConv });
+      return NextResponse.json({ success: true, conversation: shellConv, unreadSendersCount });
     }
 
     // 2. All Conversations for User or All Platform Conversations
@@ -122,6 +154,7 @@ export async function GET(req: Request) {
             receiverId: m.receiverId || undefined,
             text: m.text,
             imageUrl: m.imageUrl || undefined,
+            isRead: m.isRead,
             time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             createdAt: new Date(m.createdAt).getTime(),
           }));
@@ -132,6 +165,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       conversations: allConvs,
+      unreadSendersCount,
     });
   } catch (error) {
     return NextResponse.json(
@@ -242,6 +276,50 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json(
       { success: false, error: "Failed to process message" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const { conversationId, userId } = body;
+
+    if (conversationId && userId) {
+      try {
+        await prisma.chatMessage.updateMany({
+          where: {
+            conversationId,
+            receiverId: userId,
+            isRead: false,
+          },
+          data: { isRead: true },
+        });
+      } catch {}
+    }
+
+    let unreadSendersCount = 0;
+    if (userId) {
+      try {
+        const unreadMsgs = await prisma.chatMessage.findMany({
+          where: {
+            receiverId: userId,
+            isRead: false,
+          },
+          select: { senderId: true },
+        });
+        unreadSendersCount = new Set(unreadMsgs.map((m) => m.senderId)).size;
+      } catch {}
+    }
+
+    return NextResponse.json({
+      success: true,
+      unreadSendersCount,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to update read status" },
       { status: 500 }
     );
   }
