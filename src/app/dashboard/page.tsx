@@ -301,37 +301,58 @@ function DashboardContent() {
       <div className="relative z-10 bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-xl shadow-slate-900/5">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           {/* User Details */}
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div className="relative group">
-              {currentUser?.avatarUrl ? (
-                <img
-                  src={currentUser.avatarUrl}
-                  alt={currentUser.name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#0f172a] shadow-sm shrink-0"
+          <div className="flex items-start gap-4 sm:gap-5">
+            <div className="flex flex-col items-center shrink-0">
+              <div className="relative group">
+                {currentUser?.avatarUrl ? (
+                  <img
+                    src={currentUser.avatarUrl}
+                    alt={currentUser.name}
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#0f172a] shadow-sm shrink-0"
+                  />
+                ) : (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#0f172a] text-amber-400 border-2 border-amber-400/40 flex items-center justify-center font-black text-2xl shadow-sm shrink-0">
+                    {currentUser?.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
+                  </div>
+                )}
+                <label
+                  htmlFor="header-avatar-input"
+                  className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-[10px] font-bold cursor-pointer transition-opacity backdrop-blur-2xs"
+                  title="Change Profile Photo"
+                >
+                  <Camera className="w-5 h-5 text-amber-300 mb-0.5" />
+                  <span>Upload</span>
+                </label>
+                <input
+                  id="header-avatar-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarFile}
+                  className="hidden"
                 />
-              ) : (
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#0f172a] text-amber-400 border-2 border-amber-400/40 flex items-center justify-center font-black text-2xl shadow-sm shrink-0">
-                  {currentUser?.name ? currentUser.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "U"}
-                </div>
-              )}
-              <label
-                htmlFor="header-avatar-input"
-                className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-[10px] font-bold cursor-pointer transition-opacity backdrop-blur-2xs"
-                title="Change Profile Photo"
+              </div>
+
+              {/* Edit Profile button placed right below the profile icon / photo */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("profile");
+                  const el = document.getElementById("profile-edit-section");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`mt-2 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                  activeTab === "profile"
+                    ? "bg-[#0f172a] text-white ring-2 ring-amber-400/50 shadow-md"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-800 hover:text-black border border-slate-300"
+                }`}
+                title="Edit Profile"
               >
-                <Camera className="w-5 h-5 text-amber-300 mb-0.5" />
-                <span>Upload</span>
-              </label>
-              <input
-                id="header-avatar-input"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarFile}
-                className="hidden"
-              />
+                <Edit3 className="w-3.5 h-3.5 text-amber-500" />
+                <span>Edit Profile</span>
+              </button>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pt-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   {currentUser?.name || "My Account"}
@@ -416,18 +437,6 @@ function DashboardContent() {
         >
           <Repeat className="w-4 h-4 text-amber-400" />
           <span>Barter &amp; Deals ({offers.length + 1})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("profile")}
-          className={`flex items-center gap-1.5 px-4 py-2.5 font-bold rounded-2xl whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === "profile"
-              ? "bg-[#0f172a] text-white shadow-md font-black"
-              : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200"
-          }`}
-        >
-          <Edit3 className="w-4 h-4" />
-          <span>Edit Profile</span>
         </button>
       </div>
 
@@ -716,15 +725,24 @@ function DashboardContent() {
 
       {/* TAB: EDIT PROFILE */}
       {activeTab === "profile" && (
-        <div className="relative z-10 space-y-6">
+        <div id="profile-edit-section" className="relative z-10 space-y-6">
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-            <div className="border-b border-slate-100 pb-4">
-              <h3 className="text-base font-black text-slate-900">
-                Personal &amp; Store Profile Information
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Update your display name, profile photo, contact numbers, and store location for buyer discovery
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-base font-black text-slate-900">
+                  Personal &amp; Store Profile Information
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Update your display name, profile photo, contact numbers, and store location for buyer discovery
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab("ads")}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-black bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-1.5 rounded-full transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
+              >
+                <span>&larr; Back to My Posts</span>
+              </button>
             </div>
 
             {/* Profile Picture Management Section */}
