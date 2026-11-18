@@ -9,6 +9,7 @@ export interface ApiMessage {
   receiverId?: string;
   sender?: "me" | "them";
   text: string;
+  imageUrl?: string;
   time: string;
   createdAt: number;
 }
@@ -61,6 +62,7 @@ export async function GET(req: Request) {
         senderName: m.senderName,
         receiverId: m.receiverId || undefined,
         text: m.text,
+        imageUrl: m.imageUrl || undefined,
         time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         createdAt: new Date(m.createdAt).getTime(),
       }));
@@ -119,6 +121,7 @@ export async function GET(req: Request) {
             senderName: m.senderName,
             receiverId: m.receiverId || undefined,
             text: m.text,
+            imageUrl: m.imageUrl || undefined,
             time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             createdAt: new Date(m.createdAt).getTime(),
           }));
@@ -144,6 +147,7 @@ export async function POST(req: Request) {
     const {
       conversationId,
       text,
+      imageUrl,
       senderId,
       senderName,
       receiverId,
@@ -158,9 +162,10 @@ export async function POST(req: Request) {
       listingId,
     } = body;
 
-    if (!conversationId || !text?.trim()) {
+    const messageText = (text || "").trim();
+    if (!conversationId || (!messageText && !imageUrl)) {
       return NextResponse.json(
-        { success: false, error: "conversationId and text are required" },
+        { success: false, error: "conversationId and either text or imageUrl are required" },
         { status: 400 }
       );
     }
@@ -205,7 +210,8 @@ export async function POST(req: Request) {
           senderId: senderId || "user",
           senderName: senderName || "Trader",
           receiverId: receiverId || null,
-          text: text.trim(),
+          text: messageText || (imageUrl ? "Attached payment screenshot" : ""),
+          imageUrl: imageUrl || null,
         },
       });
     } catch (dbErr) {
@@ -218,7 +224,8 @@ export async function POST(req: Request) {
       senderId: createdDbMsg?.senderId || senderId || "user",
       senderName: createdDbMsg?.senderName || senderName || "Trader",
       receiverId: createdDbMsg?.receiverId || receiverId,
-      text: text.trim(),
+      text: messageText || (imageUrl ? "Attached payment screenshot" : ""),
+      imageUrl: createdDbMsg?.imageUrl || imageUrl || undefined,
       time: createdDbMsg
         ? new Date(createdDbMsg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
         : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
