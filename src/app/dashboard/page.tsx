@@ -24,7 +24,6 @@ import {
   AlertCircle,
   Copy,
   Check,
-  Wallet,
   DollarSign,
   ArrowUpRight,
   ArrowDownLeft,
@@ -46,7 +45,8 @@ import {
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") || "ads";
+  const initialParam = searchParams.get("tab");
+  const initialTab = initialParam === "wallet" ? "ads" : (initialParam || "ads");
 
   const {
     favorites,
@@ -73,9 +73,6 @@ function DashboardContent() {
   }, [isAuthReady, isLoggedIn, router, showToast, initialTab]);
 
   const [activeTab, setActiveTab] = useState<string>(initialTab);
-  const [walletBalance, setWalletBalance] = useState<number>(currentUser?.walletBalance || 0);
-  const [depositAmount, setDepositAmount] = useState<string>("500");
-  const [walletSuccessMsg, setWalletSuccessMsg] = useState<string | null>(null);
 
   // Profile Edit State
   const [editName, setEditName] = useState(currentUser?.name || "");
@@ -148,16 +145,6 @@ function DashboardContent() {
     setEditAvatarUrl("");
     updateUserProfile({ avatarUrl: "" });
     showToast("Profile picture removed. Initials will be used.", "info");
-  };
-
-  const handleDeposit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const amt = Number(depositAmount);
-    if (amt > 0) {
-      setWalletBalance((prev) => prev + amt);
-      setWalletSuccessMsg(`Successfully credited ${amt.toLocaleString()} ETB via Telebirr account (${currentUser?.phone || "+2519..."})!`);
-      setTimeout(() => setWalletSuccessMsg(null), 4000);
-    }
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -264,7 +251,7 @@ function DashboardContent() {
               Personal Account Protected
             </h2>
             <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-medium">
-              Access to your personal listings, Telebirr wallet, and barter deals requires you to sign in.
+              Access to your personal listings, barter deals, and account details requires you to sign in.
             </p>
           </div>
 
@@ -380,21 +367,11 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Quick Actions & Wallet Pill */}
+          {/* Quick Actions */}
           <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-            {/* Telebirr Balance Card */}
-            <div className="bg-slate-100 px-4 py-2.5 rounded-2xl border border-slate-200 text-right flex-1 sm:flex-none">
-              <div className="text-[10px] text-slate-500 font-black uppercase tracking-wider">
-                Telebirr Balance
-              </div>
-              <div className="text-base sm:text-lg font-black text-[#0f172a] font-mono">
-                {walletBalance.toLocaleString()} ETB
-              </div>
-            </div>
-
             <Link
               href="/listings/create"
-              className="inline-flex items-center justify-center gap-1.5 bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-xs sm:text-sm px-5 py-3 rounded-full shadow-md transition-all flex-1 sm:flex-none cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all flex-1 sm:flex-none cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[3] text-amber-400" />
               <span>Post Free Product</span>
@@ -439,18 +416,6 @@ function DashboardContent() {
         >
           <Repeat className="w-4 h-4 text-amber-400" />
           <span>Barter &amp; Deals ({offers.length + 1})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("wallet")}
-          className={`flex items-center gap-1.5 px-4 py-2.5 font-bold rounded-2xl whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === "wallet"
-              ? "bg-[#0f172a] text-white shadow-md font-black"
-              : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200"
-          }`}
-        >
-          <Wallet className="w-4 h-4" />
-          <span>Telebirr Wallet</span>
         </button>
 
         <button
@@ -745,102 +710,6 @@ function DashboardContent() {
                 </div>
               ))
             )}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 4: TELEBIRR WALLET */}
-      {activeTab === "wallet" && (
-        <div className="relative z-10 space-y-6">
-          <div className="bg-white/95 backdrop-blur-sm rounded-3xl border border-emerald-900/10 p-6 sm:p-8 shadow-xl shadow-emerald-950/5 space-y-5">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <span className="text-xs font-black text-emerald-800 uppercase tracking-wider block">
-                  Telebirr &amp; CBE Escrow Wallet
-                </span>
-                <div className="text-3xl sm:text-4xl font-black text-[#0e623a] font-mono mt-1">
-                  {walletBalance.toLocaleString()} ETB
-                </div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Linked Phone: <strong className="font-mono text-slate-800">{currentUser?.phone || "No phone linked"}</strong>
-                </p>
-              </div>
-
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3.5 py-1.5 rounded-full border border-emerald-300 flex items-center gap-1.5 shadow-2xs">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Dual-OTP Escrow Protection Active</span>
-              </span>
-            </div>
-
-            {walletSuccessMsg && (
-              <div className="p-4 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-bold flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span>{walletSuccessMsg}</span>
-              </div>
-            )}
-
-            {/* Quick Deposit Form */}
-            <form onSubmit={handleDeposit} className="pt-4 border-t border-slate-100 space-y-3">
-              <label className="text-xs font-bold text-slate-800 block">
-                Top Up Balance via Telebirr (Simulated Deposit)
-              </label>
-              <div className="flex flex-wrap items-center gap-2">
-                {["500", "1000", "2500", "5000", "10000"].map((preset) => (
-                  <button
-                    key={preset}
-                    type="button"
-                    onClick={() => setDepositAmount(preset)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      depositAmount === preset
-                        ? "bg-[#0e623a] text-white shadow-xs font-black"
-                        : "bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
-                    }`}
-                  >
-                    +{Number(preset).toLocaleString()} ETB
-                  </button>
-                ))}
-
-                <div className="flex items-center gap-2 ml-auto w-full sm:w-auto mt-2 sm:mt-0">
-                  <input
-                    type="number"
-                    min="100"
-                    max="100000"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-32 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-900 text-right focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0e623a]"
-                  />
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#0e623a] hover:bg-[#0b4d2e] text-white font-black text-xs shadow-xs transition-colors cursor-pointer"
-                  >
-                    Deposit
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          {/* Escrow Protections Information */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white/95 backdrop-blur-sm p-5 rounded-3xl border border-slate-200 space-y-2 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-black text-[#0e623a]">
-                <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                <span>Dual-OTP Protected Transactions</span>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                When you purchase or barter an item, payment is held safely in Sefed escrow. The funds are released to the seller only after both parties share their one-time delivery release OTP.
-              </p>
-            </div>
-
-            <div className="bg-white/95 backdrop-blur-sm p-5 rounded-3xl border border-slate-200 space-y-2 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-black text-[#0e623a]">
-                <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                <span>Verified Handover Inspection</span>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Meet sellers at designated public hubs (Bole, Piassa, Arada, Megenagna) or select verified Bajaj delivery. Test devices before confirming final exchange.
-              </p>
-            </div>
           </div>
         </div>
       )}
