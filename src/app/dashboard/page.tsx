@@ -299,7 +299,7 @@ function DashboardContent() {
 
       {/* Main Profile Header Banner */}
       <div className="relative z-10 bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-xl shadow-slate-900/5">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+        <div className="flex items-start sm:items-center justify-between gap-5">
           {/* User Details */}
           <div className="flex items-start gap-4 sm:gap-5">
             <div className="flex flex-col items-center shrink-0">
@@ -386,17 +386,6 @@ function DashboardContent() {
                 )}
               </div>
             </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-            <Link
-              href="/listings/create"
-              className="inline-flex items-center justify-center gap-1.5 bg-[#0f172a] hover:bg-slate-800 active:scale-[0.99] text-white font-black text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all flex-1 sm:flex-none cursor-pointer"
-            >
-              <Plus className="w-4 h-4 stroke-[3] text-amber-400" />
-              <span>Post Free Product</span>
-            </Link>
           </div>
         </div>
       </div>
