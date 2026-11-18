@@ -50,6 +50,7 @@ export default function Navbar() {
     isLoggedIn,
     logout,
     listings,
+    favorites,
     t,
   } = useMarketplace();
 
@@ -315,8 +316,47 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Right: Distinct Auth Buttons with Midnight Navy & Gold Palette */}
+            {/* Right: Quick Action Icons & User Account Menu */}
             <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+              {/* Quick Action Icons Cluster: Swaps, Saved, Messages (fills navbar free space) */}
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                {/* 1. Device Swaps & Barter Proposals */}
+                <Link
+                  href={isLoggedIn ? "/dashboard?tab=trades" : "/swaps"}
+                  className="relative p-2 sm:p-2.5 rounded-full text-slate-700 hover:text-amber-600 hover:bg-amber-50/90 transition-all cursor-pointer group"
+                  title={t("nav_my_swaps")}
+                  aria-label={t("nav_my_swaps")}
+                >
+                  <Repeat className="w-5 h-5 stroke-[2] transition-transform group-hover:rotate-45" />
+                </Link>
+
+                {/* 2. Saved Ads / Watchlist */}
+                <Link
+                  href={isLoggedIn ? "/dashboard?tab=saved" : "/listings"}
+                  className="relative p-2 sm:p-2.5 rounded-full text-slate-700 hover:text-rose-600 hover:bg-rose-50/90 transition-all cursor-pointer group"
+                  title={t("nav_saved")}
+                  aria-label={t("nav_saved")}
+                >
+                  <Heart className="w-5 h-5 stroke-[2] transition-transform group-hover:scale-110" />
+                  {favorites && favorites.length > 0 && (
+                    <span className="absolute top-1 right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-500 text-white font-black text-[10px] flex items-center justify-center shadow-xs ring-2 ring-white">
+                      {favorites.length}
+                    </span>
+                  )}
+                </Link>
+
+                {/* 3. Direct Messages */}
+                <Link
+                  href="/messages"
+                  className="relative p-2 sm:p-2.5 rounded-full text-slate-700 hover:text-[#0f172a] hover:bg-slate-100 transition-all cursor-pointer group"
+                  title={t("nav_messages")}
+                  aria-label={t("nav_messages")}
+                >
+                  <MessageSquare className="w-5 h-5 stroke-[2] transition-transform group-hover:scale-110" />
+                  <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white" />
+                </Link>
+              </div>
+
               {isLoggedIn ? (
                 <div ref={userMenuRef} className="relative">
                   <button
