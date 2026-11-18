@@ -196,6 +196,7 @@ model ChatMessage {
   senderName     String
   receiverId     String?
   text           String
+  imageUrl       String?
   isRead         Boolean   @default(false)
   createdAt      DateTime  @default(now())
 }
