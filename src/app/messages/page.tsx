@@ -33,6 +33,7 @@ interface Message {
   sender?: "me" | "them";
   text: string;
   imageUrl?: string;
+  isRead?: boolean;
   time: string;
   createdAt?: number;
 }
@@ -59,7 +60,7 @@ function MessagesContent() {
   const searchParams = useSearchParams();
   const requestedListingId = searchParams.get("listing");
   const requestedSellerId = searchParams.get("seller");
-  const { currentUser, isLoggedIn, isAuthReady, showToast, listings } = useMarketplace();
+  const { currentUser, isLoggedIn, isAuthReady, showToast, listings, refreshUnreadCount } = useMarketplace();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -172,13 +173,31 @@ function MessagesContent() {
     loadConversations();
   }, [currentUser?.id, requestedListingId, listings]);
 
+  // Mark active conversation messages as read and sync unread count
+  useEffect(() => {
+    if (!activeConvId || !currentUser?.id) return;
+
+    fetch("/api/messages", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId: activeConvId, userId: currentUser.id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          refreshUnreadCount();
+        }
+      })
+      .catch(() => {});
+  }, [activeConvId, currentUser?.id, refreshUnreadCount]);
+
   // Live polling for the active conversation (every 3 seconds)
   useEffect(() => {
     if (!activeConvId) return;
 
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`/api/messages?conversationId=${activeConvId}`);
+        const res = await fetch(`/api/messages?conversationId=${activeConvId}&userId=${currentUser.id}`);
         const data = await res.json();
         if (data.success && data.conversation?.messages) {
           setConversations((prev) =>
@@ -191,7 +210,7 @@ function MessagesContent() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [activeConvId]);
+  }, [activeConvId, currentUser?.id]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -491,9 +510,14 @@ function MessagesContent() {
                       >
                         {displayName}
                       </span>
-                      <span className={`text-[10px] ${isSelected ? "text-slate-600 font-semibold" : "text-slate-400"}`}>
-                        {lastMsg?.time || "Active"}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {conv.messages.some((m) => m.receiverId === currentUser.id && !m.isRead) && (
+                          <span className="w-2 h-2 rounded-full bg-amber-500 ring-2 ring-amber-100" />
+                        )}
+                        <span className={`text-[10px] ${isSelected ? "text-slate-600 font-semibold" : "text-slate-400"}`}>
+                          {lastMsg?.time || "Active"}
+                        </span>
+                      </div>
                     </div>
 
                     <p className="text-xs font-semibold text-slate-700 line-clamp-1">{conv.itemTitle}</p>
